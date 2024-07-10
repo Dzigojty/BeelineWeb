@@ -70,16 +70,9 @@
 
 * {
   font-family: "Noto Sans";
-  /* --fs-20: 1.38889vw;
-  --fs-25: 1.48889vw;
-  --fs-15: calc( (33.333vw - 320px)/(2560 - 320) * (25 - 14) + 15px);
-  --fs-14: calc( (33.333vw - 320px)/(2560 - 320) * (25 - 14) + 16px);
-  --fs-10: calc( (33.333vw - 320px)/(2560 - 320) * (25 - 14) + 10px);
-  --fs-23: calc( (33.333vw - 320px)/(2560 - 320) * (25 - 14) + 23px);
-  --fs-18: 1.25vw;
-  --fs-14: calc( (33.333vw - 320px)/(2560 - 320) * (25 - 14) + 14px); */
   --fs-20: calc(100vw / 72);
   --fs-25: calc(100vw / (288 / 5));
+  --fs-30: calc(100vw / (144/3));
   --fs-15: calc(100vw / 96);
   --fs-14: calc(100vw / (720 / 7));
   --fs-10: calc(100vw / 144);
@@ -234,12 +227,12 @@ i {
   border-radius: 50%;
 }
 
-html{
+html {
   margin: 0;
   padding: 0;
 }
 
-body{
+body {
   margin: 0;
   padding: 0;
 }
@@ -294,7 +287,7 @@ div.header_panel_button {
   border: solid 1px #5b3700;
 }
 
-.notion{
+.notion {
   width: 15vw;
 }
 

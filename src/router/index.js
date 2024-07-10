@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import DetailProductView from '../views/DetailProductView.vue'
 // import function to register Swiper custom elements
 
 
@@ -9,14 +10,14 @@ const routes = [
     name: 'home',
     component: HomeView
   },
-  // {
-  //   path: '/chat',
-  //   name: 'chat',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/ChatView.vue')
-  // },
+  {
+    path: '/detailProductView',
+    name: 'detailProductView',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: DetailProductView,
+  }
   // {
   //   path: '/product',
   //   name: 'product',
