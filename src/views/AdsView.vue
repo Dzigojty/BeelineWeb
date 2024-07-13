@@ -23,8 +23,11 @@
       <div class="shop_filter_button_price">100 000 ₽</div>
       <div class="shop_filter_button">Применить</div>
       <div class="line-grey2"></div>
-      <div class="shop_filter_grey_title">Объявления</div>
-      <div class="shop_filter_grey_title select">Заказы</div>
+      <div class="shop_filter_grey_title select">Объявления</div>
+      <Router-link to="/myOrder" class="shop_filter_grey_title">
+        Заказы
+      </Router-link>
+      <!-- <div class="shop_filter_grey_title">Заказы</div> -->
       <div class="shop_filter_grey_title">Адреса</div>
       <div class="shop_filter_grey_title">Настройки</div>
       <div class="shop_filter_grey_title exit">Выйти</div>
@@ -393,6 +396,8 @@ main {
 
 .shop_filter_grey_title {
   color: #929292;
+  display: block;
+  text-decoration: none;
   padding: 0.5vw 0;
   font-size: var(--fs-25);
 }
@@ -401,8 +406,8 @@ main {
   text-decoration: #929292 underline;
 }
 
-.grey_block.select {
-  color: #000000;
+.select {
+  color: #000000 !important;
 }
 
 .grey_text{

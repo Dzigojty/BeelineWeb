@@ -5,7 +5,10 @@
       <ul class="header_navigation-list">
         <li class="header_navigation-item">
           <img src="./assets/wallet.png" alt="" width="20" height="20" />
-          <a class="header_navigation-link" href="#">Кошелек</a>
+          <Router-link to="/walent" class="header_navigation-link">
+            Кошелек
+          </Router-link>
+          <!-- <a class="header_navigation-link" href="#">Кошелек</a> -->
         </li>
         <li class="header_navigation-item">
           <img src="./assets/star.png" alt="" width="20" height="20" />
@@ -24,9 +27,10 @@
             <img class="notif" src="./assets/notification.png" alt="" />
             <i>+5</i>
           </span>
-          <a class="header_navigation-link fs18 notion" href="#"
-            >(+5 новых уведомлений)</a
-          >
+          <Router-link to="/notif" class="header_navigation-link fs18 notion">
+            (+5 новых уведомлений)
+          </Router-link>
+          <!-- <a class="header_navigation-link fs18 notion" href="#"></a> -->
         </li>
         <li class="header_navigation-item">
           <img
@@ -36,10 +40,12 @@
             width="40"
             height="40"
           />
-          <Router-link to="/myOrder" class="header_navigation-link header_navigation-name">
+          <Router-link
+            to="/myOrder"
+            class="header_navigation-link header_navigation-name"
+          >
             Имя Фамилия
           </Router-link>
-          
         </li>
       </ul>
     </nav>

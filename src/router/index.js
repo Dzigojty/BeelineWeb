@@ -7,7 +7,7 @@ import WalentHistory from '../views/WalentHistoryView.vue'
 import Walent from '../views/WaletView.vue'
 import Favorit from '../views/FavoritView.vue'
 import Ads from '../views/AdsView.vue'
-
+import Notification from '../views/NotificationView.vue'
 
 const routes = [
   {
@@ -49,7 +49,12 @@ const routes = [
     path: '/ads',
     name: 'ads',
     component: Ads,
-  }
+  },
+  {
+    path: '/notif',
+    name: 'notif',
+    component: Notification,
+  },
   // {
   //   path: '/product',
   //   name: 'product',

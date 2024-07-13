@@ -290,8 +290,9 @@ main {
 }
 
 .shop_title {
-  font-size: var(--fs-25);
+  font-size: var(--fs-48);
   margin-bottom: 2.5vw;
+  font-weight: bold;
   padding-top: 2vw;
 }
 
@@ -396,14 +397,24 @@ main {
 }
 
 .shop_filter_grey_title {
+  display: block;
   color: #929292;
   padding: 0.5vw 0;
   text-decoration: none;
   font-size: var(--fs-25);
 }
 
+.shop_filter_grey_title.select{
+  color: #000000;
+}
+
 .exit {
   text-decoration: #929292 underline;
+}
+
+.select {
+  color: white;
+  background-color: #929292;
 }
 
 .grey_block.select {
