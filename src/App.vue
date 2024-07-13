@@ -8,12 +8,16 @@
           <a class="header_navigation-link" href="#">Кошелек</a>
         </li>
         <li class="header_navigation-item">
-          <img src="./assets/star.png" alt=" " width="20" height="20" />
-          <a class="header_navigation-link" href="#">Избранное</a>
+          <img src="./assets/star.png" alt="" width="20" height="20" />
+          <Router-link to="/favorit" class="header_navigation-link">
+            Избранное
+          </Router-link>
         </li>
         <li class="header_navigation-item">
           <img src="./assets/message.png" alt="" />
-          <a class="header_navigation-link" href="#">Сообщения</a>
+          <Router-link to="/chat" class="route-view header_navigation-link">
+            Сообщения
+          </Router-link>
         </li>
         <li class="header_navigation-item header_notification">
           <span class="header_navigation-link_notification_counter">
@@ -32,9 +36,10 @@
             width="40"
             height="40"
           />
-          <a class="header_navigation-link header_navigation-name" href="#"
-            >Имя Фамилия</a
-          >
+          <Router-link to="/myOrder" class="header_navigation-link header_navigation-name">
+            Имя Фамилия
+          </Router-link>
+          
         </li>
       </ul>
     </nav>
@@ -72,9 +77,12 @@
   font-family: "Noto Sans";
   --fs-20: calc(100vw / 72);
   --fs-25: calc(100vw / (288 / 5));
-  --fs-30: calc(100vw / (144/3));
+  --fs-30: calc(100vw / (144 / 3));
+  --fs-48: calc(100vw / (120 / 4));
+  --fs-16: calc(100vw / 90);
   --fs-15: calc(100vw / 96);
   --fs-14: calc(100vw / (720 / 7));
+  --fs-40: calc(100vw / (144 / 4));
   --fs-10: calc(100vw / 144);
   --fs-23: calc(100vw / (1440 / 23));
   --fs-18: calc(100vw / 80);
@@ -118,7 +126,7 @@ footer nav a {
 footer nav img {
   margin: 0 0.5vw;
   width: 4vw;
-  height: 4vw;
+  height: 4.2vw;
 }
 
 footer nav {
@@ -150,7 +158,7 @@ footer nav {
       black
     );
   background-size: 10% 15px;
-  background-position: 0 0, 0 23px;
+  background-position: 11px 25px, 0 23px;
 }
 
 #parallelogramB {
@@ -283,17 +291,16 @@ div.header_panel_button {
   background-color: #ffc500;
   box-sizing: border-box;
   padding: 0.3vw 5%;
-  border-radius: 8px;
+  border-radius: 0.5vw;
   border: solid 1px #5b3700;
 }
 
 .notion {
   width: 15vw;
 }
-
 .finder_button {
   position: absolute;
-  border-radius: 0.8vw;
+  border-radius: 0.5vw;
   padding: 0.2vw 1vw;
   font-size: var(--fs-20);
   font-weight: 100;
@@ -313,7 +320,7 @@ div.header_panel_finder {
   margin-right: 25px;
   height: calc(0.056 * 31vw);
   display: flex;
-  border-radius: 8px;
+  border-radius: 0.5vw;
   padding: 0.3vw 0;
   background-color: #f7ead6;
 }
@@ -323,7 +330,7 @@ div.header_panel_finder {
   background-color: black;
   padding: 0.3vw 5%;
   height: calc(0.056 * 33.35vw);
-  border-radius: 12px;
+  border-radius: 0.5vw;
   align-self: end;
   display: flex;
   align-items: center;
@@ -360,8 +367,8 @@ div.header_panel_finder {
         black 75%,
         black
       );
-    background-size: 10% 55px;
-    background-position: 0 0, 0 23px;
+    background-size: 10% 25px;
+    background-position: 23px 0, 0px 15px;
   }
 }
 </style>

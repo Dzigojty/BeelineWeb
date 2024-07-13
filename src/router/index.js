@@ -1,7 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DetailProductView from '../views/DetailProductView.vue'
-// import function to register Swiper custom elements
+import ChatView from '../views/ChatView.vue'
+import MyOrder from '../views/MyOrder.vue'
+import WalentHistory from '../views/WalentHistoryView.vue'
+import Walent from '../views/WaletView.vue'
+import Favorit from '../views/FavoritView.vue'
+import Ads from '../views/AdsView.vue'
 
 
 const routes = [
@@ -13,10 +18,37 @@ const routes = [
   {
     path: '/detailProductView',
     name: 'detailProductView',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: DetailProductView,
+  },
+  {
+    path: '/chat',
+    name: 'chat',
+    component: ChatView,
+  },
+  {
+    path: '/myOrder',
+    name: 'myOrder',
+    component: MyOrder,
+  },
+  {
+    path: '/walent',
+    name: 'walent',
+    component: Walent,
+  },
+  {
+    path: '/walentHistory',
+    name: 'walentHistory',
+    component: WalentHistory,
+  },
+  {
+    path: '/favorit',
+    name: 'favorit',
+    component: Favorit,
+  },
+  {
+    path: '/ads',
+    name: 'ads',
+    component: Ads,
   }
   // {
   //   path: '/product',
