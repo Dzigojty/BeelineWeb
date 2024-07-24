@@ -3,52 +3,20 @@
     <user-panel-right @changeRoute="changeRoute" @exitUser="exitUser" />
 
     <div class="shop_product">
-      <div class="shop_title">Объявления</div>
+      <div class="shop_title">Адреса</div>
       <div class="block_flex">
-        <div class="grey_block select">Все</div>
-        <div class="grey_block">Арендованные</div>
-        <div class="grey_block">Архивированные</div>
+        <div class="grey_block">Добавьте хотя бы один пункт, чтобы сразу видеть самые быстрые и выгодные варианты доставки.</div>
       </div>
-      <div class="shop_list">
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_r">Завтра с 17:00 до 17:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="grey_text">Объявление снято</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
+      <button class="yellow_button">Добавить</button>
+      <div class="flex-block">
+        <div class="grey-block">
+          <img src="../assets/ecoAdres.svg" alt="">
+          <div>Экономия на доставке</div>
+        </div>
+        <div class="grey-block">
+          <img src="../assets/pointAdres.svg" alt="">
+          <div>Объявления поблизости</div>
+        </div>
       </div>
     </div>
   </div>
@@ -62,9 +30,6 @@ export default {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
-     selectProduct(product) {
-      this.$emit('selectProduct', product);
-    },
   },
   components: {
     UserPanelRight,
@@ -74,6 +39,27 @@ export default {
 </script>
 
 <style scoped>
+.flex-block{
+  display: flex;
+  justify-content: space-between;
+  width: 40vw;
+  margin-top: 5vw;
+}
+
+.grey-block{
+  background-color: #F1F1F1;
+  border: none;
+  border-radius: 1vw;
+  padding: 1vw;
+  color: #141414;
+  font-size: var(--fs-25);
+  font-weight: 600;
+}
+
+.grey-block img{
+  height: 3.2vw;
+}
+
 .route-view {
   text-decoration: none;
 }
@@ -95,6 +81,13 @@ main {
 
 .swiper {
   padding: 1vw 0;
+}
+
+.yellow_button{
+  background-color: #f9cc33;
+  padding: 0.8vw 3vw;
+  border-radius: 1.2vw;
+  border: none;
 }
 
 .swiper-el {
@@ -296,9 +289,9 @@ main {
 }
 
 .grey_block{
-    color: rgba(20, 20, 20, 0.561);
-    width: min-content;
-    margin-right: 3vw;
+    color: #141414;
+    width: 34vw;
+    word-wrap: break-word;
 }
 
 .title_user {

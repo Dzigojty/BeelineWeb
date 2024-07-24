@@ -1,40 +1,6 @@
 <template>
   <div class="shop">
-    <div class="shop_filter">
-      <div class="block_title_user">
-        <img class="title_user" src="../assets/user.png" alt="" />
-      </div>
-
-      <div class="shop_filter_name">Фамилия Имя</div>
-      <div class="shop_filter_rating">
-        <div class="shop_filter_rating_name">5,0</div>
-        <div class="filter_rating">
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_grey.png" alt="" />
-        </div>
-      </div>
-      <div class="block-num_prof">
-        <samp>Номер профиля</samp>
-        <samp>0000</samp>
-      </div>
-      <div class="shop_filter_button_price">100 000 ₽</div>
-      <div class="shop_filter_button">Применить</div>
-      <div class="line-grey2"></div>
-      <Router-link to="/ads" class="shop_filter_grey_title">
-        Объявления
-      </Router-link>
-      <Router-link to="/myOrder" class="shop_filter_grey_title">
-        Заказы
-      </Router-link>
-      <!-- <div class="shop_filter_grey_title">Объявления</div> -->
-      <!-- <div class="shop_filter_grey_title">Заказы</div> -->
-      <div class="shop_filter_grey_title">Адреса</div>
-      <div class="shop_filter_grey_title">Настройки</div>
-      <div class="shop_filter_grey_title exit">Выйти</div>
-    </div>
+    <user-panel-right @changeRoute="changeRoute" @exitUser="exitUser" />
 
     <div class="shop_product">
       <div class="shop_title">История кошелька</div>
@@ -98,15 +64,19 @@
 </template>
 
 <script>
-// // @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
+import UserPanelRight from "../components/user-panel-right.vue";
 
-// export default {
-//   name: 'HomeView',
-//   components: {
-//     HelloWorld
-//   }
-// }
+export default {
+  methods: {
+    changeRoute(newRoute) {
+      this.$emit("changeRoute", newRoute);
+    },
+  },
+  components: {
+    UserPanelRight,
+  },
+  setup() {},
+};
 </script>
 
 <style scoped>
@@ -341,7 +311,6 @@ main {
   font-weight: bold;
   padding-top: 2vw;
 }
-
 
 .shop {
   display: flex;
@@ -715,8 +684,8 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
@@ -785,15 +754,15 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: rgba(20, 20, 20, 0.561);
-    width: min-content;
-    margin-right: 3vw;
+.grey_block {
+  color: rgba(20, 20, 20, 0.561);
+  width: min-content;
+  margin-right: 3vw;
 }
 
 .title_user {
@@ -881,9 +850,9 @@ main {
   color: #000000 !important;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
 
 .shop_filter_button {

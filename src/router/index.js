@@ -8,6 +8,10 @@ import Walent from '../views/WaletView.vue'
 import Favorit from '../views/FavoritView.vue'
 import Ads from '../views/AdsView.vue'
 import Notification from '../views/NotificationView.vue'
+import AdresView from '../views/AdresView.vue'
+import SettingView from '../views/SettingView.vue'
+import CreateAds1 from '../views/CreateAds1.vue'
+import CreateAds2 from '../views/CreateAds2.vue'
 
 const routes = [
   {
@@ -55,6 +59,26 @@ const routes = [
     name: 'notif',
     component: Notification,
   },
+  {
+    path: '/adres',
+    name: 'adres',
+    component: AdresView,
+  },
+  {
+    path: '/setting',
+    name: 'setting',
+    component: SettingView,
+  },
+  {
+    path: '/createAds1',
+    name: 'createAds1',
+    component: CreateAds1,
+  },
+  {
+    path: '/createAds2',
+    name: 'createAds2',
+    component: CreateAds2,
+  }
   // {
   //   path: '/product',
   //   name: 'product',

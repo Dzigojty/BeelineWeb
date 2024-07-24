@@ -1,36 +1,6 @@
 <template>
   <div class="shop">
-    <div class="shop_filter">
-      <div class="block_title_user">
-        <img class="title_user" src="../assets/user.png" alt="" />
-      </div>
-
-      <div class="shop_filter_name">Фамилия Имя</div>
-      <div class="shop_filter_rating">
-        <div class="shop_filter_rating_name">5,0</div>
-        <div class="filter_rating">
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_grey.png" alt="" />
-        </div>
-      </div>
-      <div class="block-num_prof">
-        <samp>Номер профиля</samp>
-        <samp>0000</samp>
-      </div>
-      <div class="shop_filter_button_price">100 000 ₽</div>
-      <div class="shop_filter_button">Применить</div>
-      <div class="line-grey2"></div>
-      <Router-link to="/ads" class="shop_filter_grey_title">
-        Объявления
-      </Router-link>
-      <div class="shop_filter_grey_title select">Заказы</div>
-      <div class="shop_filter_grey_title">Адреса</div>
-      <div class="shop_filter_grey_title">Настройки</div>
-      <div class="shop_filter_grey_title exit">Выйти</div>
-    </div>
+    <user-panel-right @changeRoute="changeRoute" @exitUser="exitUser" />
 
     <div class="shop_product">
       <div class="shop_title">Мои заказы</div>
@@ -40,7 +10,7 @@
         <div class="grey_block">Закрытые</div>
       </div>
       <div class="shop_list">
-        <Router-link to="/detailProductView" class="route-view">
+        <a @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -51,9 +21,9 @@
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
             </div>
           </div>
-        </Router-link>
+        </a>
         <div class="line-grey"></div>
-        <Router-link to="/detailProductView" class="route-view">
+        <a  @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -64,9 +34,9 @@
               <div class="product_status_r">Завтра с 17:00 до 17:30</div>
             </div>
           </div>
-        </Router-link>
+        </a>
         <div class="line-grey"></div>
-        <Router-link to="/detailProductView" class="route-view">
+        <a @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -77,7 +47,7 @@
               <div class="grey_text">Объявление снято</div>
             </div>
           </div>
-        </Router-link>
+        </a>
         <div class="line-grey"></div>
       </div>
     </div>
@@ -85,15 +55,25 @@
 </template>
 
 <script>
-// // @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
+import UserPanelRight from "../components/user-panel-right.vue";
 
-// export default {
-//   name: 'HomeView',
-//   components: {
-//     HelloWorld
-//   }
-// }
+export default {
+  methods: {
+    changeRoute(newRoute) {
+      this.$emit("changeRoute", newRoute);
+    },
+    exitUser() {
+      this.$emit("exitUser");
+    },
+    selectProduct(product) {
+      this.$emit('selectProduct', product);
+    },
+  },
+  components: {
+    UserPanelRight,
+  },
+  setup() {},
+};
 </script>
 
 <style scoped>
@@ -195,7 +175,6 @@ main {
   display: flex;
 }
 
-
 .product_title_date {
   font-size: var(--fs-20);
   color: #929292;
@@ -244,8 +223,8 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
@@ -294,7 +273,6 @@ main {
   padding-top: 2vw;
 }
 
-
 .shop {
   display: flex;
   justify-content: center;
@@ -315,18 +293,18 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: #141414;
-    background-color: #D9D9D9;
-    border-radius: 1vw;
-    width: min-content;
-    margin-right: 1vw;
-    padding: 0.3vw 1vw;
+.grey_block {
+  color: #141414;
+  background-color: #d9d9d9;
+  border-radius: 1vw;
+  width: min-content;
+  margin-right: 1vw;
+  padding: 0.3vw 1vw;
 }
 
 .title_user {
@@ -398,7 +376,7 @@ main {
   height: 0.2vw;
 }
 
-.shop_filter_grey_title.select{
+.shop_filter_grey_title.select {
   color: #000000;
 }
 
@@ -418,9 +396,9 @@ main {
   background-color: #929292;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
 
 .shop_filter_button {
@@ -665,8 +643,8 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
@@ -735,15 +713,15 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: rgba(20, 20, 20, 0.561);
-    width: min-content;
-    margin-right: 3vw;
+.grey_block {
+  color: rgba(20, 20, 20, 0.561);
+  width: min-content;
+  margin-right: 3vw;
 }
 
 .title_user {
@@ -831,9 +809,9 @@ main {
   color: #000000 !important;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
 
 .shop_filter_button {

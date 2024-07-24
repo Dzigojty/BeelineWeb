@@ -3,53 +3,58 @@
     <user-panel-right @changeRoute="changeRoute" @exitUser="exitUser" />
 
     <div class="shop_product">
-      <div class="shop_title">Объявления</div>
-      <div class="block_flex">
-        <div class="grey_block select">Все</div>
-        <div class="grey_block">Арендованные</div>
-        <div class="grey_block">Архивированные</div>
+      <div class="shop_title">Настройки</div>
+      <div class="mail-block">
+        <div>
+          <span class="mail">kakoyyakrasiviy@yandex.ru</span>
+          <span class="edit-block">
+            <img src="../assets/pen.svg" alt="" />
+            <samp class="desc-mail">(редактировать)</samp>
+          </span>
+        </div>
+        <div class="verify">
+          <img src="../assets/verified.svg" alt="" />
+          <samp>Подтвержден</samp>
+        </div>
       </div>
-      <div class="shop_list">
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_r">Завтра с 17:00 до 17:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="grey_text">Объявление снято</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
+      <div class="grey-line2"></div>
+      <h3>Телефоны</h3>
+      <h3 class="regular">8 928 282 25 25</h3>
+      <button class="grey_button">Добавить</button>
+      <div class="grey-line2"></div>
+      <h3>Звонки  </h3>
+      <samp class="desc-mail margin-tb">Когда принимать</samp>
+      <div class="shop_filter_block">
+        <input class="filter_block" type="text" placeholder="с 00:00" />
+        <input class="filter_block" type="text" placeholder="до 00:00" />
+
+        <div class="checkbox">
+          <input
+            class="custom-checkbox"
+            type="checkbox"
+            id="color-2"
+            name="color-2"
+            value="time"
+          />
+          <label for="color-2">В любое время</label>
+        </div>
       </div>
+      <div class="grey-line2"></div>
+      <div class="shop_title kast">Защита профиля</div>
+      <h2>Смена пароля</h2>
+      <div class="column">
+        <input class="filter_block" type="text" placeholder="Текущий" />
+        <input class="filter_block" type="text" placeholder="Новый" />
+        <button class="yellow_button">Сохранить</button>
+      </div>
+      <div class="grey-line2"></div>
+      <h2>Соцсети и сервисы</h2>
+      <div class="flex-block">
+        <img src="../assets/vk_icon.png" alt="" />
+        <samp class="text_light">VK ID</samp>
+      </div>
+      <div class="grey-line2"></div>
+      <h2>Удаление профиля</h2>
     </div>
   </div>
 </template>
@@ -62,9 +67,6 @@ export default {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
-     selectProduct(product) {
-      this.$emit('selectProduct', product);
-    },
   },
   components: {
     UserPanelRight,
@@ -74,6 +76,130 @@ export default {
 </script>
 
 <style scoped>
+.flex-block {
+  display: flex;
+  align-items: center;
+}
+
+.flex-block img {
+  width: 2vw;
+}
+
+h2 {
+  margin-bottom: 1vw;
+  font-size: var(--fs-30);
+}
+
+.column {
+  display: grid;
+}
+
+.text_light {
+  margin-left: 1vw;
+  font-size: var(--fs-20);
+  font-weight: 200;
+  color: #929292;
+}
+
+.column .filter_block {
+  width: 20vw;
+  margin-bottom: 0.5vw;
+}
+
+.yellow_button {
+  background-color: #f9cc33;
+  padding: 0.8vw 3vw;
+  width: 15vw;
+  border-radius: 1.2vw;
+  border: none;
+  margin-top: 1vw;
+}
+
+.custom-checkbox {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.color-2 {
+  font-size: var(--fs-18);
+  font-weight: 200;
+}
+
+/* для элемента label, связанного с .custom-checkbox */
+.custom-checkbox + label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+}
+
+/* создание в label псевдоэлемента before со следующими стилями */
+.custom-checkbox + label::before {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid black;
+  border-radius: 0.25em;
+  margin-right: 0.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 50% 50%;
+  border-radius: 50%;
+}
+
+/* стили при наведении курсора на checkbox */
+/* .custom-checkbox:not(:disabled):not(:checked) + label:hover::before {
+  border-color: #b3d7ff;
+  
+} */
+
+/* стили для активного чекбокса (при нажатии на него) */
+/* .custom-checkbox:not(:disabled):active + label::before {
+  background-color: #b3d7ff;
+  border-color: #b3d7ff;
+} */
+
+/* стили для чекбокса, находящегося в фокусе */
+/* .custom-checkbox:focus + label::before {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+} */
+
+/* стили для чекбокса, находящегося в фокусе и не находящегося в состоянии checked */
+.custom-checkbox:focus:not(:checked) + label::before {
+  border-color: #80bdff;
+}
+
+/* стили для чекбокса, находящегося в состоянии checked */
+.custom-checkbox:checked + label::before {
+  border-color: #f9cc33;
+  background-color: #f9cc33;
+  border-radius: 50%;
+  /* background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e"); */
+}
+
+/* стили для чекбокса, находящегося в состоянии disabled */
+.custom-checkbox:disabled + label::before {
+  background-color: #e9ecef;
+}
+
+body {
+  padding: 20px 50px;
+}
+
+.checkbox {
+  margin-bottom: 1em;
+}
+
+.grey_button {
+  background-color: #d9d9d9;
+  padding: 0.8vw 3vw;
+  border-radius: 1.2vw;
+  border: none;
+}
+
 .route-view {
   text-decoration: none;
 }
@@ -220,11 +346,60 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
+}
+
+.mail-block {
+  display: flex;
+  justify-content: space-between;
+}
+
+.edit-block {
+  margin-left: 0.5vw;
+}
+
+.verify {
+  display: flex;
+  margin-right: 3vw;
+  align-content: center;
+}
+
+.kast.shop_title {
+  margin: 0;
+  padding: 0;
+}
+
+.verify img {
+  width: 2vw;
+}
+
+.margin-tb {
+  margin-bottom: 1vw;
+}
+
+.verify samp {
+  text-decoration: underline;
+  font-size: var(--fs-18);
+  font-weight: 200;
+  margin: 0 1vw;
+}
+
+.edit-block img {
+  width: 1.6vw;
+  margin: 0 1vw;
+}
+
+.desc-mail {
+  color: #ababab;
+  text-decoration: underline;
+}
+
+.mail {
+  text-decoration: underline;
 }
 
 .slider_con_el:hover {
@@ -290,15 +465,15 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: rgba(20, 20, 20, 0.561);
-    width: min-content;
-    margin-right: 3vw;
+.grey_block {
+  color: rgba(20, 20, 20, 0.561);
+  width: min-content;
+  margin-right: 3vw;
 }
 
 .title_user {
@@ -386,9 +561,9 @@ main {
   color: #000000 !important;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
 
 .shop_filter_button {
@@ -401,16 +576,31 @@ main {
   margin: 1vw 4.5vw 2vw 4.5vw;
 }
 
+.checkbox{
+  margin: auto 0;
+}
+
 .shop_filter_block {
   display: flex;
   margin: 1vw 4vw 1vw 0;
   justify-content: space-between;
+  width: 39vw;
+  align-content: center;
+}
+
+.grey-line2 {
+  background-color: #d9d9d9;
+  height: 1px;
+  margin: 2vw 0;
 }
 
 .filter_block {
-  background-color: #d9d9d9;
+  background-color: #F1F1F1;
   border-radius: 1vw;
-  padding: 0.8vw;
+  padding-top: 0.8vw;
+  padding-bottom: 0.8vw;
+  padding-left:1.5vw;
+  padding-right: 3vw;
   border: none;
   width: 6vw;
   font-size: var(--fs-20);

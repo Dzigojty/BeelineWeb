@@ -1,74 +1,57 @@
 <template>
-  <div class="shop">
-    <user-panel-right @changeRoute="changeRoute" @exitUser="exitUser" />
-
-    <div class="walent">
-      <div class="shop_title">Кошелёк</div>
-      <div class="h2">Общий счет</div>
-      <div class="price">0 ₽</div>
-      <div class="grey-panel">Пополнение кошелька</div>
-      <div class="grey-panel_price">1 500 ₽</div>
-      <div class="h3">Выберите способ пополнения</div>
-      <div class="bank-block">
-        <img src="../assets/bank.png" alt="" />
-        <span>Банковская карта</span>
-      </div>
-      <div class="bank-block">
-        <img src="../assets/sber.png" alt="" />
-        <span>СберБанк Онлайн</span>
-      </div>
-      <div class="name margin_t">Вывод денежных средств</div>
-      <div class="grey-panel_img">
-        <img src="../assets/plus.png" alt="" />
-        <span>Добавить реквизиты</span>
-      </div>
-      <Router-link to="/walentHistory" class="history_link">
-        История кошелька
-      </Router-link>
+  <div class="user-panel-right">
+    <div class="block_title_user">
+      <img class="title_user" src="../assets/user.png" alt="" />
     </div>
-
-    <div class="walent">
-      <div class="h2 mtmax">Замороженные средства</div>
-      <div class="price">5 000 ₽</div>
-      <div class="green-block">
-        <div class="column">
-          <div class="name">Ближайшая оплата</div>
-          <div class="name2">Николай ПочтиБасков</div>
-        </div>
-
-        <div class="arrow">
-          <img src="../assets/arrow.png" alt="" />
-        </div>
-
-        <div class="column">
-          <div class="name">12.05.24</div>
-          <div class="name">5 000 ₽</div>
-        </div>
+    <div class="shop_filter_name">Фамилия Имя</div>
+    <div class="shop_filter_rating">
+      <div class="shop_filter_rating_name">5,0</div>
+      <div class="filter_rating">
+        <img src="../assets/star_yellow.png" alt="" />
+        <img src="../assets/star_yellow.png" alt="" />
+        <img src="../assets/star_yellow.png" alt="" />
+        <img src="../assets/star_yellow.png" alt="" />
+        <img src="../assets/star_grey.png" alt="" />
       </div>
-      <Router-link to="/walentHistory" class="history_link">
-        Смотреть историю
-      </Router-link>
     </div>
+    <div class="block-num_prof">
+      <samp>Номер профиля</samp>
+      <samp>0000</samp>
+    </div>
+    <div class="shop_filter_button_price">100 000 ₽</div>
+    <div class="shop_filter_button">Применить</div>
+    <div class="line-grey2"></div>
+    <a class="shop_filter_grey_title" @click="changeRoute('ads')">
+      Объявления
+    </a>
+    <a @click="changeRoute('myOrder')" class="shop_filter_grey_title">
+      Заказы
+    </a>
+    <!-- <div class="shop_filter_grey_title">Объявления</div> -->
+    <!-- <div class="shop_filter_grey_title">Заказы</div> -->
+    <a @click="changeRoute('adres')" class="shop_filter_grey_title">
+      Адреса
+    </a>
+    <!-- <div class="shop_filter_grey_title">Адреса</div> -->
+    <a @click="changeRoute('setting')" class="shop_filter_grey_title">
+      Настройки
+    </a>
+    <div class="shop_filter_grey_title exit" @click="exitUser">Выйти</div>
   </div>
 </template>
 
 <script>
-import UserPanelRight from "../components/user-panel-right.vue";
-
 export default {
-  components: {
-    UserPanelRight,
-  },
   methods: {
     changeRoute(newRoute) {
       this.$emit('changeRoute', newRoute);
     },
-
+    exitUser() {
+      this.$emit('exitUser');
+    },
   },
-  setup() {
-    
-  },
-}
+  setup() {},
+};
 </script>
 
 <style scoped>
@@ -399,8 +382,6 @@ main {
   font-weight: bold;
   padding-top: 2vw;
 }
-
-
 
 .shop_product {
   margin-left: 6vw;
@@ -769,8 +750,8 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
@@ -819,7 +800,6 @@ main {
   padding-top: 2vw;
 }
 
-
 .shop_product {
   margin-left: 6vw;
   width: 70vw;
@@ -835,15 +815,15 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: rgba(20, 20, 20, 0.561);
-    width: min-content;
-    margin-right: 3vw;
+.grey_block {
+  color: rgba(20, 20, 20, 0.561);
+  width: min-content;
+  margin-right: 3vw;
 }
 
 .title_user {
@@ -931,9 +911,9 @@ main {
   color: #000000 !important;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
 
 .shop_filter_button {

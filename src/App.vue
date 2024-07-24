@@ -1,38 +1,43 @@
 <template>
+  <v-popup-auth
+    v-if="showPopupInfoAuth"
+    @auth="Auth"
+    @closePopup="closePopupAuth"
+  />
   <header>
     <nav class="header_navigation">
-      <a class="header_breadcroums" href="#"> ➤ Владикавказ, район, радиус </a>
-      <ul class="header_navigation-list">
-        <li class="header_navigation-item">
+      <a class="header_breadcroums" @click="changeRoute('home')">
+        ➤ Владикавказ, район, радиус
+      </a>
+      <ul v-if="!auth" class="header_navigation-list">
+        <li @click="changeRoute('wallet')" class="header_navigation-item">
           <img src="./assets/wallet.png" alt="" width="20" height="20" />
-          <Router-link to="/walent" class="header_navigation-link">
-            Кошелек
-          </Router-link>
-          <!-- <a class="header_navigation-link" href="#">Кошелек</a> -->
+          <a class="header_navigation-link">Кошелек</a>
         </li>
-        <li class="header_navigation-item">
+        <li @click="changeRoute('favorit')" class="header_navigation-item">
           <img src="./assets/star.png" alt="" width="20" height="20" />
-          <Router-link to="/favorit" class="header_navigation-link">
-            Избранное
-          </Router-link>
+          <a to="/favorit" class="header_navigation-link"> Избранное </a>
         </li>
-        <li class="header_navigation-item">
+        <li @click="changeRoute('chat')" class="header_navigation-item">
           <img src="./assets/message.png" alt="" />
-          <Router-link to="/chat" class="route-view header_navigation-link">
+          <a to="/chat" class="route-view header_navigation-link">
             Сообщения
-          </Router-link>
+          </a>
         </li>
-        <li class="header_navigation-item header_notification">
+        <li
+          @click="changeRoute('notification')"
+          class="header_navigation-item header_notification"
+        >
           <span class="header_navigation-link_notification_counter">
             <img class="notif" src="./assets/notification.png" alt="" />
             <i>+5</i>
           </span>
-          <Router-link to="/notif" class="header_navigation-link fs18 notion">
+          <a to="/notif" class="header_navigation-link fs18 notion">
             (+5 новых уведомлений)
-          </Router-link>
+          </a>
           <!-- <a class="header_navigation-link fs18 notion" href="#"></a> -->
         </li>
-        <li class="header_navigation-item">
+        <li @click="changeRoute('myOrder')" class="header_navigation-item">
           <img
             class="header_navigation-image"
             src="./assets/user.png"
@@ -40,12 +45,22 @@
             width="40"
             height="40"
           />
-          <Router-link
+          <a
             to="/myOrder"
             class="header_navigation-link header_navigation-name"
           >
             Имя Фамилия
-          </Router-link>
+          </a>
+        </li>
+      </ul>
+      <ul v-if="auth" class="header_navigation-list_end">
+        <li class="header_navigation-item">
+          <a
+            @click="showPopupAuth()"
+            class="header_navigation-link header_navigation-name"
+          >
+            Войти
+          </a>
         </li>
       </ul>
     </nav>
@@ -55,11 +70,75 @@
       <div class="header_panel_finder">
         <div class="finder_button">Поиск</div>
       </div>
-      <div class="header_panel_button_adverts">Разместить объявление</div>
+      <a @click="changeRoute('createAds1')" class="header_panel_button_adverts">
+        Разместить объявление
+      </a>
+      <!-- <div class="header_panel_button_adverts">Разместить объявление</div> -->
     </div>
     <div class="line"></div>
   </header>
-  <router-view />
+  <!-- <router-view /> -->
+  <WaletView
+    v-if="route == 'wallet'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    exitUser="exitUser"
+  />
+  <WalentHistoryView
+    v-if="route == 'waletHistory'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+  />
+  <SettingView
+    v-if="route == 'setting'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    exitUser="exitUser"
+  />
+  <NotificationView v-if="route == 'notification'" />
+  <MyOrder
+    v-if="route == 'myOrder'"
+    @changeRoute="changeRoute"
+    exitUser="exitUser"
+    @selectProduct="selectProduct"
+  />
+  <HomeView v-if="route == 'home'" @selectProduct="selectProduct" />
+  <DetailProductView
+    v-if="route == 'detail'"
+    :product="selectedProduct"
+    @goBack="goBack"
+  />
+  <FavoritView
+    v-if="route == 'favorit'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    exitUser="exitUser"
+  />
+  <ChatView v-if="route == 'chat'" />
+  <AdsView
+    v-if="route == 'ads'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    exitUser="exitUser"
+  />
+  <AdresView
+    v-if="route == 'adres'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    exitUser="exitUser"
+  />
+  <CreateAds1
+    v-if="route == 'createAds1'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    exitUser="exitUser"
+  />
+  <CreateAds2
+    v-if="route == 'createAds2'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    exitUser="exitUser"
+  />
   <footer>
     <nav>
       <a>О нас</a>
@@ -72,6 +151,82 @@
     <div>Загрузите нашу мобильную версию</div>
   </footer>
 </template>
+
+<script >
+import vPopupAuth from "../src/components/popup/v-popup-auth.vue";
+import vPopupRegister from "../src/components/popup/v-popup-register.vue";
+import vPopupAddNumber from "../src/components/popup/v-popup-add-number.vue";
+import vPopupFitback from "../src/components/popup/v-popup-fitback.vue";
+import AdresView from "../src/views/AdresView.vue";
+import AdsView from "../src/views/AdsView.vue";
+import ChatView from "../src/views/ChatView.vue";
+import CreateAds1 from "../src/views/CreateAds1.vue";
+import CreateAds2 from "../src/views/CreateAds2.vue";
+import DetailProductView from "../src/views/DetailProductView.vue";
+import FavoritView from "../src/views/FavoritView.vue";
+import HomeView from "../src/views/HomeView.vue";
+import MyOrder from "../src/views/MyOrder.vue";
+import NotificationView from "../src/views/NotificationView.vue";
+import WalentHistoryView from "../src/views/WalentHistoryView.vue";
+import WaletView from "../src/views/WaletView.vue";
+import SettingView from "../src/views/SettingView.vue";
+import { computed } from "vue";
+
+export default {
+  components: {
+    vPopupAuth,
+    vPopupAddNumber,
+    vPopupRegister,
+    vPopupFitback,
+    SettingView,
+    NotificationView,
+    WalentHistoryView,
+    MyOrder,
+    HomeView,
+    WaletView,
+    DetailProductView,
+    CreateAds1,
+    CreateAds2,
+    ChatView,
+    AdsView,
+    FavoritView,
+    AdresView,
+  },
+  data() {
+    return {
+      auth: true,
+      route: "home",
+      popup: "popup-auth",
+      showPopupInfoAuth: false,
+      selectedProduct: null,
+    };
+  },
+  methods: {
+    Auth(state) {
+      this.auth = state;
+    },
+    selectProduct(product) {
+      this.selectedProduct = product;
+      this.route = "detail";
+    },
+    goBack() {
+      this.route = "home";
+    },
+    changeRoute(newRoute) {
+      this.route = newRoute;
+    },
+    showPopupAuth() {
+      this.showPopupInfoAuth = true;
+    },
+    exitUser() {
+      this.auth = true;
+    },
+    closePopupAuth() {
+      this.showPopupInfoAuth = false;
+    },
+  },
+};
+</script>
 
 <style>
 @font-face {
@@ -266,7 +421,8 @@ body {
 a.header_navigation-link {
   color: black;
   align-self: center;
-  font-size: var(--fs-25);
+  font-size: var(--fs-20);
+  margin-left: 0.5vw;
 }
 
 a.header_breadcroums {
@@ -333,6 +489,7 @@ div.header_panel_finder {
 
 .header_panel_button_adverts {
   color: #f8cb32;
+  text-decoration: none;
   background-color: black;
   padding: 0.3vw 5%;
   height: calc(0.056 * 33.35vw);
@@ -351,6 +508,11 @@ div.header_panel_finder {
 .notif {
   width: 2.3vw !important;
   height: 2.3vw !important;
+}
+
+.header_navigation-list_end {
+  display: flex;
+  justify-content: end;
 }
 
 @media (min-width: 1548px) {

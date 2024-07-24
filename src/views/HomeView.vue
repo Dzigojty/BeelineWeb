@@ -2,76 +2,23 @@
   <img src="../assets/baner_img.png" alt="" class="baner" />
   <div class="line"></div>
   <swiper-container class="swiper" slides-per-view="4">
-    <swiper-slide class="swiper-el">
+    <swiper-slide
+      :key="slide"
+      v-for="slide in sldiers"
+      class="swiper-el"
+      @click="CategoriaSliderClick()"
+    >
       <div class="slider_con_el">
-        <img src="../assets/slider1.png" alt="" />
-        <h3>Самосвалы</h3>
+        <img :src="slide.path" alt="" />
+        <h3>{{ slide.name }}</h3>
       </div></swiper-slide
     >
-    <swiper-slide class="swiper-el">
+  </swiper-container>
+  <swiper-container id="min-swiper" slides-per-view="4">
+    <swiper-slide :key="slide" v-for="slide in sldiers" class="swiper-el">
       <div class="slider_con_el">
-        <img src="../assets/slider2.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider3.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider1.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider2.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider3.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider1.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider2.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider3.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider1.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider2.png" alt="" />
-        <h3>Самосвалы</h3>
-      </div></swiper-slide
-    >
-    <swiper-slide class="swiper-el">
-      <div class="slider_con_el">
-        <img src="../assets/slider3.png" alt="" />
-        <h3>Самосвалы</h3>
+        <img :src="slide.path" alt="" />
+        <h3>{{ slide.name }}</h3>
       </div></swiper-slide
     >
   </swiper-container>
@@ -131,7 +78,7 @@
     <div class="shop_product">
       <div class="shop_title">Сортировка</div>
       <div class="shop_list">
-        <Router-link to="/detailProductView" class="route-view">
+        <div :key="prod" v-for="prod in prods" @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -173,96 +120,9 @@
               </div>
             </section>
           </div>
-        </Router-link>
         <div class="line-grey"></div>
-        <Router-link to="/detailProductView" class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-                <img src="../assets/star_yellow.png" alt="" />
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <button class="product_button_date">Выбрать дату</button>
-              <div class="product_des_text">
-                Автокран Ивановец - это марка автокранов, производимых заводом
-                “ИМЗ АВТОКРАН” в Иваново. Эти автокраны отличаются высокой
-                надежностью, производительностью и долговечностью. Они широко
-                используются в различных отраслях промышленности и
-                строительства.
-              </div>
-              <div class="product_title_date">
-                График работ: с 9:00 до 20:00
-              </div>
-              <div class="product_status_r">Занят: 10.05 - 15.05</div>
-              <div class="product_status_g">Свободен</div>
-              <div class="product_create_at">2 часа назад</div>
-            </div>
-            <section class="author_rating">
-              <img class="author_img" src="../assets/user.png" alt="" />
-              <div class="author_name">Серега</div>
-              <div class="rating_user">
-                <samp>5,0</samp>
-                <div class="rating_star">
-                  <img src="../assets/star_yellow.png" alt="" /><img
-                    src="../assets/star_yellow.png"
-                    alt=""
-                  /><img src="../assets/star_yellow.png" alt="" /><img
-                    src="../assets/star_yellow.png"
-                    alt=""
-                  /><img src="../assets/star_yellow.png" alt="" />
-                </div>
-                <samp>3 отзыва</samp>
-              </div>
-            </section>
-          </div>
-        </Router-link>
-        <div class="line-grey"></div>
-        <Router-link to="/detailProductView" class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-                <img src="../assets/star_yellow.png" alt="" />
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <button class="product_button_date">Выбрать дату</button>
-              <div class="product_des_text">
-                Автокран Ивановец - это марка автокранов, производимых заводом
-                “ИМЗ АВТОКРАН” в Иваново. Эти автокраны отличаются высокой
-                надежностью, производительностью и долговечностью. Они широко
-                используются в различных отраслях промышленности и
-                строительства.
-              </div>
-              <div class="product_title_date">
-                График работ: с 9:00 до 20:00
-              </div>
-              <div class="product_status_r">Занят: 10.05 - 15.05</div>
-              <div class="product_status_g">Свободен</div>
-              <div class="product_create_at">2 часа назад</div>
-            </div>
-            <section class="author_rating">
-              <img class="author_img" src="../assets/user.png" alt="" />
-              <div class="author_name">Серега</div>
-              <div class="rating_user">
-                <samp>5,0</samp>
-                <div class="rating_star">
-                  <img src="../assets/star_yellow.png" alt="" /><img
-                    src="../assets/star_yellow.png"
-                    alt=""
-                  /><img src="../assets/star_yellow.png" alt="" /><img
-                    src="../assets/star_yellow.png"
-                    alt=""
-                  /><img src="../assets/star_yellow.png" alt="" />
-                </div>
-                <samp>3 отзыва</samp>
-              </div>
-            </section>
-          </div>
-        </Router-link>
-        <div class="line-grey"></div>
+
+        </div>
         <button class="button_show_more">Показать еще</button>
       </div>
     </div>
@@ -271,24 +131,83 @@
 
 <script>
 // // @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from "@/components/HelloWorld.vue";
 
-// export default {
-//   name: 'HomeView',
-//   components: {
-//     HelloWorld
-//   }
-// }
+let minSlider = true;
+
+export default {
+  data() {
+    return {
+      prods: [
+        1,2,3,4
+      ],
+      sldiers: [
+        {
+          path: require("@/assets/slider1.png"),
+          name: "Самосвалы",
+        },
+        {
+          path: require("@/assets/slider2.png"),
+          name: "Экскаваторы",
+        },
+        {
+          path: require("@/assets/slider3.png"),
+          name: "Погрузчики",
+        },
+        {
+          path: require("@/assets/slider1.png"),
+          name: "Самосвалы",
+        },
+        {
+          path: require("@/assets/slider2.png"),
+          name: "Экскаваторы",
+        },
+        {
+          path: require("@/assets/slider3.png"),
+          name: "Погрузчики",
+        },
+      ],
+    };
+  },
+  methods: {
+    selectProduct(product) {
+      this.$emit('selectProduct', product);
+    },
+    CategoriaSliderClick() {
+      if (minSlider) {
+        document.getElementById("min-swiper").style.height = "15vw";
+        minSlider = false;
+      } else {
+        document.getElementById("min-swiper").style.height = "0";
+        minSlider = true;
+      }
+    },
+    PodCategoriaSliderClick() {},
+  },
+ 
+  name: "HomeView",
+  components: {
+    HelloWorld,
+  },
+};
 </script>
 
 <style scoped>
-.route-view{
+.route-view {
   text-decoration: none;
 }
+
+/* .swiper-slide-active .slider_con_el{
+background: #f9cc33;
+} */
 
 .app {
   margin: 0;
   padding: 0;
+}
+
+#min-swiper {
+  height: 0;
 }
 
 main {
@@ -330,6 +249,7 @@ main {
 
 .author_name {
   font-size: var(--fs-16);
+  color: black;
 }
 
 .author_img {
@@ -483,7 +403,7 @@ main {
 }
 
 .shop_filter_text {
-  font-size: var(--fs-25);
+  font-size: var(--fs-20);
   color: black;
 }
 
@@ -599,6 +519,6 @@ main {
 }
 
 .filter_rating img {
-  width: 3.7vw;
+  width: 2.8vw;
 }
 </style>

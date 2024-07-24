@@ -1,10 +1,12 @@
 <template>
   <div class="main">
+    <v-popup-fitback v-if="isInfoPopupRatingView" @closePopup="closeInfoPopup" />
+    <v-popup v-if="isInfoPopupView" @closePopup="closeInfoPopup" />
     <div class="detailProduct">
       <div class="block">
-        <Router-link to="/" class="route-view">
+        <a  @click="goBack" class="route-view">
           <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
-        </Router-link>
+        </a>
         <div class="product">
           <h1>Услуги аренда экскаватора-погрузчика jsb</h1>
           <div class="select-block">
@@ -128,7 +130,9 @@
         </div>
         <section class="author_rating">
           <div class="product_button_chat">Написать</div>
-          <div class="product_button_date">Выбрать дату</div>
+          <div class="product_button_date" @click="showPopup()">
+            Выбрать дату
+          </div>
 
           <div class="owner">
             <div class="author_name">Серега</div>
@@ -147,7 +151,7 @@
             </div>
           </div>
           <samp class="rating_user_samp">3 отзыва</samp>
-          <div class="product_button_otsiz">11 объявлений пользователя</div>
+          <div class="product_button_otsiz" @click="showPopupRating()">11 объявлений пользователя</div>
           <div class="grafic">График работ: с 8:00 до 22:00</div>
         </section>
       </div>
@@ -195,15 +199,44 @@
 
 <script scoped>
 import { ref } from "vue";
+import vPopup from "../components/popup/v-popup.vue";
+import vPopupFitback from "../components/popup/v-popup-fitback.vue";
 
 export default {
+  props: ['product'],
+  data() {
+    return {
+      isInfoPopupView: false,
+      isInfoPopupRatingView: false,
+    };
+  },
+  components: {
+    vPopup,
+    vPopupFitback,
+  },
+  methods: {
+    closeInfoPopup() {
+      this.isInfoPopupView = false;
+      this.isInfoPopupRatingView = false;
+    },
+    showPopup() {
+      this.isInfoPopupView = true;
+    },
+
+    showPopupRating(){
+      this.isInfoPopupRatingView = true;
+    },
+    goBack() {
+      this.$emit('goBack');
+      console.log("dsadasdasd")
+    }
+  },
   setup() {
     const images = ref([
-      "https://via.placeholder.com/150/0000FF", // Blue
-      "https://via.placeholder.com/150/008000", // Green
-      "https://via.placeholder.com/150/FF0000", // Red
-      "https://via.placeholder.com/150/FFFF00", // Yellow
-      "https://via.placeholder.com/150/FFA500", // Orange
+      require("@/assets/product2.png"),
+      require("@/assets/product2-1.png"),
+      require("@/assets/product2-2.png"),
+      require("@/assets/product2-3.png"),
     ]);
 
     const currentImage = ref(images.value[0]);
@@ -433,10 +466,13 @@ li::before {
 .slider_img {
   display: block;
   width: 10vw;
+  height: 6.5vw;
+  border-radius: 1vw;
 }
 
 .select-img {
   width: 35vw;
+  border-radius: 1vw;
 }
 
 .rating_user {
@@ -471,6 +507,7 @@ li::before {
 
 .author_name {
   font-size: var(--fs-16);
+  align-self: center;
 }
 
 .author_img {

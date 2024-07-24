@@ -33,90 +33,136 @@ function sendMessage() {
 }
 </script>
 
+<script>
+import VPopupModerDecision from "../components/popup/v-popup-moder-decision.vue";
+import VPopupChangeDeal from "../components/popup/v-popup-change-deal.vue";
+import VPopupChangeDealRequestEdit from "../components/popup/v-popup-change-deal-request-edit.vue";
+
+export default {
+  data() {
+    return {
+      isInfoPopupModerDecision: false,
+      isInfoPopupChangeDeal: false,
+    };
+  },
+  components: {
+    VPopupModerDecision,
+    VPopupChangeDeal,
+    VPopupChangeDealRequestEdit,
+  },
+  methods: {
+    closePopup() {
+      this.isInfoPopupModerDecision = false;
+      this.isInfoPopupChangeDeal = false;
+    },
+    showPopupModerDecision() {
+      this.isInfoPopupModerDecision = true;
+    },
+    showPopupPopupChangeDeal() {
+      this.isInfoPopupChangeDeal = true;
+    },
+  },
+  setup() {},
+};
+</script>
+
 <template>
   <div class="chat">
-    <div class="contacts">
-      <div class="backgroud_contact_select">
-        <div class="contact">
-          <img src="../assets/user.png" class="contact_img" />
-          <div class="column_data">
-            <div class="contact_name">Заказчик</div>
-            <div class="button_new_message">1 новое сообщение!</div>
+    <v-popup-moder-decision
+      v-if="isInfoPopupModerDecision"
+      @closePopup="closePopup"
+    />
+    <!-- <v-popup-change-deal
+      v-if="isInfoPopupChangeDeal"
+      @closePopup="closePopup"
+    /> -->
+    <v-popup-change-deal-request-edit
+      v-if="isInfoPopupChangeDeal"
+      @closePopup="closePopup"
+    />
+    <div class="container-chat">
+      <div class="contacts">
+        <div class="backgroud_contact_select">
+          <div class="contact">
+            <img src="../assets/user.png" class="contact_img" />
+            <div class="column_data">
+              <div class="contact_name">Заказчик</div>
+              <div class="button_new_message">1 новое сообщение!</div>
+            </div>
+          </div>
+        </div>
+        <div class="backgroud_contact">
+          <div class="contact">
+            <img src="../assets/user.png" class="contact_img" />
+            <div class="column_data">
+              <div class="contact_name">Заказчик</div>
+              <div class="button_status_message">Прочитанно</div>
+            </div>
+          </div>
+        </div>
+        <div class="backgroud_contact">
+          <div class="contact">
+            <img src="../assets/user.png" class="contact_img" />
+            <div class="column_data">
+              <div class="contact_name">Заказчик</div>
+              <div class="button_status_message">Прочитанно</div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="backgroud_contact">
-        <div class="contact">
-          <img src="../assets/user.png" class="contact_img" />
-          <div class="column_data">
-            <div class="contact_name">Заказчик</div>
-            <div class="button_status_message">Прочитанно</div>
-          </div>
-        </div>
-      </div>
-      <div class="backgroud_contact">
-        <div class="contact">
-          <img src="../assets/user.png" class="contact_img" />
-          <div class="column_data">
-            <div class="contact_name">Заказчик</div>
-            <div class="button_status_message">Прочитанно</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="dialog">
-      <!-- <div @v-if="message.uid != uid" class="notification">
-        <samp>Заказчик предложил изменить сроки аренды!</samp>
-        <button>Открыть</button>
-      </div> -->
-      <div @v-if="message.uid === uid" class="notification_mediator">
+      <div class="dialog">
+        <div @v-if="message.uid != uid" class="notification">
+          <samp>Заказчик предложил изменить сроки аренды!</samp>
+          <button @click="showPopupPopupChangeDeal">Открыть</button>
+        </div>
+        <!-- <div @v-if="message.uid === uid" class="notification_mediator">
         <samp>Приняли решение?</samp>
-        <button>Завершить спор</button>
-      </div>
-      <div class="panel">
-        <div class="messages" ref="messagesRef">
-          <div class="inner">
-            <div
-              :key="index"
-              v-for="(message, index) in messages"
-              class="message"
-            >
-              <div v-if="message.uid === uid" class="aligment_you">
-                <div class="datetime_message margin-right_message">20:11</div>
-                <div class="message_you">
-                  {{ message.text }}
-                  <img
-                    class="message_you_end"
-                    src="../assets/message_end.png"
-                  />
+        <button @click="showPopupModerDecision">Завершить спор</button>
+        </div> -->
+        <div class="panel">
+          <div class="messages" ref="messagesRef">
+            <div class="inner">
+              <div
+                :key="index"
+                v-for="(message, index) in messages"
+                class="message"
+              >
+                <div v-if="message.uid === uid" class="aligment_you">
+                  <div class="datetime_message margin-right_message">20:11</div>
+                  <div class="message_you">
+                    {{ message.text }}
+                    <img
+                      class="message_you_end"
+                      src="../assets/message_end.png"
+                    />
+                  </div>
                 </div>
-              </div>
-              <!-- v-if="(message.type !== 'mediator') & (message.uid !== uid)" -->
-              <div v-if="message.uid === uid" class="aligment_noyou">
-                <img class="message_user" src="../assets/user.png" alt="" />
-                <div class="message_noyou">
-                  {{ message.text }}
-                  <img
-                    class="message_noyou_end"
-                    src="../assets/message_end_noyou.png"
-                  />
+                <!-- v-if="(message.type !== 'mediator') & (message.uid !== uid)" -->
+                <div v-if="message.uid === uid" class="aligment_noyou">
+                  <img class="message_user" src="../assets/user.png" alt="" />
+                  <div class="message_noyou">
+                    {{ message.text }}
+                    <img
+                      class="message_noyou_end"
+                      src="../assets/message_end_noyou.png"
+                    />
+                  </div>
+                  <div class="datetime_message margin-left_message">20:11</div>
                 </div>
-                <div class="datetime_message margin-left_message">20:11</div>
-              </div>
-              <!-- v-if="(message.type === 'mediator') & (message.uid !== uid)" -->
-              <div v-if="message.uid === uid" class="aligment_noyou">
-                <img class="message_user" src="../assets/user.png" alt="" />
-                <div class="message_mediator">
-                  {{ message.text }}
-                  <img
-                    class="message_noyou_end"
-                    src="../assets/message_end_mediator.png"
-                  />
+                <!-- v-if="(message.type === 'mediator') & (message.uid !== uid)" -->
+                <div v-if="message.uid === uid" class="aligment_noyou">
+                  <img class="message_user" src="../assets/user.png" alt="" />
+                  <div class="message_mediator">
+                    {{ message.text }}
+                    <img
+                      class="message_noyou_end"
+                      src="../assets/message_end_mediator.png"
+                    />
+                  </div>
+                  <div class="datetime_message margin-left_message">20:11</div>
                 </div>
-                <div class="datetime_message margin-left_message">20:11</div>
-              </div>
-              <!-- <div v-if="message.uid === uid" class="message_you">
+                <!-- <div v-if="message.uid === uid" class="message_you">
                 You:&nbsp;
               </div>
               <div
@@ -132,23 +178,24 @@ function sendMessage() {
                 Them:&nbsp;
               </div>
               <div class="text">{{ message.text }}</div> -->
+              </div>
             </div>
           </div>
+          <form class="form" @submit.prevent="sendMessage">
+            <div class="buttons">
+              <button>
+                <img src="../assets/button_chat_action.png" alt="" />
+              </button>
+              <button>
+                <img src="../assets/button_chat_action1.png" alt="" />
+              </button>
+            </div>
+            <input placeholder="Ответить на сообщение" v-model="text" />
+            <button class="submit">
+              <img src="../assets/submit_chat.png" alt="" />
+            </button>
+          </form>
         </div>
-        <form class="form" @submit.prevent="sendMessage">
-          <div class="buttons">
-            <button>
-              <img src="../assets/button_chat_action.png" alt="" />
-            </button>
-            <button>
-              <img src="../assets/button_chat_action1.png" alt="" />
-            </button>
-          </div>
-          <input placeholder="Ответить на сообщение" v-model="text" />
-          <button class="submit">
-            <img src="../assets/submit_chat.png" alt="" />
-          </button>
-        </form>
       </div>
     </div>
   </div>
@@ -188,16 +235,21 @@ function sendMessage() {
   white-space: nowrap;
 }
 
+.container-chat{
+  display: flex;
+  width: 99vw;
+}
+
 .notification_mediator {
   padding: 2.2vw 0;
   border-bottom: 1px black solid;
   text-align: center;
 }
 
-.notification_mediator button{
+.notification_mediator button {
   margin-left: 1vw;
   background-color: #00dd3079;
-  border: 1px #135F00 solid;
+  border: 1px #135f00 solid;
   color: black;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
@@ -234,6 +286,7 @@ function sendMessage() {
   background-color: #ffefb9;
   width: 30vw;
   height: 100%;
+  overflow: auto;
 }
 
 .backgroud_contact_select {
@@ -256,11 +309,6 @@ function sendMessage() {
 .datetime_message {
   font-size: var(--fs-16);
   align-self: flex-end;
-}
-
-.contacts {
-  height: 100%;
-  overflow: auto;
 }
 
 .chat {
@@ -292,8 +340,9 @@ body {
   display: flex;
   flex-direction: column;
   width: 73vw;
-  height: 100%;
+  height: 38.5vw;
 }
+
 .messages {
   height: 100%;
   width: 100%;

@@ -1,40 +1,6 @@
 <template>
   <div class="shop">
-    <div class="shop_filter">
-      <div class="block_title_user">
-        <img class="title_user" src="../assets/user.png" alt="" />
-      </div>
-
-      <div class="shop_filter_name">Фамилия Имя</div>
-      <div class="shop_filter_rating">
-        <div class="shop_filter_rating_name">5,0</div>
-        <div class="filter_rating">
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_yellow.png" alt="" />
-          <img src="../assets/star_grey.png" alt="" />
-        </div>
-      </div>
-      <div class="block-num_prof">
-        <samp>Номер профиля</samp>
-        <samp>0000</samp>
-      </div>
-      <div class="shop_filter_button_price">100 000 ₽</div>
-      <div class="shop_filter_button">Применить</div>
-      <div class="line-grey2"></div>
-      <Router-link to="/ads" class="shop_filter_grey_title">
-        Объявления
-      </Router-link>
-      <Router-link to="/myOrder" class="shop_filter_grey_title">
-        Заказы
-      </Router-link>
-      <!-- <div class="shop_filter_grey_title">Объявления</div> -->
-      <!-- <div class="shop_filter_grey_title">Заказы</div> -->
-      <div class="shop_filter_grey_title">Адреса</div>
-      <div class="shop_filter_grey_title">Настройки</div>
-      <div class="shop_filter_grey_title exit">Выйти</div>
-    </div>
+    <user-panel-right @changeRoute="changeRoute" @exitUser="exitUser" />
 
     <div class="shop_product">
       <div class="shop_title">Избранное</div>
@@ -43,7 +9,7 @@
         <div class="grey_block">Профили</div>
       </div>
       <div class="shop_list">
-        <Router-link to="/detailProductView" class="route-view">
+        <a @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -54,9 +20,9 @@
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
             </div>
           </div>
-        </Router-link>
+        </a>
         <div class="line-grey"></div>
-        <Router-link to="/detailProductView" class="route-view">
+        <a @click="selectProduct(product)"  class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -67,9 +33,9 @@
               <div class="product_status_r">Завтра с 17:00 до 17:30</div>
             </div>
           </div>
-        </Router-link>
+        </a>
         <div class="line-grey"></div>
-        <Router-link to="/detailProductView" class="route-view">
+        <a @click="selectProduct(product)"  class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -80,7 +46,7 @@
               <div class="grey_text">Объявление снято</div>
             </div>
           </div>
-        </Router-link>
+        </a>
         <div class="line-grey"></div>
       </div>
     </div>
@@ -88,15 +54,22 @@
 </template>
 
 <script>
-// // @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
+import UserPanelRight from "../components/user-panel-right.vue";
 
-// export default {
-//   name: 'HomeView',
-//   components: {
-//     HelloWorld
-//   }
-// }
+export default {
+  methods: {
+    changeRoute(newRoute) {
+      this.$emit("changeRoute", newRoute);
+    },
+    selectProduct(product) {
+      this.$emit('selectProduct', product);
+    },
+  },
+  components: {
+    UserPanelRight,
+  },
+  setup() {},
+};
 </script>
 
 <style scoped>
