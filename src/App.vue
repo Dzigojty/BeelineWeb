@@ -67,9 +67,7 @@
 
     <div class="header_panel">
       <div class="header_panel_button">Все категории</div>
-      <div class="header_panel_finder">
-        <div class="finder_button">Поиск</div>
-      </div>
+      <search-field :items="items" />
       <a @click="changeRoute('createAds1')" class="header_panel_button_adverts">
         Разместить объявление
       </a>
@@ -170,10 +168,11 @@ import NotificationView from "../src/views/NotificationView.vue";
 import WalentHistoryView from "../src/views/WalentHistoryView.vue";
 import WaletView from "../src/views/WaletView.vue";
 import SettingView from "../src/views/SettingView.vue";
-import { computed } from "vue";
+import SearchField from "./components/search-field.vue";
 
 export default {
   components: {
+    SearchField,
     vPopupAuth,
     vPopupAddNumber,
     vPopupRegister,
@@ -199,6 +198,17 @@ export default {
       popup: "popup-auth",
       showPopupInfoAuth: false,
       selectedProduct: null,
+      items: [
+        "Apple",
+        "Banana",
+        "Orange",
+        "Pineapple",
+        "Strawberry",
+        "Grapes",
+        "Watermelon",
+        "Blueberry",
+        "Raspberry",
+      ],
     };
   },
   methods: {

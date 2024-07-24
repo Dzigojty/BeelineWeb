@@ -1,10 +1,13 @@
 <template>
   <div class="main">
-    <v-popup-fitback v-if="isInfoPopupRatingView" @closePopup="closeInfoPopup" />
+    <v-popup-fitback
+      v-if="isInfoPopupRatingView"
+      @closePopup="closeInfoPopup"
+    />
     <v-popup v-if="isInfoPopupView" @closePopup="closeInfoPopup" />
     <div class="detailProduct">
       <div class="block">
-        <a  @click="goBack" class="route-view">
+        <a @click="goBack" class="route-view">
           <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
         </a>
         <div class="product">
@@ -57,9 +60,7 @@
           </div>
           <div class="desc_map">
             <yandex-map
-              style="width: 100%; height: 300px"
-              v-if="true"
-              :coordinates="[55.099943, 50.706567]"
+              style="width: 100vw; height: 100vw"
             ></yandex-map>
           </div>
           <div class="desc_title">Отзывы заказчиков</div>
@@ -151,7 +152,9 @@
             </div>
           </div>
           <samp class="rating_user_samp">3 отзыва</samp>
-          <div class="product_button_otsiz" @click="showPopupRating()">11 объявлений пользователя</div>
+          <div class="product_button_otsiz" @click="showPopupRating()">
+            11 объявлений пользователя
+          </div>
           <div class="grafic">График работ: с 8:00 до 22:00</div>
         </section>
       </div>
@@ -208,13 +211,53 @@ export default {
     return {
       isInfoPopupView: false,
       isInfoPopupRatingView: false,
+      map: null,
+      coordinates: []
     };
+  },
+  mounted() {
+    // Установить скрипты для использования яндекс карты
+    let scriptYandexMap = document.createElement('script');
+    scriptYandexMap.setAttribute('src', 'https://api-maps.yandex.ru/2.1/?lang=ru_RU');
+    document.head.appendChild(scriptYandexMap); 
+
+    // Инициализировать яндекс карту
+    scriptYandexMap.addEventListener('load', () => Promise.all([
+      this.initializeYandexMap(),
+      this.getCoordData(),
+    ]).then(this.setMarkers));
   },
   components: {
     vPopup,
     vPopupFitback,
   },
   methods: {
+    getCoordData() {
+      return new Promise(r => setTimeout(() => {
+        this.coordinates = [
+          [ 52.44, 69.73 ],
+          [ 49.81, 62.12 ],
+        ];
+        r();
+      }, 1000));
+    },
+    initializeYandexMap() {
+      return new Promise(r => ymaps.ready(() => {
+        this.map = new ymaps.Map("yandex-map", {
+          center: [48.352571497155054, 64.04235076905002],
+          zoom: 5,
+          controls: ['fullscreenControl'],
+          searchControlProvider: 'yandex#search'
+        });
+        r();
+      }));
+    },
+    setMarkers() {
+      for (let i = 0; i < this.coordinates.length; i++) {
+        let placemark = new ymaps.Placemark(this.coordinates[i]);
+        this.map.geoObjects.add(placemark);
+      }
+    },
     closeInfoPopup() {
       this.isInfoPopupView = false;
       this.isInfoPopupRatingView = false;
