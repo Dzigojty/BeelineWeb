@@ -67,7 +67,7 @@
                 <div class="grey_text_tr">Фотографии</div>
                 <div class="grey_text_tr">Не более 30</div>
               </div>
-              <input class="filter_block downloade_file" type="file" />
+              <div class="min-container"><input class="filter_block downloade_file"  id="uploade-photo" type="file" /></div>
             </div>
 
             <div class="flex_block" style="margin-bottom: 15vw">
@@ -86,13 +86,13 @@
               <input
                 class="input"
                 type="text"
-                value="Начните вводить адрес, а потом выберите из списка"
+                placeholder="Начните вводить адрес, а потом выберите из списка"
               />
             </div>
             <div class="sm_title">Контакты</div>
             <div class="flex_block" style="margin-bottom: 2vw; margin-top: 2vw">
               <div class="grey_text_tr">Телефон</div>
-              <input class="input_small" type="text" />
+              <input v-model="phone"  v-mask="'+7 (###) ###-##-##'"  class="input_small" type="text" />
             </div>
             <div class="flex_block">
               <div class="grey_text_tr">Способ связи</div>
@@ -145,6 +145,7 @@ let hours_days = true;
 export default {
   data() {
     return {
+      phone: '',
       array_img: ["../assets/bank.png"],
       images: ref([
         "https://via.placeholder.com/150/0000FF", // Blue
@@ -227,6 +228,12 @@ export default {
   font-size: var(--fs-18);
 }
 
+#uploade-photo{
+   opacity: 0;
+   position: relative;
+   z-index: 10;
+}
+
 .buttons {
   margin-top: 13vw;
 }
@@ -268,6 +275,16 @@ export default {
 .textarea {
   height: 11vw;
   width: 38vw !important;
+}
+
+.min-container{
+  background-color: #F1F1F1;
+  background-image: url("../assets/icon_file.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  height: max-content;
+  border-radius: 1vw;
+  background-size: 3vw;
 }
 
 .custom-checkbox {
