@@ -2,9 +2,9 @@
   <div class="main">
     <div class="detailProduct">
       <div class="block">
-        <Router-link @click="changeRoute('createAds1')"  class="route-view">
+        <a @click="changeRoute('createAds1')"  class="route-view">
           <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
-        </Router-link>
+        </a>
         <form action="/" method="post">
           <div class="crateAds">
             <div class="shop_title">Новое объявление</div>

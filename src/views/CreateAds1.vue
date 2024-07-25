@@ -1,10 +1,15 @@
 <template>
+  <v-popup-category
+    v-if="isCategories"
+    @closePopup="closePopup"
+    @changeRoute="changeRoute('createAds2')"
+  />
   <div class="main">
     <div class="detailProduct">
       <div class="block">
-        <Router-link @click="changeRoute('home')" class="route-view">
+        <a @click="changeRoute('home')" class="route-view">
           <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
-        </Router-link>
+        </a>
         <div class="crateAds">
           <div class="shop_title">Новое объявление</div>
           <h2>Параметры</h2>
@@ -19,22 +24,21 @@
                 type="text"
                 readonly="true"
                 value="Сельхозтехника"
-                 @click="changeRoute('createAds2')"
+                @click="changeRoute('createAds2')"
               />
               <input
                 class="filter_block filter_block_check"
                 type="text"
                 readonly="true"
                 value="Строительная техника"
-                 @click="changeRoute('createAds2')"
-
+                @click="changeRoute('createAds2')"
               />
               <input
                 class="filter_block filter_block_check"
                 type="text"
                 readonly="true"
                 value="Другая категория"
-                 @click="changeRoute('createAds2')"
+                @click="showCategory"
               />
             </div>
           </div>
@@ -46,13 +50,31 @@
 
 <script scoped>
 import { ref } from "vue";
+import vPopupCategory from "../components/popup/v-popup-category.vue";
+import VPopup from "@/components/popup/v-popup.vue";
 
 export default {
-
+  data(){
+    return{
+      isCategories: false,
+    }
+  },
+  components: {
+    vPopupCategory,
+    VPopup,
+  },
   methods: {
     changeRoute(route) {
-      this.$emit('changeRoute', route);
-    }
+      this.$emit("changeRoute", route);
+    },
+
+    showCategory(){
+      this.isCategories = true;
+    },
+    
+    closePopup() {
+      this.isCategories = false;
+    },
   },
   setup() {
     const images = ref([
@@ -86,19 +108,19 @@ export default {
   padding-top: 2vw;
 }
 
-.desc_field{
-    color: #929292;
-    font-size: var(--fs-15);
+.desc_field {
+  color: #929292;
+  font-size: var(--fs-15);
 }
 
-.field_name{
-    color: #141414;
-    margin: 1vw 0;
-    font-weight: 600;
+.field_name {
+  color: #141414;
+  margin: 1vw 0;
+  font-weight: 600;
 }
 
-h2{
-    font-size: var(--fs-40);
+h2 {
+  font-size: var(--fs-40);
 }
 
 .button_show_more {
@@ -238,8 +260,8 @@ h2{
 .filter_block_check {
   text-align: center;
   color: #929292;
-      display: block;
-    width: min-content;
+  display: block;
+  width: min-content;
 }
 
 .product_button_chat {
@@ -315,9 +337,9 @@ li::before {
   line-height: 3vw;
 }
 
-.flex_block{
-    margin-top: 1vw;
-    display: flex;
+.flex_block {
+  margin-top: 1vw;
+  display: flex;
 }
 
 .desc_text {

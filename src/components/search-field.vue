@@ -64,9 +64,12 @@ ul {
   position: absolute;
   border: 1px solid #ccc;
   margin: 0;
-  width: 29.5vw;
+  width: 31.3vw;
+  background-color: #ccc;
+  top: 2.5vw;
   padding: 0;
   list-style-type: none;
+  border-radius: 0 0 1vw 1vw;
 }
 
 li {
