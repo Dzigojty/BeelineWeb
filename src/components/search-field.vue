@@ -8,16 +8,19 @@
     class="header_panel_finder"
       type="text"
       v-model="query"
-      @input="filterResults"
+      @input="inputFinder"
     />
     <ul v-if="filteredItems.length">
-      <li v-for="item in filteredItems" :key="item">{{ item }}</li>
+      <li @click="selectProduct(prod)" v-for="item in filteredItems" :key="item">{{ item }}</li>
     </ul>
     <div class="finder_button">Поиск</div>
   </div>
+  <div v-if="filteredItems.length" class="close_panel" @click="closeInfoPopup()"></div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     items: {
@@ -32,6 +35,44 @@ export default {
     };
   },
   methods: {
+    closeInfoPopup(){
+      this.filteredItems = [];
+    },
+    selectProduct(product) {
+      console.log(product);
+      this.$emit("selectProduct", product);
+    },
+    async inputFinder(){
+      console.log("inputFinder");
+      this.filteredItems = [];
+
+      if (this.query.trim() === "") {
+        this.filteredItems = [];
+      } else {
+        console.log(this.query);
+        try {
+          const response = await axios.post('http://localhost:8090/searchForTech',
+          {
+            "Title": this.query,
+          }, 
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+          );
+          console.log(response);
+          for (let index = 0; index < 5; index++) {
+            this.filteredItems.push(response.data.data[index].Title);
+          }
+
+          console.log(this.filteredItems)
+        } catch (error) {
+          console.error('Ошибка при загрузке продуктов:', error);
+        } 
+      }
+    },
+
     filterResults() {
       if (this.query.trim() === "") {
         this.filteredItems = [];
@@ -47,6 +88,19 @@ export default {
 </script>
 
 <style scoped>
+.close_panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+.search-field ul {
+  z-index: 10;
+}
+
 .search-field {
 position: relative;
 display: flex;

@@ -3,13 +3,23 @@ import App from './App.vue'
 import router from './router'
 import { createYmaps } from 'vue-yandex-maps';
 import { register } from 'swiper/element/bundle';
+import VueTheMask from 'vue-the-mask';
+
 // register Swiper custom elements
 register();
 
 const app = createApp(App);
 
-app.use(createYmaps({
-  apikey: '6e8b0885-8405-4bf3-b552-546dd840e044',
-}));
+const settings = {
+  apiKey: '6e8b0885-8405-4bf3-b552-546dd840e044',
+  lang: 'ru_RU',
+  importModules: ['@yandex/ymaps3-controls@0.0.1'],
+  coordorder: 'latlong',
+}
+app.use(createYmaps, settings);
+app.use(router);
 
-app.use(router).mount('#app');
+// Регистрируем директиву маски
+app.use(VueTheMask);
+app.mount('#app')
+

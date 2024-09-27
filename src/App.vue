@@ -4,6 +4,10 @@
     @auth="Auth"
     @closePopup="closePopupAuth"
   />
+  <v-popup-category
+    v-if="isCategories"
+    @closePopup="closePopup"
+  />
   <header>
     <nav class="header_navigation">
       <a class="header_breadcroums" @click="changeRoute('home')">
@@ -66,8 +70,8 @@
     </nav>
 
     <div class="header_panel">
-      <div class="header_panel_button">Все категории</div>
-      <search-field :items="items" />
+      <div class="header_panel_button" @click="changeRoute('home')">Все категории</div>
+      <search-field :items="items" @selectProduct="selectProduct"/>
       <a @click="changeRoute('createAds1')" class="header_panel_button_adverts">
         Разместить объявление
       </a>
@@ -80,7 +84,7 @@
     v-if="route == 'wallet'"
     @changeRoute="changeRoute"
     @selectProduct="selectProduct"
-    exitUser="exitUser"
+    @exitUser="exitUser"
   />
   <WalentHistoryView
     v-if="route == 'waletHistory'"
@@ -91,16 +95,16 @@
     v-if="route == 'setting'"
     @changeRoute="changeRoute"
     @selectProduct="selectProduct"
-    exitUser="exitUser"
+    @exitUser="exitUser"
   />
   <NotificationView v-if="route == 'notification'" />
   <MyOrder
     v-if="route == 'myOrder'"
     @changeRoute="changeRoute"
-    exitUser="exitUser"
+    @exitUser="exitUser"
     @selectProduct="selectProduct"
   />
-  <HomeView v-if="route == 'home'" @selectProduct="selectProduct" />
+  <HomeView v-if="route == 'home'"  @selectProduct="selectProduct" />
   <DetailProductView
     v-if="route == 'detail'"
     :product="selectedProduct"
@@ -110,32 +114,32 @@
     v-if="route == 'favorit'"
     @changeRoute="changeRoute"
     @selectProduct="selectProduct"
-    exitUser="exitUser"
+    @exitUser="exitUser"
   />
   <ChatView v-if="route == 'chat'" />
   <AdsView
     v-if="route == 'ads'"
     @changeRoute="changeRoute"
     @selectProduct="selectProduct"
-    exitUser="exitUser"
+    @exitUser="exitUser"
   />
   <AdresView
     v-if="route == 'adres'"
     @changeRoute="changeRoute"
     @selectProduct="selectProduct"
-    exitUser="exitUser"
+    @exitUser="exitUser"
   />
   <CreateAds1
     v-if="route == 'createAds1'"
     @changeRoute="changeRoute"
     @selectProduct="selectProduct"
-    exitUser="exitUser"
+    @exitUser="exitUser"
   />
   <CreateAds2
     v-if="route == 'createAds2'"
     @changeRoute="changeRoute"
     @selectProduct="selectProduct"
-    exitUser="exitUser"
+    @exitUser="exitUser"
   />
   <footer>
     <nav>
@@ -193,25 +197,27 @@ export default {
   },
   data() {
     return {
-      auth: true,
+      auth: false,
+      isCategories: false,
       route: "home",
       popup: "popup-auth",
       showPopupInfoAuth: false,
-      selectedProduct: null,
-      items: [
-        "Apple",
-        "Banana",
-        "Orange",
-        "Pineapple",
-        "Strawberry",
-        "Grapes",
-        "Watermelon",
-        "Blueberry",
-        "Raspberry",
-      ],
+      selectedProduct: null, // Здесь будет храниться выбранный продукт
     };
   },
   methods: {
+    changeRoute(route) {
+      this.$emit("changeRoute", route);
+    },
+
+    showCategory(){
+      this.isCategories = true;
+    },
+    
+    closePopup() {
+      this.isCategories = false;
+    },
+
     Auth(state) {
       this.auth = state;
     },
@@ -220,7 +226,8 @@ export default {
       this.route = "detail";
     },
     goBack() {
-      this.route = "home";
+      this.route = 'home'; // Возвращаемся на главную страницу
+      this.selectedProduct = null; // Очищаем выбранный продукт
     },
     changeRoute(newRoute) {
       this.route = newRoute;
@@ -309,6 +316,8 @@ footer nav {
   margin-top: 5vw;
 }
 
+
+
 .line {
   height: 0.5vw;
   background-color: #f8cb32;
@@ -330,6 +339,10 @@ footer nav {
     );
   background-size: 10% 15px;
   background-position: 11px 25px, 0 23px;
+}
+
+.line:nth-child(3){
+  margin-top: -0.45vw;
 }
 
 #parallelogramB {
@@ -433,12 +446,15 @@ a.header_navigation-link {
   align-self: center;
   font-size: var(--fs-20);
   margin-left: 0.5vw;
+  cursor: pointer;
+
 }
 
 a.header_breadcroums {
   color: black;
   display: block;
   font-size: var(--fs-18);
+  cursor: pointer;
 }
 
 .header_navigation-link.header_navigation-name {

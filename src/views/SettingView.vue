@@ -22,7 +22,7 @@
       <h3 class="regular">8 928 282 25 25</h3>
       <button class="grey_button">Добавить</button>
       <div class="grey-line2"></div>
-      <h3>Звонки  </h3>
+      <h3>Звонки</h3>
       <samp class="desc-mail margin-tb">Когда принимать</samp>
       <div class="shop_filter_block">
         <input class="filter_block" type="text" placeholder="с 00:00" />
@@ -66,6 +66,9 @@ export default {
   methods: {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
+    },
+    exitUser() {
+      this.$emit("exitUser");
     },
   },
   components: {
@@ -576,7 +579,7 @@ main {
   margin: 1vw 4.5vw 2vw 4.5vw;
 }
 
-.checkbox{
+.checkbox {
   margin: auto 0;
 }
 
@@ -595,11 +598,11 @@ main {
 }
 
 .filter_block {
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   border-radius: 1vw;
   padding-top: 0.8vw;
   padding-bottom: 0.8vw;
-  padding-left:1.5vw;
+  padding-left: 1.5vw;
   padding-right: 3vw;
   border: none;
   width: 6vw;

@@ -8,13 +8,13 @@
         <div class="grey_block select">Объявления</div>
         <div class="grey_block">Профили</div>
       </div>
-      <div class="shop_list">
+      <div v-for="(favorite, index) in favorites" :key="index" class="shop_list">
         <a @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
               <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
+                <div>{{ favorite.Title }}</div>
               </div>
               <div class="product_price">от 2 500 ₽ за час</div>
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
@@ -22,7 +22,7 @@
           </div>
         </a>
         <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
+        <a @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -35,7 +35,7 @@
           </div>
         </a>
         <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
+        <a @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -55,18 +55,45 @@
 
 <script>
 import UserPanelRight from "../components/user-panel-right.vue";
-
+import axios from "axios";
 export default {
+  data() {
+    return {
+      favorites: [],
+    };
+  },
   methods: {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
     selectProduct(product) {
-      this.$emit('selectProduct', product);
+      this.$emit("selectProduct", product);
+    },
+    exitUser() {
+      this.$emit("exitUser");
     },
   },
+  //http://localhost:8090/groupFavByRecent
   components: {
     UserPanelRight,
+  },
+  async created() {
+    try {
+      const response = await axios.get("http://localhost:8090/groupFavByRecent", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+      console.log(response.data.data);
+      if (response.data.status === "success") {
+        this.favorites = response.data.data;
+      } else {
+        alert("Error favorites status:fatal");
+      }
+    } catch (error) {
+      console.error("Ошибка при выводе favorites:", error);
+    }
   },
   setup() {},
 };
@@ -371,7 +398,6 @@ main {
   font-size: var(--fs-25);
 }
 
-
 .exit {
   text-decoration: #929292 underline;
 }
@@ -627,8 +653,8 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
@@ -697,15 +723,15 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: rgba(20, 20, 20, 0.561);
-    width: min-content;
-    margin-right: 3vw;
+.grey_block {
+  color: rgba(20, 20, 20, 0.561);
+  width: min-content;
+  margin-right: 3vw;
 }
 
 .title_user {
@@ -789,12 +815,10 @@ main {
   text-decoration: #929292 underline;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
-
-
 
 .shop_filter_block {
   display: flex;
@@ -888,8 +912,7 @@ main {
   margin-right: 1vw;
 }
 
-
-.shop_filter_grey_title.select{
+.shop_filter_grey_title.select {
   color: #000000;
 }
 

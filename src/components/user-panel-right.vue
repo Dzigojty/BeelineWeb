@@ -213,6 +213,10 @@ main {
   margin-right: 26vw;
 }
 
+a {
+  cursor: pointer;
+}
+
 .data {
   color: #141414;
   font-size: var(--fs-15);
@@ -905,6 +909,7 @@ main {
 
 .exit {
   text-decoration: #929292 underline;
+  cursor: pointer;
 }
 
 .select {

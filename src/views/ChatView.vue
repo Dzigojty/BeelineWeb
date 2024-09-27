@@ -1,71 +1,3 @@
-<script setup>
-import { v4 as uuidv4 } from "uuid";
-import { ref, onMounted, nextTick, defineExpose } from "vue";
-
-const APP_ID = "452f99a0814b44d29d9a446ec20356fc";
-const CHANNEL = "wdj";
-let uid = uuidv4();
-let text = ref("dsadsad");
-let messagesRef = ref(null);
-let messages = ref([]);
-let channel;
-
-//Функция для загрузки изображений
-
-//Функция для загрузки файлов
-
-defineExpose({ messagesRef });
-
-const appendMessage = async (message) => {
-  messages.value.push(message);
-  await nextTick();
-  messagesRef.value.scrollTop = messagesRef.value.scrollHeight;
-};
-
-function sendMessage() {
-  if (text.value === "") return;
-  //   channel.sendMessage({ text: text.value, type: 'text' });
-  appendMessage({
-    text: text.value,
-    uid,
-  });
-  text.value = "";
-}
-</script>
-
-<script>
-import VPopupModerDecision from "../components/popup/v-popup-moder-decision.vue";
-import VPopupChangeDeal from "../components/popup/v-popup-change-deal.vue";
-import VPopupChangeDealRequestEdit from "../components/popup/v-popup-change-deal-request-edit.vue";
-
-export default {
-  data() {
-    return {
-      isInfoPopupModerDecision: false,
-      isInfoPopupChangeDeal: false,
-    };
-  },
-  components: {
-    VPopupModerDecision,
-    VPopupChangeDeal,
-    VPopupChangeDealRequestEdit,
-  },
-  methods: {
-    closePopup() {
-      this.isInfoPopupModerDecision = false;
-      this.isInfoPopupChangeDeal = false;
-    },
-    showPopupModerDecision() {
-      this.isInfoPopupModerDecision = true;
-    },
-    showPopupPopupChangeDeal() {
-      this.isInfoPopupChangeDeal = true;
-    },
-  },
-  setup() {},
-};
-</script>
-
 <template>
   <div class="chat">
     <v-popup-moder-decision
@@ -81,36 +13,26 @@ export default {
       @closePopup="closePopup"
     />
     <div class="container-chat">
-      <div class="contacts">
-        <div class="backgroud_contact_select">
-          <div class="contact">
-            <img src="../assets/user.png" class="contact_img" />
-            <div class="column_data">
-              <div class="contact_name">Заказчик</div>
-              <div class="button_new_message">1 новое сообщение!</div>
+        <swiper-container class="swiper contacts" slides-per-view="5"
+        :direction="'vertical'">
+          <swiper-slide
+            :key="chat.id"
+            v-for="(chat, index) in chats"
+            :class="['swiper-el', { active: chatSelected === index }]" 
+            @click="ChatSelect(index)"
+          >
+            <div :class="[{backgroud_contact: true, backgroud_contact_select: chatSelected === index}]">
+              <div class="contact">
+                <img src="../assets/user.png" class="contact_img" />
+                <div class="column_data">
+                  <div class="contact_name">{{chat.name_owner}}</div>
+                  <div v-if="chat.messages[chat.messages.length - 1].status" class="button_status_message">Прочитанно</div>
+                  <div v-else class="button_new_message">Новое сообщение!</div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="backgroud_contact">
-          <div class="contact">
-            <img src="../assets/user.png" class="contact_img" />
-            <div class="column_data">
-              <div class="contact_name">Заказчик</div>
-              <div class="button_status_message">Прочитанно</div>
-            </div>
-          </div>
-        </div>
-        <div class="backgroud_contact">
-          <div class="contact">
-            <img src="../assets/user.png" class="contact_img" />
-            <div class="column_data">
-              <div class="contact_name">Заказчик</div>
-              <div class="button_status_message">Прочитанно</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+          </swiper-slide>
+        </swiper-container>
       <div class="dialog">
         <div @v-if="message.uid != uid" class="notification">
           <samp>Заказчик предложил изменить сроки аренды!</samp>
@@ -191,9 +113,7 @@ export default {
               </button>
             </div>
             <input placeholder="Ответить на сообщение" v-model="text" />
-            <button class="submit">
-              <img src="../assets/submit_chat.png" alt="" />
-            </button>
+            <button class="submit" type="submit" />
           </form>
         </div>
       </div>
@@ -201,7 +121,490 @@ export default {
   </div>
 </template>
 
+<script>
+import { v4 as uuidv4 } from "uuid";
+import { ref, onMounted, nextTick, defineExpose } from "vue";
+import VPopupModerDecision from "../components/popup/v-popup-moder-decision.vue";
+import VPopupChangeDeal from "../components/popup/v-popup-change-deal.vue";
+import VPopupChangeDealRequestEdit from "../components/popup/v-popup-change-deal-request-edit.vue";
+
+const APP_ID = "452f99a0814b44d29d9a446ec20356fc";
+const CHANNEL = "wdj";
+let uid = uuidv4();
+let messagesRef = ref(null);
+let channel;
+
+defineExpose({ messagesRef });
+
+let chatSelected = ref();
+
+export default {
+  components: {
+    VPopupModerDecision,
+    VPopupChangeDeal,
+    VPopupChangeDealRequestEdit,
+  },
+  methods: {
+    closePopup() {
+      this.isInfoPopupModerDecision = false;
+      this.isInfoPopupChangeDeal = false;
+    },
+    showPopupModerDecision() {
+      this.isInfoPopupModerDecision = true;
+    },
+    showPopupPopupChangeDeal() {
+      this.isInfoPopupChangeDeal = true;
+    },
+    ChatSelect(index){
+      this.chatSelected = index;
+      console.log(this.chatSelected);
+    }
+  },
+  setup() {
+    const chats = [
+        {
+          name_owner: "Test-name",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name2",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: false
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name2",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: false
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name2",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: false
+            }
+          ]          
+        }
+      ];
+
+    let chatSelected = 0;
+    const appendMessage = async (message) => {
+      chats[chatSelected].messages.push(message);
+      console.log(chats[chatSelected].messages);
+      // await nextTick();
+      // messagesRef.value.scrollTop = messagesRef.value.scrollHeight;
+    }
+    const sendMessage = (text) => {
+      if (text === "") return;
+      //   channel.sendMessage({ text: text.value, type: 'text' });
+      appendMessage({
+        id: 4,
+        id_user: uid,
+        timestamp: 500000,
+        text: text,
+        status: false,
+      });
+      text.value = "";
+      console.log("sendMessage");
+    }
+
+    return {
+      appendMessage,
+      sendMessage,
+    };
+  },
+  data() {
+    return {
+      chatSelected: chatSelected,
+      isInfoPopupModerDecision: false,
+      isInfoPopupChangeDeal: false,
+      chats: [
+        {
+          name_owner: "Test-name",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name2",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: false
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name2",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: false
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            }
+          ]          
+        },
+        {
+          name_owner: "Test-name2",
+          messages: [
+            {
+              id: 0,
+              id_user: 0,
+              timestamp: 500000,
+              text: "Message 0", 
+              status: true
+            },
+            {
+              id: 1,
+              id_user: 1,
+              timestamp: 500000,
+              text: "Message 1",
+              status: true
+            },
+            {
+              id: 2,
+              id_user: 2,
+              timestamp: 500000,
+              text: "Message 0",
+              status: true
+            },
+            {
+              id: 3,
+              id_user: 3,
+              timestamp: 500000,
+              text: "Message 1",
+              status: false
+            }
+          ]          
+        }
+      ]
+    };
+  },
+  
+};
+</script>
+
+
 <style scoped>
+#min-swiper {
+  height: 0;
+}
+
 .dialog {
   height: 39.1vw;
 }
@@ -237,7 +640,7 @@ export default {
 
 .container-chat{
   display: flex;
-  width: 99vw;
+  width: 100vw;
 }
 
 .notification_mediator {
@@ -405,6 +808,11 @@ input {
   background-color: #f9cc33;
   padding: 0;
   padding-right: 0.5vw;
+  width: 4.5vw;
+  height: 66%;
+  background-image: url("../assets/submit_chat.png");
+  background-repeat: no-repeat;
+  background-size: 3.8vw;
 }
 
 .aligment_noyou {

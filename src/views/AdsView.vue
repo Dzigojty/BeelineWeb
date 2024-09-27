@@ -65,6 +65,10 @@ export default {
      selectProduct(product) {
       this.$emit('selectProduct', product);
     },
+
+    exitUser() {
+      this.$emit('exitUser');
+    },
   },
   components: {
     UserPanelRight,

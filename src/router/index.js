@@ -13,6 +13,7 @@ import SettingView from '../views/SettingView.vue'
 import CreateAds1 from '../views/CreateAds1.vue'
 import CreateAds2 from '../views/CreateAds2.vue'
 
+
 const routes = [
   {
     path: '/',

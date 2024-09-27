@@ -1,9 +1,6 @@
 <template>
   <div class="main">
-    <v-popup-fitback
-      v-if="isInfoPopupRatingView"
-      @closePopup="closeInfoPopup"
-    />
+    <v-popup-fitback v-if="isInfoPopupRatingView" @closePopup="closeInfoPopup" />
     <v-popup v-if="isInfoPopupView" @closePopup="closeInfoPopup" />
     <div class="detailProduct">
       <div class="block">
@@ -11,35 +8,19 @@
           <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
         </a>
         <div class="product">
-          <h1>Услуги аренда экскаватора-погрузчика jsb</h1>
+          <h1>{{ detail.Title }}</h1>
           <div class="select-block">
-            <img
-              class="select-img"
-              id="select-img"
-              :src="currentImage"
-              alt=""
-            />
+            <img class="select-img" id="select-img" :src="currentImage" alt="" />
           </div>
           <swiper-container grabCursor class="swiper" slides-per-view="3">
-            <swiper-slide
-              v-for="(image, index) in images"
-              :key="index"
-              class="swiper-el"
-            >
-              <img
-                class="slider_img"
-                :src="image"
-                alt=""
-                @click="setMainImage(image)"
-              />
+            <swiper-slide v-for="(image, index) in images" :key="index" class="swiper-el">
+              <img class="slider_img" :src="image" alt="" @click="setMainImage(image)" />
             </swiper-slide>
           </swiper-container>
           <div class="time_publication">5 часов назад</div>
           <div class="desc_title">Описание</div>
           <div class="desc_text">
-            Услуги экскаватора JCB - 3CX. Любой вид земляных работ. Копка
-            траншей, колодцев, котлованов,снос зданий и т.д.. Без выходных, 24
-            часа.
+            {{ detail.Description }}
           </div>
           <div class="desc_title">Характеристика</div>
           <ul class="desc_list">
@@ -55,72 +36,54 @@
           </ul>
           <div class="desc_title">Расположение</div>
           <div class="desc_text">
-            Республика Северная Осетия — Владикавказ, Северо-Западный округ р-н
-            Северо-Западный
+            {{ detail.Location }}
           </div>
           <div class="desc_map">
             <yandex-map
-              style="width: 100vw; height: 100vw"
-            ></yandex-map>
+              v-model="map"
+              :settings="{
+                location: {
+                  center: [37.617644, 55.755819],
+                  zoom: 9,
+                },
+              }"
+              width="100%"
+              height="500px"
+            >
+              <yandex-map-default-scheme-layer />
+            </yandex-map>
           </div>
           <div class="desc_title">Отзывы заказчиков</div>
-          <div class="otsivi">
-            <div class="ontsiv">
-              <img
-                class="author_img user_margin"
-                src="../assets/user.png"
-                alt=""
-              />
-              <div class="chat_block">
-                <div class="user_name">Ацамаз</div>
-                <div class="rating_user_samp">6 апреля</div>
-                <div class="rating_user">
-                  <div class="rating_star">
-                    <img src="../assets/star_yellow.png" alt="" /><img
-                      src="../assets/star_yellow.png"
-                      alt=""
-                    /><img src="../assets/star_yellow.png" alt="" /><img
-                      src="../assets/star_yellow.png"
-                      alt=""
-                    /><img src="../assets/star_yellow.png" alt="" />
+
+          <!-- Отображаем отзывы -->
+          <div  class="otsivi" id="otsivi">
+            <div v-for="(review, index) in reviews" :key="index" class="ontsiv">
+              <div class="ontsiv">
+                <img class="author_img user_margin" src="../assets/user.png" alt="" />
+                <div class="chat_block">
+                  <div class="user_name">{{ review.Name }}</div>
+                  <div class="rating_user_samp">6 апреля</div>
+                  <div class="rating_user">
+                    <!-- Отображение звездочек на основе рейтинга -->
+                    <div v-for="n in 5" :key="n" class="rating_star">
+                      <img
+                        src="../assets/star_yellow.png"
+                        alt="Звезда"
+                        v-if="n <= review.Rating"
+                      />
+                      <img src="../assets/star_grey.png" alt="Пустая звезда" v-else />
+                    </div>
+                    <samp class="rating_user_samp">Сделка состоялась </samp>
                   </div>
-                  <samp class="rating_user_samp">Сделка состоялась </samp>
-                </div>
-                <div class="comment_title">Комментарий</div>
-                <div class="comment">
-                  А мне гулять смело, дороже чем делать дело.
-                </div>
-              </div>
-            </div>
-            <div class="ontsiv">
-              <img
-                class="author_img user_margin"
-                src="../assets/user.png"
-                alt=""
-              />
-              <div class="chat_block">
-                <div class="user_name">Ацамаз</div>
-                <div class="rating_user_samp">6 апреля</div>
-                <div class="rating_user">
-                  <div class="rating_star">
-                    <img src="../assets/star_yellow.png" alt="" /><img
-                      src="../assets/star_yellow.png"
-                      alt=""
-                    /><img src="../assets/star_yellow.png" alt="" /><img
-                      src="../assets/star_yellow.png"
-                      alt=""
-                    /><img src="../assets/star_yellow.png" alt="" />
-                  </div>
-                  <samp class="rating_user_samp">Сделка состоялась </samp>
-                </div>
-                <div class="comment_title">Комментарий</div>
-                <div class="comment">
-                  А мне гулять смело, дороже чем делать дело.
+                  <div class="comment_title">Комментарий</div>
+                  <div class="comment">{{ review.Comment }}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="product_button_otsiz min-size">Читать еще 6 отзывов</div>
+          <div v-if="reviews.length > 2" @click="showReviews" id="showReviews" class="product_button_otsiz min-size">
+            Читать еще {{ reviews.length - 2 }} отзывов
+          </div>
         </div>
       </div>
       <div class="action">
@@ -131,12 +94,10 @@
         </div>
         <section class="author_rating">
           <div class="product_button_chat">Написать</div>
-          <div class="product_button_date" @click="showPopup()">
-            Выбрать дату
-          </div>
+          <div class="product_button_date" @click="showPopup()">Выбрать дату</div>
 
           <div class="owner">
-            <div class="author_name">Серега</div>
+            <div class="author_name">{{ detail.Owner_host_name }}</div>
             <img class="author_img" src="../assets/user.png" alt="" />
           </div>
           <div class="rating_user">
@@ -151,8 +112,8 @@
               /><img src="../assets/star_yellow.png" alt="" />
             </div>
           </div>
-          <samp class="rating_user_samp">3 отзыва</samp>
-          <div class="product_button_otsiz" @click="showPopupRating()">
+          <samp @click="showPopupRating()" class="rating_user_samp">3 отзыва</samp>
+          <div class="product_button_otsiz">
             11 объявлений пользователя
           </div>
           <div class="grafic">График работ: с 8:00 до 22:00</div>
@@ -166,32 +127,32 @@
           <img src="../assets/product2.png" alt="" />
           <div class="recomendation_price">от 2 000 ₽ за смену</div>
           <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н
-            Затеречный 13 марта 13:05
+            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
+            марта 13:05
           </div>
         </div>
         <div class="recomendation">
           <img src="../assets/product2.png" alt="" />
           <div class="recomendation_price">от 2 000 ₽ за смену</div>
           <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н
-            Затеречный 13 марта 13:05
+            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
+            марта 13:05
           </div>
         </div>
         <div class="recomendation">
           <img src="../assets/product2.png" alt="" />
           <div class="recomendation_price">от 2 000 ₽ за смену</div>
           <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н
-            Затеречный 13 марта 13:05
+            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
+            марта 13:05
           </div>
         </div>
         <div class="recomendation">
           <img src="../assets/product2.png" alt="" />
           <div class="recomendation_price">от 2 000 ₽ за смену</div>
           <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н
-            Затеречный 13 марта 13:05
+            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
+            марта 13:05
           </div>
         </div>
       </div>
@@ -202,55 +163,46 @@
 
 <script scoped>
 import { ref } from "vue";
+import axios from "axios";
 import vPopup from "../components/popup/v-popup.vue";
 import vPopupFitback from "../components/popup/v-popup-fitback.vue";
+import { YandexMap, YandexMapDefaultSchemeLayer } from "vue-yandex-maps";
 
 export default {
-  props: ['product'],
+  props: {
+    product: Object,
+  },
   data() {
     return {
       isInfoPopupView: false,
       isInfoPopupRatingView: false,
       map: null,
-      coordinates: []
+      coordinates: [],
+      detail: {},
+      reviews: [],
     };
-  },
-  mounted() {
-    // Установить скрипты для использования яндекс карты
-    let scriptYandexMap = document.createElement('script');
-    scriptYandexMap.setAttribute('src', 'https://api-maps.yandex.ru/2.1/?lang=ru_RU');
-    document.head.appendChild(scriptYandexMap); 
-
-    // Инициализировать яндекс карту
-    scriptYandexMap.addEventListener('load', () => Promise.all([
-      this.initializeYandexMap(),
-      this.getCoordData(),
-    ]).then(this.setMarkers));
   },
   components: {
     vPopup,
     vPopupFitback,
   },
+
   methods: {
-    getCoordData() {
-      return new Promise(r => setTimeout(() => {
-        this.coordinates = [
-          [ 52.44, 69.73 ],
-          [ 49.81, 62.12 ],
-        ];
-        r();
-      }, 1000));
+    showReviews() {
+      const listContainer = document.getElementById("otsivi");
+      listContainer.classList.toggle("expanded");
     },
-    initializeYandexMap() {
-      return new Promise(r => ymaps.ready(() => {
-        this.map = new ymaps.Map("yandex-map", {
-          center: [48.352571497155054, 64.04235076905002],
-          zoom: 5,
-          controls: ['fullscreenControl'],
-          searchControlProvider: 'yandex#search'
-        });
-        r();
-      }));
+
+    getCoordData() {
+      return new Promise((r) =>
+        setTimeout(() => {
+          this.coordinates = [
+            [52.44, 69.73],
+            [49.81, 62.12],
+          ];
+          r();
+        }, 1000)
+      );
     },
     setMarkers() {
       for (let i = 0; i < this.coordinates.length; i++) {
@@ -266,13 +218,54 @@ export default {
       this.isInfoPopupView = true;
     },
 
-    showPopupRating(){
+    showPopupRating() {
       this.isInfoPopupRatingView = true;
     },
     goBack() {
-      this.$emit('goBack');
-      console.log("dsadasdasd")
+      this.$emit("goBack");
+    },
+  },
+  async created() {
+    try {
+      const response = await axios.post(
+        "http://localhost:8090/printAds",
+        {
+          Ads_id: this.product.Id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.status != "success") console.log(response);
+      console.log(response);
+      this.detail = response.data.data;
+      this.reviews = response.data.data.Customer_reviews;
+    } catch (error) {
+      console.error(
+        "Ошибка при загрузке продукта:",
+        error.response ? error.response.data : error.message
+      );
     }
+
+    // try {
+    //   const response = await axios.get(
+    //     "http://localhost:8090/groupReviewLowRatOnesFirst",
+    //     {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+    //   if (response.data.status === "success") {
+    //     this.reviews = response.data.data;
+    //   } else {
+    //     alert("Error groupReviewLowRatOnesFirst status:fatal");
+    //   }
+    // } catch (error) {
+    //   console.error("Ошибка при выводе отзывав:", error);
+    // }
   },
   setup() {
     const images = ref([
@@ -298,6 +291,11 @@ export default {
 </script>
 
 <style scoped>
+
+.otsivi.expanded {
+  height: min-content !important; /* Новая высота для отображения всех элементов */
+}
+
 .button_show_more {
   display: block;
   background-color: black;
@@ -331,13 +329,21 @@ export default {
   font-size: var(--fs-20);
 }
 
+.select-block {
+  height: 33.5vw;
+  width: 33.5vw;
+  margin-bottom: 1vw;
+}
+
 .margin-top {
   margin-top: 3vw !important;
   margin-bottom: 2vw !important;
 }
 
 .otsivi {
+  height: 17vw;
   margin-top: 3vw;
+  overflow: hidden;
 }
 
 .user_margin {
@@ -387,6 +393,7 @@ export default {
 .rating_user_samp {
   font-size: var(--fs-10);
   color: #929292;
+  cursor: pointer;
 }
 
 .rating_user samp:first-child {
@@ -514,8 +521,10 @@ li::before {
 }
 
 .select-img {
-  width: 35vw;
+  width: 100%;
+  height: 100%;
   border-radius: 1vw;
+  object-fit: cover;
 }
 
 .rating_user {

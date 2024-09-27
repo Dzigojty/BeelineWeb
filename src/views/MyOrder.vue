@@ -9,42 +9,16 @@
         <div class="grey_block">Действующие</div>
         <div class="grey_block">Закрытые</div>
       </div>
-      <div class="shop_list">
+      <div v-for="(el, index) in array" :key="index" class="shop_list">
         <a @click="selectProduct(product)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
               <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
+                <div>{{ el.Title }}</div>
               </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
+              <div class="product_price">от {{ el.Hourly_rate }} ₽ за час</div>
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a  @click="selectProduct(product)" class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_r">Завтра с 17:00 до 17:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)" class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="grey_text">Объявление снято</div>
             </div>
           </div>
         </a>
@@ -56,8 +30,31 @@
 
 <script>
 import UserPanelRight from "../components/user-panel-right.vue";
-
+import axios from "axios";
 export default {
+  data() {
+    return {
+      array: [],
+    };
+  },
+  async created() {
+    try {
+      const response = await axios.get("http://localhost:8090/groupAdsByRented", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+      console.log(response.data.data);
+      if (response.data.status === "success") {
+        this.array = response.data.data;
+      } else {
+        alert("Error favorites status:fatal");
+      }
+    } catch (error) {
+      console.error("Ошибка при выводе favorites:", error);
+    }
+  },
   methods: {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
@@ -66,7 +63,10 @@ export default {
       this.$emit("exitUser");
     },
     selectProduct(product) {
-      this.$emit('selectProduct', product);
+      this.$emit("selectProduct", product);
+    },
+    exitUser() {
+      this.$emit("exitUser");
     },
   },
   components: {

@@ -2,9 +2,15 @@
   <div class="v-popup-auth">
     <div v-if="showAuth == 'login'" class="center">
       <div class="title">Вход</div>
-      <form action="">
-        <input type="text" placeholder="Телефон, почта" />
-        <input type="password" placeholder="Пароль" />
+      <form @submit.prevent="AuthInfo">
+        <input
+          v-model="loginForm.emailOrPhone"
+          type="text"
+          placeholder="Телефон, почта"
+        />
+        <span v-if="errors.emailOrPhone" class="error">{{ errors.emailOrPhone }}</span>
+        <input v-model="loginForm.password" type="password" placeholder="Пароль" />
+        <span v-if="errors.password" class="error">{{ errors.password }}</span>
         <div class="other-auth-block">
           <div class="small-text m-t m-b center-text">Или продолжить через</div>
           <div class="flex-block min-context">
@@ -13,257 +19,263 @@
           </div>
         </div>
         <div class="center-block">
-          <button class="submit" @click="AuthInfo()">Войти</button>
+          <button class="submit">Войти</button>
         </div>
       </form>
       <div class="small-text m-b2 center-text">
         Нет аккаунта?
-        <samp class="underline" @click="ChangeShowAuth('register')"
-          >Создать</samp
-        >
+        <samp class="underline" @click="ChangeShowAuth('register_Phone')">Создать</samp>
       </div>
       <div class="small-text center-text">
-        <samp class="underline" @click="ChangeShowAuth('password')"
-          >Забыли пароль</samp
-        >
+        <samp class="underline" @click="ChangeShowAuth('password')">Забыли пароль</samp>
       </div>
     </div>
+
+    <!-- Экран восстановления пароля -->
     <div v-if="showAuth == 'password'" class="center">
       <div class="title">Восстановление пароля</div>
       <div class="small-text m-b">
-        Введите номер телефона или адрес электронной почты, указанного при
-        регистрации, на который Вам будет направлен код для смены пароля или
-        письмо с инструкцией.
+        Введите номер телефона или адрес электронной почты, указанного при регистрации, на
+        который Вам будет направлен код для смены пароля или письмо с инструкцией.
       </div>
-      <form action="" method="post">
-        <input type="text" placeholder="Телефон, почта" />
+      <form @submit.prevent="requestPassword">
+        <input
+          v-model="passwordRecoveryForm.emailOrPhone"
+          type="text"
+          placeholder="Телефон, почта"
+        />
+        <span v-if="errors.emailOrPhone" class="error">{{ errors.emailOrPhone }}</span>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('passwordRequst')"
-          >
-            Запросить
-          </button>
+          <button type="submit" class="submit">Запросить</button>
         </div>
       </form>
     </div>
+
+    <!-- Экран подтверждения кода для восстановления пароля -->
     <div v-if="showAuth == 'passwordRequst'" class="center">
       <div class="title">Восстановление пароля</div>
-      <form action="" method="post">
-        <input type="text" placeholder="Код" />
+      <form @submit.prevent="validateCode">
+        <input v-model="recoveryCode" type="text" placeholder="Код" />
+        <span v-if="errors.recoveryCode" class="error">{{ errors.recoveryCode }}</span>
         <div class="center-block">
           <button type="submit" class="submit">Отправить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register'" class="center">
+
+    <!-- Шаги регистрации -->
+    <div v-if="showAuth == 'register_Phone'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
-        <input type="text" placeholder="Введите номер телефона" />
+      <form @submit.prevent="validatePhone">
+        <input
+          v-model="registerForm.Phone_number"
+          type="text"
+          placeholder="Введите номер телефона"
+        />
+        <span v-if="errors.phone" class="error">{{ errors.phone }}</span>
         <div class="small-text m-t m-b">
           Вы сможете скрыть номер телефона в объявлениях
         </div>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register2')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register2'" class="center">
+
+    <div v-if="showAuth == 'register_phone_confirm'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
-        <input type="text" placeholder="Код подтверждения" />
+      <form @submit.prevent="validateConfirmationCode">
+        <input
+          v-model="confirmationCode"
+          type="text"
+          placeholder="Код подтверждения"
+        />
+        <span v-if="errors.confirmationCode" class="error">{{
+          errors.confirmationCode
+        }}</span>
         <div class="center-block-width">
           <div class="small-text-black">
-            В течении 2 минут вы получите смс с кодом подтверждения на номер + 7
-            457 457 45 45
+            В течении 2 минут вы получите смс с кодом подтверждения на номер +7 457 457 45
+            45
           </div>
           <div class="link">получить новый код</div>
         </div>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register3')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register3'" class="center">
+
+
+    <div v-if="showAuth == 'register_type_user'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
+      <form @submit.prevent="validateProfileType">
         <div class="small-text-black margin-bottom">Выберите тип профиля</div>
         <div class="flex-block space-e">
-          <div class="check-block">Для личного пользования</div>
-          <div class="check-block">Для работы</div>
+          <div class="check-block" @style="" @click="profileType = 'personal'">
+            Для личного пользования
+          </div>
+          <div class="check-block" :class="{ active: profileType == 'business' }" @click="profileType = 'business'">
+            Для работы
+          </div>
         </div>
+        <span v-if="errors.profileType" class="error">{{ errors.profileType }}</span>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register4')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register4'" class="center">
+
+    <div v-if="showAuth == 'register_password'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
-        <div class="small-text-black mb">Введите имя</div>
-        <div class="small-text-black-c-b">
-          Напишите так, как вы хотите, чтобы к вам обращались.
-        </div>
-        <input type="text" />
-        <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register5')"
-          >
-            Продолжить
-          </button>
-        </div>
-      </form>
-    </div>
-    <div v-if="showAuth == 'register5'" class="center">
-      <div class="title">Регистрация</div>
-      <form action="" method="post">
+      <form @submit.prevent="validatePassword">
         <div class="small-text-black marg-bottom">Придумайте пароль</div>
-        <input type="text" />
-        <div class="small-text-black marg-bottom">Повторите</div>
-        <input type="text" />
+        <input v-model="password" type="password" />
+        <span v-if="errors.password" class="error">{{ errors.password }}</span>
+        <div class="small-text-black marg-bottom">Повторите пароль</div>
+        <input v-model="confirmPassword" type="password" />
+        <span v-if="errors.confirmPassword" class="error">{{
+          errors.confirmPassword
+        }}</span>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register6')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register6'" class="center">
+
+    <div v-if="showAuth == 'register_email'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
-        <input type="text" placeholder="Введите почту" />
+      <form @submit.prevent="validateEmail">
+        <input
+          v-model="registerForm.Email"
+          required
+          type="email"
+          placeholder="Введите почту"
+        />
+        <span v-if="errors.email" class="error">{{ errors.email }}</span>
         <div class="small-text m-b">Вы сможете скрыть почту в объявлениях</div>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register7')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register7'" class="center">
+
+    <div v-if="showAuth == 'register_email_confirm'" class="center">
       <div class="title">Регистрация</div>
       <form action="" method="post">
-        <div class="link marg-bottom">
-          Сообщение с подтверждением отправлено!
-        </div>
+        <div class="link marg-bottom">Сообщение с подтверждением отправлено!</div>
 
         <div class="small-text-black">
-          Чтобы выполнить это действие необходимо подтвердить адрес эл. почты.
-          Пожалуйста, проверьте ваш почтовый ящик и выполните следующие
-          указания. Письмо отправлено на: opaopaopa@yandex.ru
+          Чтобы выполнить это действие необходимо подтвердить адрес эл. почты. Пожалуйста,
+          проверьте ваш почтовый ящик и выполните следующие указания. Письмо отправлено
+          на: opaopaopa@yandex.ru
         </div>
 
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register8')"
-          >
+          <button type="submit" class="submit" @click="ChangeShowAuth( profileType == 'personal' ? 'register_nature_user_name' : 'register_company_name')">
             Ок
           </button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register8'" class="center">
+
+    <!-- NATURE -->
+    <div v-if="showAuth == 'register_nature_user_name'" class="center">
+      <div class="title">Регистрация</div>
+      <form @submit.prevent="validateName">
+        <div class="small-text-black mb">Введите фамилию</div>
+        <input v-model="registerForm.Surname" type="text" />
+        <span v-if="errors.surname" class="error">{{ errors.surname }}</span>
+        <div class="small-text-black mb">Введите имя</div>
+        <input v-model="registerForm.Name" type="text" />
+        <span v-if="errors.name" class="error">{{ errors.name }}</span>
+        <div class="small-text-black mb">Введите отчество (оставьте пустым если его нет)</div>
+        <input v-model="registerForm.Patronymic" type="text" />
+        <div class="center-block">
+          <button type="submit" class="submit">Продолжить</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- COMPANY -->
+    <div v-if="showAuth == 'register_company_name'" class="center">
       <div class="title">Регистрация</div>
       <form action="" method="post">
         <div class="small-text-black mb">Имя или название компании</div>
         <div class="small-text-black-c-b">
-          Напишите так, как вы хотите, чтобы к вам обращались. Если у вас
-          компания, можно без ООО, ИП и прочего.
+          Напишите так, как вы хотите, чтобы к вам обращались. Если у вас компания, можно
+          без ООО, ИП и прочего.
         </div>
-        <input type="text" />
+        <input v-model="registerForm.Name_of_company" type="text" />
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register9')"
-          >
+          <button type="submit" class="submit" @click="ChangeShowAuth('register_company_confirm')">
             Продолжить
           </button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register9'" class="center">
+    <div v-if="showAuth == 'register_company_confirm'" class="center">
       <div class="title">Регистрация</div>
       <form action="" method="post">
         <div class="small-text-black mb">Подтверждение данных</div>
-        <div class="small-text-black-c-b">
-          Выберите способ, который вам удобнее.
-        </div>
+        <div class="small-text-black-c-b">Выберите способ, который вам удобнее.</div>
         <div>
-          <div class="check-block w100 pad">
+          <div class="check-block w100 pad" @click="profileType = 'recvez'">
             <div class="title-check-block">Реквизиты компании</div>
             <div class="text-check-block">
-              Введите ИНН и оплатите хотя бы 1 ₽ со счёта компании. Деньги
-              придут в ваш кошелёк на сайте.
+              Введите ИНН и оплатите хотя бы 1 ₽ со счёта компании. Деньги придут в ваш
+              кошелёк на сайте.
             </div>
           </div>
-          <div class="check-block w100 pad">
+          <div class="check-block w100 pad" @click="profileType = 'passport'">
             <div class="title-check-block">Паспорт</div>
             <div class="text-check-block">
-              Селфи с оригинальным паспортом. Данные будут защищены, другие
-              пользователи не увидят.
+              Селфи с оригинальным паспортом. Данные будут защищены, другие пользователи
+              не увидят.
             </div>
           </div>
         </div>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register10')"
-          >
+          <button type="submit" class="submit" @click="ChangeShowAuth( profileType == 'recvez' ? 'register_recvez_confirm' : 'register_passport_confirm')">
             Продолжить
           </button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register10'" class="center">
+
+    <div v-if="showAuth == 'register_passport_confirm'" class="center">
+      <div class="title">Регистрация</div>
+      <form action="" method="post">
+        <div class="small-text-black mb">Проверка по реквизитам</div>
+        <ul class="list">
+          <li>Для проверки вам должно быть от 18 лет</li>
+          <li>Вам понадобится камера и оригинал документа</li>
+          <li>Проходить проверку в профиле, который вам не принадлежит, нельзя: мы отслеживаем такие случаи</li>
+        </ul>
+        <div class="center-block">
+          <button type="submit" class="submit" @click="ChangeShowAuth('register_photo')">
+            Продолжить
+          </button>
+        </div>
+      </form>
+    </div>
+
+
+    <div v-if="showAuth == 'register_recvez_confirm'" class="center">
       <div class="title">Регистрация</div>
       <form action="" method="post">
         <div class="small-text-black mb">Проверка по реквизитам</div>
         <ul class="list">
           <li>Для проверки вам должно быть от 18 лет</li>
           <li>Вам понадобится ИНН и другие реквизиты юрлица</li>
+          <li>По реквизитам одного юрлица можно пройти проверку только один раз</li>
           <li>
-            По реквизитам одного юрлица можно пройти проверку только один раз
+            Для проверки нужно заплатить от 1 ₽ со счёта юрлица, деньги придут в ваш
+            кошелёк на сайте
           </li>
           <li>
-            Для проверки нужно заплатить от 1 ₽ со счёта юрлица, деньги придут
-            в ваш кошелёк на сайте
-          </li>
-          <li>
-            Значок «Реквизиты проверены» появится только в том профиле,
-            в котором вы пройдёте проверку
+            Значок «Реквизиты проверены» появится только в том профиле, в котором
+            вы пройдёте проверку
           </li>
           <li>
             Проходить проверку в профиле, который вам не принадлежит, нельзя:
@@ -271,64 +283,43 @@
           </li>
         </ul>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register11')"
-          >
+          <button type="submit" class="submit" @click="ChangeShowAuth('register_company_inn')">
             Продолжить
           </button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register11'" class="center">
+
+    <div v-if="showAuth == 'register_company_inn'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
-        <div class="small-text-black marg-bottom">
-          Введите ИНН юрлица или ИП
-        </div>
-        <input type="text" placeholder="Введите номер" />
+      <form @submit.prevent="validateINN">
+        <div class="small-text-black marg-bottom">Введите ИНН юрлица или ИП</div>
+        <input v-model="registerForm.Ind_num_taxp" type="text" placeholder="Введите номер" />
+        <span v-if="errors.inn" class="error">{{ errors.inn }}</span>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register12')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register12'" class="center">
+
+    <div v-if="showAuth == 'register_photo'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
+      <form @submit.prevent="validatePhoto">
         <div class="small-text-black marg-bottom">Загрузите фотографию</div>
-        <input type="file" class="file" />
+        <input type="file" class="file" @change="handleFileUpload" />
+        <span v-if="errors.photo" class="error">{{ errors.photo }}</span>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register13')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
-    <div v-if="showAuth == 'register13'" class="center">
+
+    <div v-if="showAuth == 'register_finaly'" class="center">
       <div class="title">Регистрация</div>
-      <form action="" method="post">
-        <div class="small-text-black marg-bottom">
-          Отправлено на рассмотрение.
-        </div>
+      <form @submit.prevent="submitForReview">
+        <div class="small-text-black marg-bottom">Отправлено на рассмотрение.</div>
         <div class="center-block">
-          <button
-            type="submit"
-            class="submit"
-            @click="ChangeShowAuth('register14')"
-          >
-            Продолжить
-          </button>
+          <button type="submit" class="submit">Продолжить</button>
         </div>
       </form>
     </div>
@@ -337,22 +328,354 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import axios from 'axios';
 
 export default {
   data() {
     return {
       showAuth: "login",
-      startDate: this.startDate,
+      errors: {},
+      loginForm: {
+        emailOrPhone: "",
+        password: "",
+      },
+      passwordRecoveryForm: {
+        emailOrPhone: "",
+      },
+      password: "",
+      confirmPassword: "",
+      recoveryCode: "",
+      profileType: "",
+      confirmationCode: "",
+      inn: "",
+      photo: null,
+      registerForm: {
+        Ind_num_taxp: "",
+        Name_of_company: "",
+        Address_name: "feqwew",
+        Phone_number: "",
+        Patronymic: "",
+        Name: "",
+        Surname: "",
+        Password_hash: "",
+        Email: "",
+      },
     };
   },
   components: {},
   methods: {
-    AuthInfo() {
-      this.$emit("auth");
+    validateINN() {
+      this.errors = {};
+      if (!this.registerForm.Ind_num_taxp) {
+        this.errors.inn = "Введите ИНН.";
+      } else if (!/^\d{10,12}$/.test(this.registerForm.Ind_num_taxp)) {
+        this.errors.inn = "Введите корректный ИНН.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        this.ChangeShowAuth("register_photo");
+      }
+    },
+
+    validatePhoto() {
+      this.errors = {};
+      if (!this.photo) {
+        this.errors.photo = "Загрузите фотографию.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        this.ChangeShowAuth("register_finaly");
+      }
+    },
+
+    async LoginSubmit() {
+      // try {
+console.log(this.loginForm);
+
+let form = {
+    "Login": this.loginForm.emailOrPhone,
+    "Password": this.loginForm.password,
+};
+let costil = "";
+
+        const response = await axios.post('http://localhost:8090/login', 
+          form, 
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+        ).then(function (response) {
+          console.log(response);
+
+          if (response.data.status == "fatal") {
+            alert('Вы ввели не действительные данные!');
+
+          } else {
+            alert('Вы авторизовались!');
+            costil = "авторизовались";
+          }
+        }).catch(function (error)  {
+          alert('Произошла ошибка!');
+          console.log(error);
+        });
+
+        if (costil != "") {
+          this.$emit("registrationComplete");
+        this.$emit("auth");
+        this.closeInfoPopup();
+        }
+        
+        // console.log(response.data);  // Выводим ответ сервера в консоль
+      // } catch (error) {
+      //   alert('Произошла ошибка!');
+      //   console.error(error);
+      // }
+
+      // Завершение процесса регистрации или переход на другую страницу
+    },
+
+    async submitForReview() {
+
+      if(this.profileType == "personal") {
+        if (this.registerForm.Patronymic == "") {
+          this.registerForm.Patronymic = "-"
+        }
+        try {
+          const response = await axios.post('http://localhost:8090/signupNatur', 
+            this.registerForm, 
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            }
+          );
+          alert('Ваши данные отправлены на рассмотрение!');
+          console.log(response.data);  // Выводим ответ сервера в консоль
+        } catch (error) {
+          alert('Произошла ошибка!');
+          console.error(error);
+        }
+      } else {
+        try {
+          const response = await axios.post('http://localhost:8090/signupLegal', 
+            this.registerForm, 
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            }
+          );
+          alert('Ваши данные отправлены на рассмотрение!');
+          console.log(response.data);  // Выводим ответ сервера в консоль
+        } catch (error) {
+          alert('Произошла ошибка!');
+          console.error(error);
+        }
+      }
+
+      
+
+      // Завершение процесса регистрации или переход на другую страницу
+      this.closeInfoPopup();
+    },
+
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.photo = file;
+      }
+    },
+
+    validateLoginForm() {
+      this.errors = {};
+
+      if (!this.loginForm.emailOrPhone) {
+        this.errors.emailOrPhone = "Поле не может быть пустым.";
+      } else if (!this.isValidEmailOrPhone(this.loginForm.emailOrPhone)) {
+        this.errors.emailOrPhone = "Введите корректный телефон или email.";
+      }
+
+      if (!this.loginForm.password) {
+        this.errors.password = "Пароль обязателен для заполнения.";
+      }
+
+      return Object.keys(this.errors).length === 0;
+    },
+
+    validatePhone() {
+      this.errors = {};
+      console.log(this.registerForm.Phone_number)
+      if (!this.registerForm.Phone_number) {
+        this.errors.phone = "Введите номер телефона.";
+      } else if (!this.isValidPhone(this.registerForm.Phone_number)) {
+        this.errors.phone = "Введите корректный номер телефона.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        this.ChangeShowAuth("register_phone_confirm");
+      }
+    },
+
+    validateConfirmationCode() {
+      this.errors = {};
+      if (!this.confirmationCode) {
+        this.errors.confirmationCode = "Введите код подтверждения.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        this.ChangeShowAuth('register_type_user');
+      }
+    },
+
+    validateProfileType() {
+      this.errors = {};
+      if (!this.profileType) {
+        this.errors.profileType = "Выберите тип профиля.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+          this.ChangeShowAuth("register_password");
+      }
+    },
+
+    validateName() {
+      this.errors = {};
+      if (!this.registerForm.Name) {
+        this.errors.name = "Введите ваше имя.";
+      }
+
+      if (!this.registerForm.Name) {
+        this.errors.surname = "Введите вашу фамилию.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        this.ChangeShowAuth("register_photo");
+      }
+    },
+
+    validatePassword() {
+      this.errors = {};
+      if (!this.password) {
+        this.errors.password = "Введите пароль.";
+      } else if (this.password.length < 6) {
+        this.errors.password = "Пароль должен быть не менее 6 символов.";
+      }
+
+      if (!this.confirmPassword) {
+        this.errors.confirmPassword = "Повторите пароль.";
+      } else if (this.confirmPassword !== this.password) {
+        this.errors.confirmPassword = "Пароли не совпадают.";
+      }
+
+      this.registerForm.Password_hash = this.password;
+
+      if (Object.keys(this.errors).length === 0) {
+        this.ChangeShowAuth("register_email");
+      }
+    },
+
+    validateEmail() {
+      this.errors = {};
+      if (!this.registerForm.Email) {
+        this.errors.email = "Введите адрес электронной почты.";
+      } else if (!this.isValidEmail(this.registerForm.Email)) {
+        this.errors.email = "Введите корректный email.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        this.ChangeShowAuth("register_email_confirm");
+      }
+    },
+
+
+    requestPassword() {
+      if (this.validatePasswordRecoveryForm()) {
+        this.$emit("passwordRequested");
+      }
+    },
+
+    isValidEmail(value) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(value);
+    },
+
+    isValidPhone(value) {
+      const phonePattern = /^\+?\d{10,15}$/;
+      return phonePattern.test(value);
+    },
+
+    isValidEmailOrPhone(value) {
+      return this.isValidEmail(value) || this.isValidPhone(value);
+    },
+
+    ChangeShowAuth(popup) {
+      this.showAuth = popup;
     },
     closeInfoPopup() {
       this.$emit("closePopup");
+    },
+    ChangeShowAuth(popup) {
+      this.showAuth = popup;
+
+      switch (popup) {
+        case "register_phone_confirm":
+          isValidPhone();
+          break;
+        default:
+          break;
+      }
+    },
+    validateLoginForm() {
+      this.errors = {};
+
+      if (!this.loginForm.emailOrPhone) {
+        this.errors.emailOrPhone = "Поле не может быть пустым.";
+      } else if (!this.isValidEmailOrPhone(this.loginForm.emailOrPhone)) {
+        this.errors.emailOrPhone = "Введите корректный телефон или email.";
+      }
+
+      if (!this.loginForm.password) {
+        this.errors.password = "Пароль обязателен для заполнения.";
+      }
+
+      return Object.keys(this.errors).length === 0;
+    },
+    validatePasswordRecoveryForm() {
+      this.errors = {};
+
+      if (!this.passwordRecoveryForm.emailOrPhone) {
+        this.errors.emailOrPhone = "Поле не может быть пустым.";
+      } else if (!this.isValidEmailOrPhone(this.passwordRecoveryForm.emailOrPhone)) {validateLoginForm
+        this.errors.emailOrPhone = "Введите корректный телефон или email.";
+      }
+
+      return Object.keys(this.errors).length === 0;
+    },
+    AuthInfo() {
+      if (this.validateLoginForm()) {
+        this.LoginSubmit();
+ 
+      }
+    },
+    requestPassword() {
+      if (this.validatePasswordRecoveryForm()) {
+        this.$emit("passwordRequested");
+      }
+    },
+    
+    isValidEmail(value) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(value);
+    },
+    isValidPhone(value) {
+      const phonePattern = /^\+?\d{10,15}$/;
+      return phonePattern.test(value);
+    },
+    isValidEmailOrPhone(value) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phonePattern = /^\+?\d{10,15}$/;
+      return emailPattern.test(value) || phonePattern.test(value);
     },
     ChangeShowAuth(popup) {
       this.showAuth = popup;
@@ -362,6 +685,14 @@ export default {
 </script>
 
 <style scoped>
+.error {
+  color: red;
+  font-size: var(--fs-15);
+  margin-top: -10px;
+  margin-bottom: 10px;
+  display: block;
+}
+
 .file {
   padding: 5vw 1vw;
   width: 93%;

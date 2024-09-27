@@ -61,14 +61,14 @@ export default {
   },
   methods: {
     changeRoute(newRoute) {
-      this.$emit('changeRoute', newRoute);
+      this.$emit("changeRoute", newRoute);
     },
-
+    exitUser() {
+      this.$emit("exitUser");
+    },
   },
-  setup() {
-    
-  },
-}
+  setup() {},
+};
 </script>
 
 <style scoped>
@@ -399,8 +399,6 @@ main {
   font-weight: bold;
   padding-top: 2vw;
 }
-
-
 
 .shop_product {
   margin-left: 6vw;
@@ -769,8 +767,8 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
@@ -819,7 +817,6 @@ main {
   padding-top: 2vw;
 }
 
-
 .shop_product {
   margin-left: 6vw;
   width: 70vw;
@@ -835,15 +832,15 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: rgba(20, 20, 20, 0.561);
-    width: min-content;
-    margin-right: 3vw;
+.grey_block {
+  color: rgba(20, 20, 20, 0.561);
+  width: min-content;
+  margin-right: 3vw;
 }
 
 .title_user {
@@ -931,9 +928,9 @@ main {
   color: #000000 !important;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
 
 .shop_filter_button {

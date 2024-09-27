@@ -5,16 +5,18 @@
     <div class="shop_product">
       <div class="shop_title">Адреса</div>
       <div class="block_flex">
-        <div class="grey_block">Добавьте хотя бы один пункт, чтобы сразу видеть самые быстрые и выгодные варианты доставки.</div>
+        <div class="grey_block">
+          Добавьте хотя бы один пункт, чтобы сразу видеть самые быстрые и выгодные варианты доставки.
+        </div>
       </div>
       <button class="yellow_button">Добавить</button>
       <div class="flex-block">
         <div class="grey-block">
-          <img src="../assets/ecoAdres.svg" alt="">
+          <img src="../assets/ecoAdres.svg" alt="" />
           <div>Экономия на доставке</div>
         </div>
         <div class="grey-block">
-          <img src="../assets/pointAdres.svg" alt="">
+          <img src="../assets/pointAdres.svg" alt="" />
           <div>Объявления поблизости</div>
         </div>
       </div>
@@ -30,6 +32,9 @@ export default {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
+    exitUser() {
+      this.$emit("exitUser");
+    },
   },
   components: {
     UserPanelRight,
@@ -39,15 +44,15 @@ export default {
 </script>
 
 <style scoped>
-.flex-block{
+.flex-block {
   display: flex;
   justify-content: space-between;
   width: 40vw;
   margin-top: 5vw;
 }
 
-.grey-block{
-  background-color: #F1F1F1;
+.grey-block {
+  background-color: #f1f1f1;
   border: none;
   border-radius: 1vw;
   padding: 1vw;
@@ -56,7 +61,7 @@ export default {
   font-weight: 600;
 }
 
-.grey-block img{
+.grey-block img {
   height: 3.2vw;
 }
 
@@ -83,7 +88,7 @@ main {
   padding: 1vw 0;
 }
 
-.yellow_button{
+.yellow_button {
   background-color: #f9cc33;
   padding: 0.8vw 3vw;
   border-radius: 1.2vw;
@@ -213,8 +218,8 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
+  color: #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
   font-size: var(--fs-23);
   margin-bottom: 0.5vw;
   font-weight: bold;
@@ -283,15 +288,15 @@ main {
   margin-top: 3.5vw;
 }
 
-.block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+.block_flex {
+  display: flex;
+  margin-bottom: 3vw;
 }
 
-.grey_block{
-    color: #141414;
-    width: 34vw;
-    word-wrap: break-word;
+.grey_block {
+  color: #141414;
+  width: 34vw;
+  word-wrap: break-word;
 }
 
 .title_user {
@@ -379,9 +384,9 @@ main {
   color: #000000 !important;
 }
 
-.grey_text{
-    color: black;
-    font-size: var(--fs-18);
+.grey_text {
+  color: black;
+  font-size: var(--fs-18);
 }
 
 .shop_filter_button {

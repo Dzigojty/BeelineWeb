@@ -71,6 +71,9 @@ export default {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
+    exitUser() {
+      this.$emit("exitUser");
+    },
   },
   components: {
     UserPanelRight,

@@ -4,297 +4,148 @@
       <div class="title">Отзывы о пользователе</div>
       <div class="rating_title">
         <samp>5,0</samp>
-        <div class="rating_container">
-          <img src="../../assets/star_yellow.png" alt="" class="rating_big" />
-          <img src="../../assets/star_yellow.png" alt="" class="rating_big" />
-          <img src="../../assets/star_yellow.png" alt="" class="rating_big" />
-          <img src="../../assets/star_yellow.png" alt="" class="rating_big" />
-          <img src="../../assets/star_yellow.png" alt="" class="rating_big" />
+        <div v-for="n in 5" :key="n" class="rating_container">
+          <img
+            src="../../assets/star_yellow.png"
+            alt="Звезда"
+            class="rating_big"
+            v-if="n <= 5"
+          />
+          <img
+            src="../../assets/star_grey.png"
+            alt="Пустая звезда"
+            class="rating_big"
+            v-else
+          />
         </div>
       </div>
-      <div class="text_desc">на основании 33 оценок</div>
+      <div class="text_desc">на основании {{reviews.length}} оценок</div>
       <div class="flex_block s-b">
         <div class="matrix_rating">
           <div class="rating_line">
-            <div class="rating_container">
+            <div v-for="n in 5" :key="n" class="rating_container">
               <img
                 src="../../assets/star_yellow.png"
-                alt=""
+                alt="Звезда"
                 class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-            </div>
-            <div class="rat_line"></div>
-            <samp>33</samp>
-          </div>
-          <div class="rating_line">
-            <div class="rating_container">
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
+                v-if="n <= 5"
               />
               <img
                 src="../../assets/star_grey.png"
-                alt=""
+                alt="Пустая звезда"
                 class="rating_midle"
+                v-else
+              />
+            </div>
+            <div class="rat_line"></div>
+            <samp>{{stars[0]}}</samp>
+          </div>
+          <div class="rating_line">
+            <div v-for="n in 5" :key="n" class="rating_container">
+              <img
+                src="../../assets/star_yellow.png"
+                alt="Звезда"
+                class="rating_midle"
+                v-if="n <= 4"
+              />
+              <img
+                src="../../assets/star_grey.png"
+                alt="Пустая звезда"
+                class="rating_midle"
+                v-else
               />
             </div>
             <div class="rat_line"></div>
             <samp>0</samp>
           </div>
           <div class="rating_line">
-            <div class="rating_container">
+            <div v-for="n in 5" :key="n" class="rating_container">
               <img
                 src="../../assets/star_yellow.png"
-                alt=""
+                alt="Звезда"
                 class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
+                v-if="n <= 3"
               />
               <img
                 src="../../assets/star_grey.png"
-                alt=""
+                alt="Пустая звезда"
                 class="rating_midle"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt=""
-                class="rating_midle"
+                v-else
               />
             </div>
             <div class="rat_line"></div>
-            <samp>0</samp>
+            <samp>{{stars[0]}}</samp>
           </div>
           <div class="rating_line">
-            <div class="rating_container">
+            <div v-for="n in 5" :key="n" class="rating_container">
               <img
                 src="../../assets/star_yellow.png"
-                alt=""
+                alt="Звезда"
                 class="rating_midle"
-              />
-              <img
-                src="../../assets/star_yellow.png"
-                alt=""
-                class="rating_midle"
+                v-if="n <= 2"
               />
               <img
                 src="../../assets/star_grey.png"
-                alt=""
+                alt="Пустая звезда"
                 class="rating_midle"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt=""
-                class="rating_midle"
+                v-else
               />
             </div>
             <div class="rat_line"></div>
-            <samp>0</samp>
+            <samp>{{stars[0]}}</samp>
           </div>
           <div class="rating_line">
-            <div class="rating_container">
+            <div v-for="n in 5" :key="n" class="rating_container">
               <img
                 src="../../assets/star_yellow.png"
-                alt=""
+                alt="Звезда"
                 class="rating_midle"
+                v-if="n <= 1"
               />
               <img
                 src="../../assets/star_grey.png"
-                alt=""
+                alt="Пустая звезда"
                 class="rating_midle"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt=""
-                class="rating_midle"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt=""
-                class="rating_midle"
+                v-else
               />
             </div>
             <div class="rat_line"></div>
-            <samp>0</samp>
+            <samp>{{stars[0]}}</samp>
           </div>
         </div>
         <button class="grey_button">Добавить отзыв</button>
       </div>
       <div class="container_selected">
-        <select class="selecte_fileter" name="filter" id="">
+        <select v-model="selected" class="selecte_fileter" name="filter" id="">
           <option>Сначала новые</option>
           <option>Сначала старые</option>
         </select>
       </div>
       <div class="container_comments">
-        <div class="container_comment">
+        <div v-for="(review, index) in reviews" :key="index" class="container_comment">
           <img class="comment_img" src="../../assets/user.png" alt="" />
           <div class="comment_desc">
-            <div class="name">Ацамаз</div>
+            <div class="name">{{ review.Name }}</div>
             <div class="date">6 апреля</div>
             <div class="flex_block">
-              <div class="rating_container">
+              <div v-for="n in 5" :key="n" class="rating_container">
                 <img
                   src="../../assets/star_yellow.png"
-                  alt=""
+                  alt="Звезда"
+                  v-if="n <= review.Rating"
                   class="rating_mini"
                 />
                 <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
+                  src="../../assets/star_grey.png"
+                  alt="Пустая звезда"
                   class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
+                  v-else
                 />
               </div>
               <div class="state">Сделка состоялась</div>
             </div>
             <div class="comment_title">Комментарий</div>
-            <div class="comment_text">Все вкусно. Вроде едет.</div>
-          </div>
-        </div>
-        <div class="container_comment">
-          <img class="comment_img" src="../../assets/user.png" alt="" />
-          <div class="comment_desc">
-            <div class="name">Ацамаз</div>
-            <div class="date">6 апреля</div>
-            <div class="flex_block">
-              <div class="rating_container">
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-              </div>
-              <div class="state">Сделка состоялась</div>
-            </div>
-            <div class="comment_title">Комментарий</div>
-            <div class="comment_text">Все вкусно. Вроде едет.</div>
-          </div>
-        </div>
-        <div class="container_comment">
-          <img class="comment_img" src="../../assets/user.png" alt="" />
-          <div class="comment_desc">
-            <div class="name">Ацамаз</div>
-            <div class="date">6 апреля</div>
-            <div class="flex_block flex_center">
-              <div class="rating_container">
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-                <img
-                  src="../../assets/star_yellow.png"
-                  alt=""
-                  class="rating_mini"
-                />
-              </div>
-              <div class="state">Сделка состоялась</div>
-            </div>
-            <div class="comment_title">Комментарий</div>
-            <div class="comment_text">Все вкусно. Вроде едет.</div>
+            <div class="comment_text">{{ review.Comment }}</div>
           </div>
         </div>
       </div>
@@ -304,22 +155,95 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
-
+import axios from "axios";
 export default {
   data() {
-    return {};
+    return {
+      reviews: [],
+      selected: "Сначала новые",
+      stars: [0,0,0,0,0]
+    };
   },
   components: {
     Swiper,
     SwiperSlide,
   },
   methods: {
+    groupReview(){
+      console.log("@click=groupReview");
+      switch (selected) {
+        case "Сначала новые":
+          groupReviewNewOnesFirst();
+          break;
+        case "Сначала старые":
+          groupReviewOldOnesFirst();
+          break;
+        default:
+          break;
+      }
+    },
     closeInfoPopup() {
       this.$emit("closePopup");
     },
+    async groupReviewOldOnesFirst() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8090/groupReviewOldOnesFirst",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.data.status === "success") {
+          this.reviews = response.data.data;
+        } else {
+          alert("Error groupReviewLowRatOnesFirst status:fatal");
+        }
+      } catch (error) {
+        console.error("Ошибка при выводе отзывав:", error);
+      }
+    },
+    async groupReviewNewOnesFirst() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8090/groupReviewNewOnesFirst",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.data.status === "success") {
+          this.reviews = response.data.data;
+        } else {
+          alert("Error groupReviewLowRatOnesFirst status:fatal");
+        }
+      } catch (error) {
+        console.error("Ошибка при выводе отзывав:", error);
+      }
+    },
+  },
+  async created() {
+    try {
+      const response = await axios.get(
+        "http://localhost:8090/groupReviewNewOnesFirst",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.status === "success") {
+        this.reviews = response.data.data;
+      } else {
+        alert("Error groupReviewLowRatOnesFirst status:fatal");
+      }
+    } catch (error) {
+      console.error("Ошибка при выводе отзывав:", error);
+    }
   },
   setup() {},
 };
@@ -361,7 +285,7 @@ export default {
   width: 2vw;
 }
 
-.container_comments{
+.container_comments {
   overflow-y: scroll;
   height: 20vw;
   overflow-x: auto;
@@ -456,8 +380,7 @@ export default {
 }
 
 .selecte_fileter {
-  background: #f1f1f1 url("../../assets/selected_arrow.svg") no-repeat right
-    1.2vw center;
+  background: #f1f1f1 url("../../assets/selected_arrow.svg") no-repeat right 1.2vw center;
   background-size: 0.8vw;
   border: none;
   font-size: var(--fs-14);
