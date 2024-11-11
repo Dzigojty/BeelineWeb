@@ -1,155 +1,66 @@
 <template>
-  <v-popup-add-review v-if="isInfoPopupAddReview" @closePopup="closeInfoPopup" />
-  <div class="v-popup-fitback">
+  <div class="v-popup-add-review">
     <div class="center">
-      <div class="title">Отзывы о пользователе</div>
-      <div class="rating_title">
-        <samp>5,0</samp>
-        <div v-for="n in 5" :key="n" class="rating_container">
-          <img
-            src="../../assets/star_yellow.png"
-            alt="Звезда"
-            class="rating_big"
-            v-if="n <= 5"
-          />
-          <img
-            src="../../assets/star_grey.png"
-            alt="Пустая звезда"
-            class="rating_big"
-            v-else
-          />
-        </div>
-      </div>
-      <div class="text_desc">на основании {{reviews.length}} оценок</div>
-      <div class="flex_block s-b">
-        <div class="matrix_rating">
-          <div class="rating_line">
-            <div v-for="n in 5" :key="n" class="rating_container">
-              <img
-                src="../../assets/star_yellow.png"
-                alt="Звезда"
-                class="rating_midle"
-                v-if="n <= 5"
+      <div class="title">Чем все закончилось?</div>
+      <form action="">
+        <div class="flex-block">
+          <div class="status-options">
+            <label v-for="option in options" :key="option.value" class="status-option">
+              <input
+                type="radio"
+                name="status"
+                :value="option.value"
+                v-model="selectedStatus"
+                @change="handleChange"
               />
-              <img
-                src="../../assets/star_grey.png"
-                alt="Пустая звезда"
-                class="rating_midle"
-                v-else
-              />
-            </div>
-            <div class="rat_line"></div>
-            <samp>{{stars[0]}}</samp>
+              <span
+                :class="['status-dot', option.value === selectedStatus ? 'selected' : '']"
+              ></span>
+              <div class="status-text">
+                <p class="status-title">{{ option.title }}</p>
+                <p class="status-description">{{ option.description }}</p>
+              </div>
+            </label>
           </div>
-          <div class="rating_line">
-            <div v-for="n in 5" :key="n" class="rating_container">
-              <img
-                src="../../assets/star_yellow.png"
-                alt="Звезда"
-                class="rating_midle"
-                v-if="n <= 4"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt="Пустая звезда"
-                class="rating_midle"
-                v-else
-              />
-            </div>
-            <div class="rat_line"></div>
-            <samp>0</samp>
-          </div>
-          <div class="rating_line">
-            <div v-for="n in 5" :key="n" class="rating_container">
-              <img
-                src="../../assets/star_yellow.png"
-                alt="Звезда"
-                class="rating_midle"
-                v-if="n <= 3"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt="Пустая звезда"
-                class="rating_midle"
-                v-else
-              />
-            </div>
-            <div class="rat_line"></div>
-            <samp>{{stars[0]}}</samp>
-          </div>
-          <div class="rating_line">
-            <div v-for="n in 5" :key="n" class="rating_container">
-              <img
-                src="../../assets/star_yellow.png"
-                alt="Звезда"
-                class="rating_midle"
-                v-if="n <= 2"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt="Пустая звезда"
-                class="rating_midle"
-                v-else
-              />
-            </div>
-            <div class="rat_line"></div>
-            <samp>{{stars[0]}}</samp>
-          </div>
-          <div class="rating_line">
-            <div v-for="n in 5" :key="n" class="rating_container">
-              <img
-                src="../../assets/star_yellow.png"
-                alt="Звезда"
-                class="rating_midle"
-                v-if="n <= 1"
-              />
-              <img
-                src="../../assets/star_grey.png"
-                alt="Пустая звезда"
-                class="rating_midle"
-                v-else
-              />
-            </div>
-            <div class="rat_line"></div>
-            <samp>{{stars[0]}}</samp>
-          </div>
-        </div>
-        <button @click="addReviewPopap" class="grey_button">Добавить отзыв</button>
-      </div>
-      <div class="container_selected">
-        <select v-model="selected" class="selecte_fileter" name="filter" id="">
-          <option>Сначала новые</option>
-          <option>Сначала старые</option>
-        </select>
-      </div>
-      <div class="container_comments">
-        <div v-for="(review, index) in reviews" :key="index" class="container_comment">
-          <img class="comment_img" src="../../assets/user.png" alt="" />
-          <div class="comment_desc">
-            <div class="name">{{ review.Name }}</div>
-            <div class="date">6 апреля</div>
-            <div class="flex_block">
+
+          <div class="rating">
+            <div class="title" style="margin: 0 0 1vw 0">Оцените пользователя</div>
+            <div class="rating_title">
               <div v-for="n in 5" :key="n" class="rating_container">
                 <img
                   src="../../assets/star_yellow.png"
                   alt="Звезда"
-                  v-if="n <= review.Rating"
-                  class="rating_mini"
+                  class="rating_big"
+                  v-if="n <= 5"
                 />
                 <img
                   src="../../assets/star_grey.png"
                   alt="Пустая звезда"
-                  class="rating_mini"
+                  class="rating_big"
                   v-else
                 />
               </div>
-              <div class="state">Сделка состоялась</div>
             </div>
-            <div class="comment_title">Комментарий</div>
-            <div class="comment_text">{{ review.Comment }}</div>
           </div>
         </div>
-      </div>
+
+        <div style="margin-bottom: 4vw">
+          <div class="title" style="margin: 2vw 0 1.5vw 0">Напишите отзыв</div>
+          <textarea
+            placeholder="В тексте не должно содержаться оскорблений, ненормативной лексики и чужой личной информации, такой как фамилия, контактные данные и адрес."
+            v-model="desc"
+            id="story"
+            class="filter_block textarea"
+            name="story"
+            rows="5"
+            cols="33"
+          ></textarea>
+          <div class="text_desc">Не более 2 000 символов</div>
+        </div>
+        <div class="center-block">
+          <button>Отправить</button>
+        </div>
+      </form>
     </div>
     <div class="close_panel" @click="closeInfoPopup()"></div>
   </div>
@@ -157,35 +68,53 @@
 
 <script>
 import { Swiper, SwiperSlide } from "swiper/vue";
-import vPopupAddReview from "../popup/v-popup-add-review.vue";
 import "swiper/swiper-bundle.css";
 import axios from "axios";
 export default {
   data() {
     return {
-      isInfoPopupAddReview: false,
       reviews: [],
       selected: "Сначала новые",
-      stars: [0,0,0,0,0]
+      stars: [0, 0, 0, 0, 0],
+      selectedStatus: "", // переменная для хранения выбранного значения
+      options: [
+        {
+          value: "done",
+          title: "Услуга оказана",
+          description: "Исполнитель получил деньги",
+        },
+        {
+          value: "not_done",
+          title: "Работа не выполнена",
+          description: "После того как вы договорились о сделке",
+        },
+        {
+          value: "no_agreement",
+          title: "Не договорились",
+          description: "Не подошли условия или квалификация",
+        },
+        {
+          value: "no_contact",
+          title: "Не общались",
+          description: "Не удалось связаться",
+        },
+      ],
     };
   },
   components: {
     Swiper,
     SwiperSlide,
-    vPopupAddReview,
   },
   methods: {
-    //add review
-    closeInfoPopup() {
-      this.isInfoPopupView = false;
-      this.isInfoPopupAddReview = false;
-    },
-    addReviewPopap() {
-      this.isInfoPopupAddReview = true;
+    handleChange() {
+      console.log(this.selectedStatus); // выводим выбранное значение в консоль
     },
 
-    
-    groupReview(){
+    closeInfoPopup() {
+      this.$emit("closePopup");
+    },
+
+    groupReview() {
       console.log("@click=groupReview");
       switch (selected) {
         case "Сначала новые":
@@ -264,6 +193,109 @@ export default {
 </script>
 
 <style scoped>
+.center-block{
+  display: flex;
+  justify-content: center;
+}
+
+form div button {
+  background-color: #f9cc33;
+  border-radius: 1vw;
+  padding: 1vw 6vw;
+  border: none;
+  align-content: center;
+}
+
+.rating_big {
+  width: 2vw;
+}
+
+.rating_title {
+  display: flex;
+  align-items: center;
+}
+
+.rating_title samp {
+  font-size: var(--fs-18);
+  font-weight: 500;
+  margin-right: 1vw;
+}
+
+.textarea {
+  height: 5vw;
+  font-size: var(--fs-15);
+  width: 41vw !important;
+}
+
+.textarea::placeholder {
+  font-size: var(--fs-15);
+  color: #929292;
+}
+
+.flex-block {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 5vw;
+}
+
+.filter_block {
+  background-color: #f1f1f1;
+  border-radius: 1vw;
+  padding-top: 0.8vw;
+  padding-bottom: 0.8vw;
+  padding-left: 1.5vw;
+  padding-right: 3vw;
+  border: none;
+  width: 15vw;
+  font-size: var(--fs-20);
+  padding: 2vw;
+}
+
+.status-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vw;
+}
+
+.status-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.status-option input[type="radio"] {
+  display: none;
+}
+
+.status-dot {
+  width: 1.1vw;
+  height: 1.1vw;
+  border-radius: 50%;
+  background-color: lightgray;
+  margin-right: 1.1vw;
+}
+
+.status-dot.selected {
+  background-color: #ffd700; /* желтый цвет для выбранного состояния */
+}
+
+.status-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.status-title {
+  font-size: var(--fs-14);
+  font-weight: bold;
+  margin: 0;
+}
+
+.status-description {
+  font-size: var(--fs-10);
+  color: gray;
+  margin: 0;
+}
+
 .close_panel {
   position: fixed;
   top: 0;
@@ -274,8 +306,9 @@ export default {
 }
 
 .title {
-  font-size: var(--fs-25);
-  font-weight: bold;
+  font-size: var(--fs-20);
+  font-weight: 600;
+  margin-bottom: 2vw;
 }
 
 .container_comment {
@@ -399,10 +432,13 @@ export default {
   background-size: 0.8vw;
   border: none;
   font-size: var(--fs-14);
-  padding: 0.6vw 3vw 0.6vw 1vw; /* Резервируем место под стрелку */
+  padding: 0.6vw 3vw 0.6vw 1vw;
+  /* Резервируем место под стрелку */
   border-radius: 1vw;
-  -webkit-appearance: none; /* Стиль для Safari */
-  -moz-appearance: none; /* Стиль для Firefox */
+  -webkit-appearance: none;
+  /* Стиль для Safari */
+  -moz-appearance: none;
+  /* Стиль для Firefox */
   appearance: none;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -434,9 +470,9 @@ export default {
   background-color: white;
 }
 
-.v-popup-fitback {
+.v-popup-add-review {
   position: fixed;
-  z-index: 10;
+  z-index: 11;
   display: flex;
   justify-content: center;
   align-content: center;

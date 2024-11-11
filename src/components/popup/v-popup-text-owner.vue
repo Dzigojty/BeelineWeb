@@ -74,11 +74,13 @@ export default {
   font-size: var(--fs-15);
   background-color: #f9cc33;
   border-radius: 0.4vw;
+  cursor: pointer;
   border: 1px #5b3700 solid;
 }
 
 .button-block {
   display: flex;
+  cursor: pointer;
   justify-content: space-evenly;
   padding: 0 10vw;
   margin-top: 2vw;

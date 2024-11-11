@@ -93,6 +93,7 @@ main {
   padding: 0.8vw 3vw;
   border-radius: 1.2vw;
   border: none;
+  cursor: pointer;
 }
 
 .swiper-el {
@@ -188,6 +189,7 @@ main {
   border: solid 2px #f9cc33;
   border-radius: 10px;
   padding: 8px 40px;
+  cursor: pointer;
 }
 
 .product_button_date {
@@ -197,6 +199,7 @@ main {
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
+  cursor: pointer;
 }
 
 .product_status_r {
@@ -230,6 +233,7 @@ main {
 }
 
 .product_button_date:hover {
+  cursor: pointer;
   background-color: #f9cc33;
 }
 
@@ -255,6 +259,7 @@ main {
   background-color: #f9cc33;
   font-size: var(--fs-20);
   color: #141414;
+  cursor: pointer;
 }
 
 .product {
@@ -360,6 +365,7 @@ main {
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.2vw 0;
+  cursor: pointer;
   margin: 1.2vw 2.5vw 0 2.5vw;
 }
 
@@ -397,6 +403,7 @@ main {
   text-align: center;
   padding: 0.5vw 0;
   margin: 1vw 4.5vw 2vw 4.5vw;
+  cursor: pointer;
 }
 
 .shop_filter_block {

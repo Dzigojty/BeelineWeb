@@ -257,6 +257,7 @@ main {
   background-color: black;
   color: #f9cc33;
   padding: 1.4vw 5vw;
+  cursor: pointer;
   border-radius: 2vw;
   font-size: var(--fs-20);
   align-content: center;
@@ -294,6 +295,7 @@ main {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
   border-radius: 10px;
+  cursor: pointer;
   padding: 8px 40px;
 }
 
@@ -302,6 +304,7 @@ main {
   box-sizing: border-box;
   background-color: white;
   border: solid 0.2vw #f9cc33;
+  cursor: pointer;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
 }
@@ -361,6 +364,7 @@ main {
 .product_button {
   background-color: #f9cc33;
   font-size: var(--fs-20);
+  cursor: pointer;
   color: #141414;
 }
 
@@ -486,6 +490,7 @@ main {
 .shop_filter_button_price {
   border: 1px #888888 solid;
   background-color: #e8e8e8;
+  cursor: pointer;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
   text-align: center;
@@ -531,6 +536,7 @@ main {
   font-size: var(--fs-16);
   border-radius: 0.8vw;
   text-align: center;
+  cursor: pointer;
   padding: 0.5vw 0;
   margin: 1vw 4.5vw 2vw 4.5vw;
 }
@@ -699,6 +705,7 @@ main {
   background-color: black;
   color: #f9cc33;
   padding: 1.4vw 5vw;
+  cursor: pointer;
   border-radius: 2vw;
   font-size: var(--fs-20);
   align-content: center;
@@ -735,12 +742,14 @@ main {
 .product_button_date_active {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
+  cursor: pointer;
   border-radius: 10px;
   padding: 8px 40px;
 }
 
 .product_button_date {
   margin-top: 1vw;
+  cursor: pointer;
   box-sizing: border-box;
   background-color: white;
   border: solid 0.2vw #f9cc33;
@@ -803,6 +812,7 @@ main {
 .product_button {
   background-color: #f9cc33;
   font-size: var(--fs-20);
+  cursor: pointer;
   color: #141414;
 }
 
@@ -900,6 +910,7 @@ main {
 .shop_filter_button_price {
   border: 1px #888888 solid;
   background-color: #e8e8e8;
+  cursor: pointer;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
   text-align: center;
@@ -938,6 +949,7 @@ main {
   background-color: #f9cc33;
   font-size: var(--fs-16);
   border-radius: 0.8vw;
+  cursor: pointer;
   text-align: center;
   padding: 0.5vw 0;
   margin: 1vw 4.5vw 2vw 4.5vw;

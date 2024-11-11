@@ -21,21 +21,13 @@
     <div class="shop_filter_button_price">100 000 ₽</div>
     <div class="shop_filter_button">Применить</div>
     <div class="line-grey2"></div>
-    <a class="shop_filter_grey_title" @click="changeRoute('ads')">
-      Объявления
-    </a>
-    <a @click="changeRoute('myOrder')" class="shop_filter_grey_title">
-      Заказы
-    </a>
+    <a class="shop_filter_grey_title" @click="changeRoute('ads')"> Объявления </a>
+    <a @click="changeRoute('myOrder')" class="shop_filter_grey_title"> Заказы </a>
     <!-- <div class="shop_filter_grey_title">Объявления</div> -->
     <!-- <div class="shop_filter_grey_title">Заказы</div> -->
-    <a @click="changeRoute('adres')" class="shop_filter_grey_title">
-      Адреса
-    </a>
+    <a @click="changeRoute('adres')" class="shop_filter_grey_title"> Адреса </a>
     <!-- <div class="shop_filter_grey_title">Адреса</div> -->
-    <a @click="changeRoute('setting')" class="shop_filter_grey_title">
-      Настройки
-    </a>
+    <a @click="changeRoute('setting')" class="shop_filter_grey_title"> Настройки </a>
     <div class="shop_filter_grey_title exit" @click="exitUser">Выйти</div>
   </div>
 </template>
@@ -44,10 +36,10 @@
 export default {
   methods: {
     changeRoute(newRoute) {
-      this.$emit('changeRoute', newRoute);
+      this.$emit("changeRoute", newRoute);
     },
     exitUser() {
-      this.$emit('exitUser');
+      this.$emit("exitUser");
     },
   },
   setup() {},
@@ -245,6 +237,7 @@ a {
   color: #f9cc33;
   padding: 1.4vw 5vw;
   border-radius: 2vw;
+  cursor: pointer;
   font-size: var(--fs-20);
   align-content: center;
   align-items: center;
@@ -281,6 +274,7 @@ a {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
   border-radius: 10px;
+  cursor: pointer;
   padding: 8px 40px;
 }
 
@@ -289,6 +283,7 @@ a {
   box-sizing: border-box;
   background-color: white;
   border: solid 0.2vw #f9cc33;
+  cursor: pointer;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
 }
@@ -324,6 +319,7 @@ a {
 }
 
 .product_button_date:hover {
+  cursor: pointer;
   background-color: #f9cc33;
 }
 
@@ -348,6 +344,7 @@ a {
 .product_button {
   background-color: #f9cc33;
   font-size: var(--fs-20);
+  cursor: pointer;
   color: #141414;
 }
 
@@ -475,6 +472,7 @@ a {
   background-color: #e8e8e8;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
+  cursor: pointer;
   text-align: center;
   padding: 0.2vw 0;
   margin: 1.2vw 2.5vw 0 2.5vw;
@@ -516,6 +514,7 @@ a {
   border: 1px #585858 solid;
   background-color: #f9cc33;
   font-size: var(--fs-16);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.5vw 0;
@@ -687,6 +686,7 @@ main {
   color: #f9cc33;
   padding: 1.4vw 5vw;
   border-radius: 2vw;
+  cursor: pointer;
   font-size: var(--fs-20);
   align-content: center;
   align-items: center;
@@ -722,6 +722,7 @@ main {
 .product_button_date_active {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
+  cursor: pointer;
   border-radius: 10px;
   padding: 8px 40px;
 }
@@ -730,6 +731,7 @@ main {
   margin-top: 1vw;
   box-sizing: border-box;
   background-color: white;
+  cursor: pointer;
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
@@ -767,6 +769,7 @@ main {
 
 .product_button_date:hover {
   background-color: #f9cc33;
+  cursor: pointer;
 }
 
 .product_title img {
@@ -791,6 +794,7 @@ main {
   background-color: #f9cc33;
   font-size: var(--fs-20);
   color: #141414;
+  cursor: pointer;
 }
 
 .product {
@@ -888,6 +892,7 @@ main {
   border: 1px #888888 solid;
   background-color: #e8e8e8;
   font-size: var(--fs-20);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.2vw 0;
@@ -925,6 +930,7 @@ main {
   border: 1px #585858 solid;
   background-color: #f9cc33;
   font-size: var(--fs-16);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.5vw 0;

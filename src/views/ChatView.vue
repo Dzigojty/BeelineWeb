@@ -1,38 +1,35 @@
 <template>
   <div class="chat">
-    <v-popup-moder-decision
-      v-if="isInfoPopupModerDecision"
-      @closePopup="closePopup"
-    />
+    <v-popup-moder-decision v-if="isInfoPopupModerDecision" @closePopup="closePopup" />
     <!-- <v-popup-change-deal
       v-if="isInfoPopupChangeDeal"
       @closePopup="closePopup"
     /> -->
-    <v-popup-change-deal-request-edit
-      v-if="isInfoPopupChangeDeal"
-      @closePopup="closePopup"
-    />
+    <v-popup-change-deal-request-edit v-if="isInfoPopupChangeDeal" @closePopup="closePopup" />
     <div class="container-chat">
-        <swiper-container class="swiper contacts" slides-per-view="5"
-        :direction="'vertical'">
-          <swiper-slide
-            :key="chat.id"
-            v-for="(chat, index) in chats"
-            :class="['swiper-el', { active: chatSelected === index }]" 
-            @click="ChatSelect(index)"
-          >
-            <div :class="[{backgroud_contact: true, backgroud_contact_select: chatSelected === index}]">
-              <div class="contact">
-                <img src="../assets/user.png" class="contact_img" />
-                <div class="column_data">
-                  <div class="contact_name">{{chat.name_owner}}</div>
-                  <div v-if="chat.messages[chat.messages.length - 1].status" class="button_status_message">Прочитанно</div>
-                  <div v-else class="button_new_message">Новое сообщение!</div>
+      <swiper-container class="swiper contacts" slides-per-view="5" :direction="'vertical'">
+        <swiper-slide :key="index" v-for="(chat, index) in chats"
+          :class="['swiper-el', { active: chatSelected === chat.Chat_id }]" @click="ChatSelect(chat.Chat_id)">
+          <div :class="[
+            {
+              backgroud_contact: true,
+              backgroud_contact_select: chatSelected === chat.Chat_id,
+            },
+          ]">
+            <div class="contact">
+              <img v-if="chat.avatar" :src="chat.avatar" alt="Avatar" class="contact_img" />
+              <img v-else src="../assets/user.png" class="contact_img" />
+              <div class="column_data">
+                <div class="contact_name">{{ chat.name_owner }}</div>
+                <div v-if="!!chat.text" class="button_status_message">
+                  Прочитанно
                 </div>
+                <div v-else class="button_new_message">Новое сообщение!</div>
               </div>
             </div>
-          </swiper-slide>
-        </swiper-container>
+          </div>
+        </swiper-slide>
+      </swiper-container>
       <div class="dialog">
         <div @v-if="message.uid != uid" class="notification">
           <samp>Заказчик предложил изменить сроки аренды!</samp>
@@ -45,61 +42,42 @@
         <div class="panel">
           <div class="messages" ref="messagesRef">
             <div class="inner">
-              <div
-                :key="index"
-                v-for="(message, index) in messages"
-                class="message"
-              >
+              <div :key="index" v-for="(message, index) in messages" class="message">
                 <div v-if="message.uid === uid" class="aligment_you">
-                  <div class="datetime_message margin-right_message">20:11</div>
+                  <div class="datetime_message margin-right_message">{{message.sent_at}}</div>
                   <div class="message_you">
                     {{ message.text }}
-                    <img
-                      class="message_you_end"
-                      src="../assets/message_end.png"
-                    />
+                    <img class="message_you_end" src="../assets/message_end.png" />
                   </div>
                 </div>
                 <!-- v-if="(message.type !== 'mediator') & (message.uid !== uid)" -->
-                <div v-if="message.uid === uid" class="aligment_noyou">
+                <div v-if="message.uid !== uid" class="aligment_noyou">
                   <img class="message_user" src="../assets/user.png" alt="" />
                   <div class="message_noyou">
                     {{ message.text }}
-                    <img
-                      class="message_noyou_end"
-                      src="../assets/message_end_noyou.png"
-                    />
+                    <img class="message_noyou_end" src="../assets/message_end_noyou.png" />
                   </div>
-                  <div class="datetime_message margin-left_message">20:11</div>
+                  <div class="datetime_message margin-left_message">{{message.sent_at}}</div>
                 </div>
                 <!-- v-if="(message.type === 'mediator') & (message.uid !== uid)" -->
-                <div v-if="message.uid === uid" class="aligment_noyou">
+                <div v-if="(message.type === 'mediator') & (message.uid !== uid)" class="aligment_noyou">
                   <img class="message_user" src="../assets/user.png" alt="" />
                   <div class="message_mediator">
                     {{ message.text }}
-                    <img
-                      class="message_noyou_end"
-                      src="../assets/message_end_mediator.png"
-                    />
+                    <img class="message_noyou_end" src="../assets/message_end_mediator.png" />
                   </div>
-                  <div class="datetime_message margin-left_message">20:11</div>
+                  <div class="datetime_message margin-left_message">{{message.sent_at}}</div>
                 </div>
                 <!-- <div v-if="message.uid === uid" class="message_you">
-                You:&nbsp;
-              </div>
-              <div
-                v-if="(message.type !== 'mediator') & (message.uid !== uid)"
-                class="message_noyou"
-              >
-                Them:&nbsp;
-              </div>
-              <div
-                v-if="(message.type === 'mediator') & (message.uid !== uid)"
-                class="message_mediator"
-              >
-                Them:&nbsp;
-              </div>
-              <div class="text">{{ message.text }}</div> -->
+                  You:&nbsp;
+                </div> -->
+                <!-- <div v-if="(message.type !== 'mediator') & (message.uid !== uid)" class="message_noyou">
+                  Them:&nbsp;
+                </div>
+                <div v-if="(message.type === 'mediator') & (message.uid !== uid)" class="message_mediator">
+                  Them:&nbsp;
+                </div> -->
+                <!-- <div class="text">{{ message.text }}</div> -->
               </div>
             </div>
           </div>
@@ -122,21 +100,11 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
-import { ref, onMounted, nextTick, defineExpose } from "vue";
 import VPopupModerDecision from "../components/popup/v-popup-moder-decision.vue";
 import VPopupChangeDeal from "../components/popup/v-popup-change-deal.vue";
 import VPopupChangeDealRequestEdit from "../components/popup/v-popup-change-deal-request-edit.vue";
-
-const APP_ID = "452f99a0814b44d29d9a446ec20356fc";
-const CHANNEL = "wdj";
-let uid = uuidv4();
-let messagesRef = ref(null);
-let channel;
-
-defineExpose({ messagesRef });
-
-let chatSelected = ref();
+import axios from 'axios';
+import Cookies from "js-cookie";
 
 export default {
   components: {
@@ -145,6 +113,47 @@ export default {
     VPopupChangeDealRequestEdit,
   },
   methods: {
+    async sendMessage() {
+      const selectedChat = this.chats.find(chat => this.chatSelected == chat.Chat_id);
+      if (!selectedChat) {
+        console.error("Выбранный чат не существует.");
+        return;
+      }
+
+      try {
+        this.messages.push({
+            uid: this.user_id,
+            text: this.text,
+            sent_at: new Date().toLocaleTimeString(),
+          });
+        const response = await axios.post("http://185.112.83.36:8080/sendMessage", {
+          Id_chat: selectedChat.id,
+          Text: this.text,
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+
+        // Проверим весь ответ от сервера
+        console.log("Ответ от сервера:", response);
+
+        // Дополнительная проверка данных
+        if (response && response.data && response.data.status === "success") {
+          this.messages.push({
+            uid: this.user_id,
+            text: this.text,
+            sent_at: new Date().toLocaleTimeString(),
+          });
+          this.text = ""; // Очистка поля ввода после отправки
+        } else {
+          console.error("Ошибка отправки сообщения:", response.data ? response.data.message : "Нет данных");
+        }
+      } catch (error) {
+        console.error("Ошибка при отправке сообщения:", error.message);
+      }
+    },
     closePopup() {
       this.isInfoPopupModerDecision = false;
       this.isInfoPopupChangeDeal = false;
@@ -155,450 +164,58 @@ export default {
     showPopupPopupChangeDeal() {
       this.isInfoPopupChangeDeal = true;
     },
-    ChatSelect(index){
+    ChatSelect(index) {
       this.chatSelected = index;
       console.log(this.chatSelected);
-    }
+    },
   },
-  setup() {
-    const chats = [
-        {
-          name_owner: "Test-name",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            }
-          ]          
+  async created() {
+    try {
+      const response = await axios.get("http://185.112.83.36:8080/printChat", {
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          name_owner: "Test-name2",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: false
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name2",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: false
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name2",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: false
-            }
-          ]          
-        }
-      ];
-
-    let chatSelected = 0;
-    const appendMessage = async (message) => {
-      chats[chatSelected].messages.push(message);
-      console.log(chats[chatSelected].messages);
-      // await nextTick();
-      // messagesRef.value.scrollTop = messagesRef.value.scrollHeight;
-    }
-    const sendMessage = (text) => {
-      if (text === "") return;
-      //   channel.sendMessage({ text: text.value, type: 'text' });
-      appendMessage({
-        id: 4,
-        id_user: uid,
-        timestamp: 500000,
-        text: text,
-        status: false,
+        withCredentials: true, // для отправки куки
       });
-      text.value = "";
-      console.log("sendMessage");
+      if (response.data.status != "success") {
+        this.chats = [];
+        return false;
+      } else if (response.data.message != "Чатов не найденно, либо они не созданны") {
+        this.chats = response.data.data;
+        for (let index = 0; index < this.chats.length; index++) {
+          this.chats[index].avatar = this.chats[index].avatar != '' ? `data:image/png;base64,${this.chats[index].avatar}` : '';
+        }
+        consoel.log(this.chats)
+        return true;
+      }
+    } catch (error) {
+      console.error("Ошибка при загрузке чатов:", error);
+      return false;
     }
-
-    return {
-      appendMessage,
-      sendMessage,
-    };
   },
   data() {
     return {
-      chatSelected: chatSelected,
+      avatar: '',
+      text: '',
+      user_id: 27,
+      chatSelected: null,
       isInfoPopupModerDecision: false,
       isInfoPopupChangeDeal: false,
+      messages: [],
       chats: [
         {
-          name_owner: "Test-name",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name2",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: false
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name2",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: false
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            }
-          ]          
-        },
-        {
-          name_owner: "Test-name2",
-          messages: [
-            {
-              id: 0,
-              id_user: 0,
-              timestamp: 500000,
-              text: "Message 0", 
-              status: true
-            },
-            {
-              id: 1,
-              id_user: 1,
-              timestamp: 500000,
-              text: "Message 1",
-              status: true
-            },
-            {
-              id: 2,
-              id_user: 2,
-              timestamp: 500000,
-              text: "Message 0",
-              status: true
-            },
-            {
-              id: 3,
-              id_user: 3,
-              timestamp: 500000,
-              text: "Message 1",
-              status: false
-            }
-          ]          
+          id: 30,
+          message_id: 0,
+          path_to_file: "",
+          sender_id: 27,
+          sent_at: "2024-10-29T15:33:20.057Z",
+          text: null,
         }
-      ]
+      ],
     };
   },
-  
 };
 </script>
-
 
 <style scoped>
 #min-swiper {
@@ -611,6 +228,10 @@ export default {
 
 .contact_name {
   margin-bottom: 0.5vw;
+}
+
+.contact {
+  cursor: pointer;
 }
 
 .column_data {
@@ -626,6 +247,7 @@ export default {
 
 .button_status_message {
   border-radius: 4vw;
+  cursor: pointer;
   background-color: #b5b1ac;
   padding: 0.5vw 1vw;
 }
@@ -634,11 +256,12 @@ export default {
   border-radius: 4vw;
   background-color: #f9cc33;
   padding: 0.5vw 1vw;
+  cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.container-chat{
+.container-chat {
   display: flex;
   width: 100vw;
 }
@@ -653,6 +276,7 @@ export default {
   margin-left: 1vw;
   background-color: #00dd3079;
   border: 1px #135f00 solid;
+  cursor: pointer;
   color: black;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
@@ -670,6 +294,7 @@ export default {
 .notification button {
   margin-left: 1vw;
   background-color: #f9cc33;
+  cursor: pointer;
   border: none;
   border-radius: 1vw;
   padding: 0.25vw 2.5vw;
@@ -731,12 +356,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background: linear-gradient(
-    90deg,
-    rgba(188, 255, 147, 1) 0%,
-    rgba(88, 245, 158, 1) 53%,
-    rgba(0, 237, 69, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(188, 255, 147, 1) 0%,
+      rgba(88, 245, 158, 1) 53%,
+      rgba(0, 237, 69, 1) 100%);
 }
 
 .panel {
@@ -753,6 +376,7 @@ body {
   overflow-y: none;
   background-color: white;
 }
+
 .inner {
   padding: 10px 30px;
 }
@@ -775,6 +399,7 @@ form {
 
 .buttons button {
   border: none;
+  cursor: pointer;
   background-color: #ffefb9;
 }
 

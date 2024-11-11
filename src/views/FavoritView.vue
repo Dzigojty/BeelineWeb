@@ -73,13 +73,13 @@ export default {
       this.$emit("exitUser");
     },
   },
-  //http://localhost:8090/groupFavByRecent
+  //http://185.112.83.36:8080/groupFavByRecent
   components: {
     UserPanelRight,
   },
   async created() {
     try {
-      const response = await axios.get("http://localhost:8090/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -178,6 +178,7 @@ main {
   background-color: black;
   color: #f9cc33;
   padding: 1.4vw 5vw;
+  cursor: pointer;
   border-radius: 2vw;
   font-size: var(--fs-20);
   align-content: center;
@@ -214,6 +215,7 @@ main {
 .product_button_date_active {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
+  cursor: pointer;
   border-radius: 1vw;
   padding: 8px 40px;
 }
@@ -221,6 +223,7 @@ main {
 .product_button_date {
   margin-top: 1vw;
   box-sizing: border-box;
+  cursor: pointer;
   background-color: white;
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
@@ -283,6 +286,7 @@ main {
   background-color: #f9cc33;
   font-size: var(--fs-20);
   color: #141414;
+  cursor: pointer;
 }
 
 .product {
@@ -382,6 +386,7 @@ main {
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.2vw 0;
+  cursor: pointer;
   margin: 1.2vw 2.5vw 0 2.5vw;
 }
 
@@ -415,6 +420,7 @@ main {
   border: 1px #585858 solid;
   background-color: #f9cc33;
   font-size: var(--fs-16);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.5vw 0;
@@ -588,6 +594,7 @@ main {
   border-radius: 2vw;
   font-size: var(--fs-20);
   align-content: center;
+  cursor: pointer;
   align-items: center;
   align-self: center;
   margin: 0 auto;
@@ -622,11 +629,13 @@ main {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
   border-radius: 10px;
+  cursor: pointer;
   padding: 8px 40px;
 }
 
 .product_button_date {
   margin-top: 1vw;
+  cursor: pointer;
   box-sizing: border-box;
   background-color: white;
   border: solid 0.2vw #f9cc33;
@@ -689,6 +698,7 @@ main {
 .product_button {
   background-color: #f9cc33;
   font-size: var(--fs-20);
+  cursor: pointer;
   color: #141414;
 }
 
@@ -793,6 +803,7 @@ main {
   background-color: #e8e8e8;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
+  cursor: pointer;
   text-align: center;
   padding: 0.2vw 0;
   margin: 1.2vw 2.5vw 0 2.5vw;
@@ -920,6 +931,7 @@ main {
   border: 1px #585858 solid;
   background-color: #f9cc33;
   font-size: var(--fs-16);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.5vw 0;

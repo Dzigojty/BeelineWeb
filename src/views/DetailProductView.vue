@@ -53,10 +53,9 @@
               <yandex-map-default-scheme-layer />
             </yandex-map>
           </div>
-          <div class="desc_title">Отзывы заказчиков</div>
+          <!-- <div class="desc_title">Отзывы заказчиков</div>
 
-          <!-- Отображаем отзывы -->
-          <div  class="otsivi" id="otsivi">
+          <div class="otsivi" id="otsivi">
             <div v-for="(review, index) in reviews" :key="index" class="ontsiv">
               <div class="ontsiv">
                 <img class="author_img user_margin" src="../assets/user.png" alt="" />
@@ -64,7 +63,6 @@
                   <div class="user_name">{{ review.Name }}</div>
                   <div class="rating_user_samp">6 апреля</div>
                   <div class="rating_user">
-                    <!-- Отображение звездочек на основе рейтинга -->
                     <div v-for="n in 5" :key="n" class="rating_star">
                       <img
                         src="../assets/star_yellow.png"
@@ -81,16 +79,36 @@
               </div>
             </div>
           </div>
-          <div v-if="reviews.length > 2" @click="showReviews" id="showReviews" class="product_button_otsiz min-size">
-            Читать еще {{ reviews.length - 2 }} отзывов
-          </div>
+          <div
+            @click="showReviews"
+            id="showReviews"
+            class="product_button_otsiz min-size"
+          >
+            Читать еще {{ reviewsLength }} отзывов
+          </div> -->
         </div>
       </div>
       <div class="action">
         <div class="flex-row">
-          <div class="desc_title">2 000 ₽ за час</div>
+          <div class="desc_title">
+            {{ detail.Hourly_rate }} ₽ за час<br />
+            {{ detail.Daily_rate }} ₽ за день
+          </div>
           <div class="product_status_g">Свободен</div>
-          <img class="desc_star" src="../assets/star_grey.png" alt="" />
+          <img
+            @click="clickFavorite"
+            class="desc_star"
+            src="../assets/star_yellow.png"
+            v-if="adsFav"
+            alt=""
+          />
+          <img
+            @click="clickFavorite"
+            class="desc_star"
+            src="../assets/star_grey.png"
+            v-else
+            alt=""
+          />
         </div>
         <section class="author_rating">
           <div class="product_button_chat">Написать</div>
@@ -113,9 +131,7 @@
             </div>
           </div>
           <samp @click="showPopupRating()" class="rating_user_samp">3 отзыва</samp>
-          <div class="product_button_otsiz">
-            11 объявлений пользователя
-          </div>
+          <div class="product_button_otsiz">11 объявлений пользователя</div>
           <div class="grafic">График работ: с 8:00 до 22:00</div>
         </section>
       </div>
@@ -167,6 +183,10 @@ import axios from "axios";
 import vPopup from "../components/popup/v-popup.vue";
 import vPopupFitback from "../components/popup/v-popup-fitback.vue";
 import { YandexMap, YandexMapDefaultSchemeLayer } from "vue-yandex-maps";
+axios.defaults.xsrfCookieName = 'token'
+axios.defaults.xsrfHeaderName = "token"
+
+axios.defaults.withCredentials = true;
 
 export default {
   props: {
@@ -179,15 +199,97 @@ export default {
       map: null,
       coordinates: [],
       detail: {},
+      favorite: [],
+      adsFav: 0,
       reviews: [],
+      reviewsLength: 0,
     };
   },
   components: {
     vPopup,
     vPopupFitback,
   },
-
   methods: {
+    clickFavorite() {
+      console.log(`ClickFav detail.Ads_id = ${this.detail.Ads_id}`)
+      console.log(this.favorite)
+      if (this.favorite.find((prod) => prod.Ad_id === this.detail.Ads_id) === undefined) {
+        this.addFavorite(this.detail.Ads_id);
+      } else {
+        this.removeFavorite(this.detail.Ads_id);
+      }
+    },
+    async addFavorite(idProduct) {
+      console.log(`addFavorite ${idProduct}`);
+      try {
+        const response = await axios.post(
+          "http://185.112.83.36:8080/sigFavAds",
+          {
+            Ads_id: idProduct
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // для отправки куки
+          }
+        );
+        console.log(response)
+
+        if (response.data.status === "fatal") {
+          alert("Error addFavorite status:fatal");
+        } else {
+          this.getFavoritList();
+        }
+      } catch (error) {
+        console.error("Ошибка при добавлении в избранное:", error);
+      }
+    },
+    async removeFavorite(idProduct) {
+      console.log(`removeFavorite ${idProduct}`);
+      try {
+        const response = await axios.post(
+          "http://185.112.83.36:8080/delFavAds",
+          {
+            Ads_id: 3
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // для отправки куки
+          }
+        );
+        console.log(response)
+
+        if (response.data.status === "fatal") {
+          alert("Error removeFavirite status:fatal");
+        } else {
+          this.getFavoritList();
+        }
+      } catch (error) {
+        console.error("Ошибка при удалении из избранного:", error);
+      }
+    },
+    async getFavoritList() {
+      try {
+        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(response)
+        if (response.data.data.status == "fatal") {
+          this.favorite = [];
+        } else {
+          this.favorite = response.data.data.slice(0, this.perPage);
+          this.adsFav =
+          this.favorite.find((prod) => prod.Ad_id === this.detail.Ads_id) != undefined;
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке продуктов:", error);
+      }
+    },
     showReviews() {
       const listContainer = document.getElementById("otsivi");
       listContainer.classList.toggle("expanded");
@@ -228,7 +330,7 @@ export default {
   async created() {
     try {
       const response = await axios.post(
-        "http://localhost:8090/printAds",
+        "http://185.112.83.36:8080/printAds",
         {
           Ads_id: this.product.Id,
         },
@@ -239,7 +341,6 @@ export default {
         }
       );
       if (response.data.status != "success") console.log(response);
-      console.log(response);
       this.detail = response.data.data;
       this.reviews = response.data.data.Customer_reviews;
     } catch (error) {
@@ -249,23 +350,23 @@ export default {
       );
     }
 
-    // try {
-    //   const response = await axios.get(
-    //     "http://localhost:8090/groupReviewLowRatOnesFirst",
-    //     {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //     }
-    //   );
-    //   if (response.data.status === "success") {
-    //     this.reviews = response.data.data;
-    //   } else {
-    //     alert("Error groupReviewLowRatOnesFirst status:fatal");
-    //   }
-    // } catch (error) {
-    //   console.error("Ошибка при выводе отзывав:", error);
-    // }
+    try {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.data.data.status == "fatal") {
+        this.favorite = [];
+      } else {
+        this.favorite = response.data.data.slice(0, this.perPage);
+        this.adsFav =
+          this.favorite.find((prod) => prod.Ad_id === this.detail.Ads_id) != undefined;
+        console.log(this.adsFav);
+      }
+    } catch (error) {
+      console.error("Ошибка при загрузке избранного:", error);
+    }
   },
   setup() {
     const images = ref([
@@ -291,7 +392,6 @@ export default {
 </script>
 
 <style scoped>
-
 .otsivi.expanded {
   height: min-content !important; /* Новая высота для отображения всех элементов */
 }
@@ -301,6 +401,7 @@ export default {
   background-color: black;
   color: #f9cc33;
   padding: 1.4vw 5vw;
+  cursor: pointer;
   border-radius: 1vw;
   font-size: var(--fs-20);
   align-content: center;
@@ -408,6 +509,7 @@ export default {
 .product_button_otsiz {
   margin-top: 1vw;
   text-align: center;
+  cursor: pointer;
   box-sizing: border-box;
   color: black;
   background-color: #d9d9d9;
@@ -424,6 +526,7 @@ export default {
   color: #000000;
   background-color: white;
   border: solid 0.2vw #000000;
+  cursor: pointer;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
 }
@@ -434,6 +537,7 @@ export default {
   box-sizing: border-box;
   color: #f9cc33;
   background-color: white;
+  cursor: pointer;
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
@@ -441,7 +545,7 @@ export default {
 
 .flex-row {
   display: flex;
-  align-items: end;
+  align-items: center;
   width: 30vw;
   justify-content: space-between;
 }

@@ -51,7 +51,7 @@ export default {
       } else {
         console.log(this.query);
         try {
-          const response = await axios.post('http://localhost:8090/searchForTech',
+          const response = await axios.post('http://185.112.83.36:8080/searchForTech',
           {
             "Title": this.query,
           }, 
@@ -136,6 +136,7 @@ li:hover {
 }
 
 .finder_button {
+  cursor: pointer;
   position: absolute;
   border-radius: 0.5vw;
   padding: 0.2vw 1vw;

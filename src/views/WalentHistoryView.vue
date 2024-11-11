@@ -197,6 +197,7 @@ main {
   background-color: black;
   color: #f9cc33;
   padding: 1.4vw 5vw;
+  cursor: pointer;
   border-radius: 2vw;
   font-size: var(--fs-20);
   align-content: center;
@@ -233,6 +234,7 @@ main {
 .product_button_date_active {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
+  cursor: pointer;
   border-radius: 10px;
   padding: 8px 40px;
 }
@@ -240,6 +242,7 @@ main {
 .product_button_date {
   margin-top: 1vw;
   box-sizing: border-box;
+  cursor: pointer;
   background-color: white;
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
@@ -300,6 +303,7 @@ main {
 
 .product_button {
   background-color: #f9cc33;
+  cursor: pointer;
   font-size: var(--fs-20);
   color: #141414;
 }
@@ -408,6 +412,7 @@ main {
   background-color: #e8e8e8;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
+  cursor: pointer;
   text-align: center;
   padding: 0.2vw 0;
   margin: 1.2vw 2.5vw 0 2.5vw;
@@ -450,6 +455,7 @@ main {
   background-color: #f9cc33;
   font-size: var(--fs-16);
   border-radius: 0.8vw;
+  cursor: pointer;
   text-align: center;
   padding: 0.5vw 0;
   margin: 1vw 4.5vw 2vw 4.5vw;
@@ -620,6 +626,7 @@ main {
   color: #f9cc33;
   padding: 1.4vw 5vw;
   border-radius: 2vw;
+  cursor: pointer;
   font-size: var(--fs-20);
   align-content: center;
   align-items: center;
@@ -656,6 +663,7 @@ main {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
   border-radius: 10px;
+  cursor: pointer;
   padding: 8px 40px;
 }
 
@@ -664,6 +672,7 @@ main {
   box-sizing: border-box;
   background-color: white;
   border: solid 0.2vw #f9cc33;
+  cursor: pointer;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
 }
@@ -721,6 +730,7 @@ main {
 }
 
 .product_button {
+  cursor: pointer;
   background-color: #f9cc33;
   font-size: var(--fs-20);
   color: #141414;
@@ -826,6 +836,7 @@ main {
   border: 1px #888888 solid;
   background-color: #e8e8e8;
   font-size: var(--fs-20);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.2vw 0;
@@ -863,6 +874,7 @@ main {
   background-color: #f9cc33;
   font-size: var(--fs-16);
   border-radius: 0.8vw;
+  cursor: pointer;
   text-align: center;
   padding: 0.5vw 0;
   margin: 1vw 4.5vw 2vw 4.5vw;

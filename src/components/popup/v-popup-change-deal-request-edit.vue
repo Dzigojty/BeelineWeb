@@ -358,6 +358,7 @@ export default {
   color: #f8cb32;
   align-content: center;
   border-radius: 1vw;
+  cursor: pointer;
   padding: 0.6vw 3vw;
   margin: 4vw 0;
 }
@@ -573,6 +574,7 @@ export default {
 
 .yellow_button {
   height: 3vw;
+  cursor: pointer;
   width: 9.5vw;
   margin-right: 2vw;
   font-size: var(--fs-20);
@@ -583,6 +585,7 @@ export default {
 
 .button-block {
   display: flex;
+  cursor: pointer;
   justify-content: space-evenly;
   padding: 0 10vw;
   margin-top: 2vw;

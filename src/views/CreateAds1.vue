@@ -56,6 +56,8 @@ import VPopup from "@/components/popup/v-popup.vue";
 export default {
   data(){
     return{
+      base64Image: "",
+      selectedFile: null,
       isCategories: false,
     }
   },
@@ -132,6 +134,7 @@ h2 {
   font-size: var(--fs-20);
   align-content: center;
   align-items: center;
+  cursor: pointer;
   align-self: center;
   margin: 0 auto;
   margin-top: 4vw;
@@ -228,6 +231,7 @@ h2 {
   text-align: center;
   box-sizing: border-box;
   color: black;
+  cursor: pointer;
   background-color: #d9d9d9;
   font-size: var(--fs-15);
   border: solid 0.2vw #d9d9d9;
@@ -270,6 +274,7 @@ h2 {
   box-sizing: border-box;
   color: #000000;
   background-color: white;
+  cursor: pointer;
   border: solid 0.2vw #000000;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
@@ -278,6 +283,7 @@ h2 {
 .product_button_date {
   text-align: center;
   margin-top: 1vw;
+  cursor: pointer;
   box-sizing: border-box;
   color: #f9cc33;
   background-color: white;

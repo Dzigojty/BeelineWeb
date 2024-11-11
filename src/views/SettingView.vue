@@ -113,6 +113,7 @@ h2 {
   background-color: #f9cc33;
   padding: 0.8vw 3vw;
   width: 15vw;
+  cursor: pointer;
   border-radius: 1.2vw;
   border: none;
   margin-top: 1vw;
@@ -200,6 +201,7 @@ body {
   background-color: #d9d9d9;
   padding: 0.8vw 3vw;
   border-radius: 1.2vw;
+  cursor: pointer;
   border: none;
 }
 
@@ -281,6 +283,7 @@ main {
   background-color: black;
   color: #f9cc33;
   padding: 1.4vw 5vw;
+  cursor: pointer;
   border-radius: 2vw;
   font-size: var(--fs-20);
   align-content: center;
@@ -318,6 +321,7 @@ main {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
   border-radius: 10px;
+  cursor: pointer;
   padding: 8px 40px;
 }
 
@@ -325,6 +329,7 @@ main {
   margin-top: 1vw;
   box-sizing: border-box;
   background-color: white;
+  cursor: pointer;
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
@@ -434,6 +439,7 @@ main {
 .product_button {
   background-color: #f9cc33;
   font-size: var(--fs-20);
+  cursor: pointer;
   color: #141414;
 }
 
@@ -536,6 +542,7 @@ main {
 .shop_filter_button_price {
   border: 1px #888888 solid;
   background-color: #e8e8e8;
+  cursor: pointer;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
   text-align: center;
@@ -572,6 +579,7 @@ main {
 .shop_filter_button {
   border: 1px #585858 solid;
   background-color: #f9cc33;
+  cursor: pointer;
   font-size: var(--fs-16);
   border-radius: 0.8vw;
   text-align: center;

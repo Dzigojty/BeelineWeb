@@ -302,6 +302,7 @@ export default {
 .button_yellow_border {
   border: 1px #f8cb32 solid;
   color: #f8cb32;
+  cursor: pointer;
   align-content: center;
   border-radius: 1vw;
   padding: 0.6vw 3vw;

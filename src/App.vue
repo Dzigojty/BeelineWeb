@@ -1,19 +1,13 @@
 <template>
-  <v-popup-auth
-    v-if="showPopupInfoAuth"
-    @auth="Auth"
-    @closePopup="closePopupAuth"
-  />
-  <v-popup-category
-    v-if="isCategories"
-    @closePopup="closePopup"
-  />
+  <v-popup-auth v-if="showPopupInfoAuth" @auth="Auth" @closePopup="closePopupAuth" />
+  <v-popup-category v-if="isCategories" @closePopup="closePopup" />
   <header>
     <nav class="header_navigation">
       <a class="header_breadcroums" @click="changeRoute('home')">
         ➤ Владикавказ, район, радиус
       </a>
-      <ul v-if="!auth" class="header_navigation-list">
+      <ul v-if="auth" class="header_navigation-list">
+        <!-- <button @click="testSigAds">sigAds</button> -->
         <li @click="changeRoute('wallet')" class="header_navigation-item">
           <img src="./assets/wallet.png" alt="" width="20" height="20" />
           <a class="header_navigation-link">Кошелек</a>
@@ -24,9 +18,7 @@
         </li>
         <li @click="changeRoute('chat')" class="header_navigation-item">
           <img src="./assets/message.png" alt="" />
-          <a to="/chat" class="route-view header_navigation-link">
-            Сообщения
-          </a>
+          <a to="/chat" class="route-view header_navigation-link"> Сообщения </a>
         </li>
         <li
           @click="changeRoute('notification')"
@@ -49,15 +41,12 @@
             width="40"
             height="40"
           />
-          <a
-            to="/myOrder"
-            class="header_navigation-link header_navigation-name"
-          >
+          <a to="/myOrder" class="header_navigation-link header_navigation-name">
             Имя Фамилия
           </a>
         </li>
       </ul>
-      <ul v-if="auth" class="header_navigation-list_end">
+      <ul v-else class="header_navigation-list_end">
         <li class="header_navigation-item">
           <a
             @click="showPopupAuth()"
@@ -71,7 +60,7 @@
 
     <div class="header_panel">
       <div class="header_panel_button" @click="changeRoute('home')">Все категории</div>
-      <search-field :items="items" @selectProduct="selectProduct"/>
+      <search-field :items="items" @selectProduct="selectProduct" />
       <a @click="changeRoute('createAds1')" class="header_panel_button_adverts">
         Разместить объявление
       </a>
@@ -104,7 +93,7 @@
     @exitUser="exitUser"
     @selectProduct="selectProduct"
   />
-  <HomeView v-if="route == 'home'"  @selectProduct="selectProduct" />
+  <HomeView v-if="route == 'home'" @selectProduct="selectProduct" :user_id="appMessage" />
   <DetailProductView
     v-if="route == 'detail'"
     :product="selectedProduct"
@@ -154,7 +143,7 @@
   </footer>
 </template>
 
-<script >
+<script>
 import vPopupAuth from "../src/components/popup/v-popup-auth.vue";
 import vPopupRegister from "../src/components/popup/v-popup-register.vue";
 import vPopupAddNumber from "../src/components/popup/v-popup-add-number.vue";
@@ -173,6 +162,8 @@ import WalentHistoryView from "../src/views/WalentHistoryView.vue";
 import WaletView from "../src/views/WaletView.vue";
 import SettingView from "../src/views/SettingView.vue";
 import SearchField from "./components/search-field.vue";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 export default {
   components: {
@@ -197,36 +188,75 @@ export default {
   },
   data() {
     return {
+      user: null,
       auth: false,
       isCategories: false,
+      selectedFile: '',
       route: "home",
       popup: "popup-auth",
       showPopupInfoAuth: false,
       selectedProduct: null, // Здесь будет храниться выбранный продукт
     };
   },
+  async created() {
+    console.log("Server started and collections cleared.");
+    let authB = false;
+    if(Cookies.get('token') == undefined) {
+      const response = await axios
+      .get("http://185.112.83.36:8080/refreshToken", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      })
+      .then(function (response) {
+        console.log(response);
+        if (response.data.status == "fatal") {
+          alert("Ошибка в ответе refreshToken!");
+        } else {
+          alert("Вы авторизовались!");
+          // Установка cookie на стороне клиента
+          Cookies.set("token", `${response.data.data.JWT}`, { expires: 7 });
+          Cookies.set("Refresh_token", `${response.data.data.Refresh_token}`, { expires: 7 });
+          // Cookies.set("token", `${response.data.data.JWT}`, { expires: 7 });
+          localStorage.setItem('user', response.data.data);
+          authB = true;
+        }
+      })
+      .catch(function (error) {
+        alert("Произошла ошибка!");
+        console.log(error);
+        authB = false;
+      })
+    } else {
+      authB = true;
+    }
+    this.auth = authB;
+    console.log(this.auth)
+  },
   methods: {
     changeRoute(route) {
       this.$emit("changeRoute", route);
     },
 
-    showCategory(){
+    showCategory() {
       this.isCategories = true;
     },
-    
+
     closePopup() {
       this.isCategories = false;
     },
 
     Auth(state) {
       this.auth = state;
+      console.log(this.auth);
     },
     selectProduct(product) {
       this.selectedProduct = product;
       this.route = "detail";
     },
     goBack() {
-      this.route = 'home'; // Возвращаемся на главную страницу
+      this.route = "home"; // Возвращаемся на главную страницу
       this.selectedProduct = null; // Очищаем выбранный продукт
     },
     changeRoute(newRoute) {
@@ -235,8 +265,39 @@ export default {
     showPopupAuth() {
       this.showPopupInfoAuth = true;
     },
+    
+    async testSigAds() {
+      try {
+        const response = await axios.post(
+          "http://185.112.83.36:8080/sigAds",
+          {
+            Image: [""],
+            Title: "AZAAZAMATMAT",
+            Description: "AZAMAZAMATAT",
+            Hourly_rate: 1282,
+            Daily_rate: 28914,
+            Category_id: 1,
+            Location: "Республика 2Алания, г.МагасAZAMATAZAMATAZAMAT"
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response);
+        if (response.data.data.status == "fatal") {
+
+        } else {
+
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке sigAds:", error);
+      }
+    },
     exitUser() {
-      this.auth = true;
+      this.auth = false;
+      this.deleteToken();
     },
     closePopupAuth() {
       this.showPopupInfoAuth = false;
@@ -316,8 +377,6 @@ footer nav {
   margin-top: 5vw;
 }
 
-
-
 .line {
   height: 0.5vw;
   background-color: #f8cb32;
@@ -329,19 +388,12 @@ footer nav {
       black 75%,
       black
     ),
-    linear-gradient(
-      -25deg,
-      black 25%,
-      transparent 25%,
-      transparent 75%,
-      black 75%,
-      black
-    );
+    linear-gradient(-25deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
   background-size: 10% 15px;
   background-position: 11px 25px, 0 23px;
 }
 
-.line:nth-child(3){
+.line:nth-child(3) {
   margin-top: -0.45vw;
 }
 
@@ -447,7 +499,6 @@ a.header_navigation-link {
   font-size: var(--fs-20);
   margin-left: 0.5vw;
   cursor: pointer;
-
 }
 
 a.header_breadcroums {
@@ -474,6 +525,7 @@ a.header_breadcroums {
 div.header_panel_button {
   display: flex;
   align-content: center;
+  cursor: pointer;
   align-items: center;
   color: black;
   background-color: #ffc500;
@@ -487,6 +539,7 @@ div.header_panel_button {
   width: 15vw;
 }
 .finder_button {
+  cursor: pointer;
   position: absolute;
   border-radius: 0.5vw;
   padding: 0.2vw 1vw;
@@ -514,6 +567,7 @@ div.header_panel_finder {
 }
 
 .header_panel_button_adverts {
+  cursor: pointer;
   color: #f8cb32;
   text-decoration: none;
   background-color: black;

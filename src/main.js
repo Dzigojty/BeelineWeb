@@ -4,6 +4,7 @@ import router from './router'
 import { createYmaps } from 'vue-yandex-maps';
 import { register } from 'swiper/element/bundle';
 import VueTheMask from 'vue-the-mask';
+import VueCookies from 'vue-cookies';
 
 // register Swiper custom elements
 register();
@@ -21,5 +22,11 @@ app.use(router);
 
 // Регистрируем директиву маски
 app.use(VueTheMask);
+
+
+
+// Правильное подключение плагина vue-cookies
+app.use(VueCookies);
+
 app.mount('#app')
 

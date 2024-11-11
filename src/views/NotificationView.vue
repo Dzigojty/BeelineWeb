@@ -52,6 +52,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
+  cursor: pointer;
   padding: 0.6vw;
   border-radius: 1vw;
   border: 1px #929292 solid;

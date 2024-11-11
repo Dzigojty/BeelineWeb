@@ -2,21 +2,21 @@
   <div class="main">
     <div class="detailProduct">
       <div class="block">
-        <a @click="changeRoute('createAds1')"  class="route-view">
+        <a @click="changeRoute('createAds1')" class="route-view">
           <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
         </a>
-        <form action="/" method="post">
+        <form @submit.prevent="sigAds" action="/" method="post">
           <div class="crateAds">
             <div class="shop_title">Новое объявление</div>
             <div class="sm_title">Название объявления</div>
             <div class="flex_block">
               <div class="grey_text_tr">Название объявления</div>
-              <input class="input" type="text" />
+              <input v-model="title" class="input" type="text" />
             </div>
             <div class="sm_title">Название объявления</div>
             <div class="flex_block">
               <div class="grey_text_tr">Тип оборудования</div>
-              <input class="filter_block" type="text" />
+              <input v-model="type" class="filter_block" type="text" />
             </div>
             <div class="flex_block">
               <div class="grey_text_tr">Год выпуска</div>
@@ -26,6 +26,7 @@
             <div class="flex_block">
               <div class="grey_text_tr">Цена</div>
               <input
+                v-model="hourly_rate"
                 class="filter_block"
                 type="text"
                 style="margin-right: 2vw"
@@ -38,7 +39,7 @@
                   id="hours"
                   name="daysOrHours"
                 />
-                <label for="hours" >Почасовая</label>
+                <label for="hours">Почасовая</label>
               </div>
               <div class="checkbox">
                 <input
@@ -51,28 +52,27 @@
               </div>
             </div>
             <div id="hour_block">
-              <input
-                class="hour_input"
-                type="text"
-                placeholder="С 6:00"
-              />
-              <input
-                class="hour_input"
-                type="text"
-                placeholder="До 18:00"
-              />
+              <input v-model="hourTo" class="hour_input" type="text" placeholder="С 6:00" />
+              <input v-model="hourFrom" class="hour_input" type="text" placeholder="До 18:00" />
             </div>
             <div class="flex_block" style="margin-bottom: 12vw">
               <div>
                 <div class="grey_text_tr">Фотографии</div>
                 <div class="grey_text_tr">Не более 30</div>
               </div>
-              <div class="min-container"><input class="filter_block downloade_file"  id="uploade-photo" type="file" /></div>
+              <div class="min-container">
+                <input
+                  class="filter_block downloade_file"
+                  id="uploade-photo"
+                  type="file"
+                />
+              </div>
             </div>
 
             <div class="flex_block" style="margin-bottom: 15vw">
               <div class="grey_text_tr">Описание объявления</div>
               <textarea
+              v-model="desc"
                 id="story"
                 class="filter_block textarea"
                 name="story"
@@ -84,6 +84,7 @@
             <div class="flex-block">
               <div class="sm_title align">Адрес осмотра</div>
               <input
+                v-model="place"
                 class="input"
                 type="text"
                 placeholder="Начните вводить адрес, а потом выберите из списка"
@@ -92,7 +93,12 @@
             <div class="sm_title">Контакты</div>
             <div class="flex_block" style="margin-bottom: 2vw; margin-top: 2vw">
               <div class="grey_text_tr">Телефон</div>
-              <input v-model="phone"  v-mask="'+7 (###) ###-##-##'"  class="input_small" type="text" />
+              <input
+                v-model="phone"
+                v-mask="'+7 (###) ###-##-##'"
+                class="input_small"
+                type="text"
+              />
             </div>
             <div class="flex_block">
               <div class="grey_text_tr">Способ связи</div>
@@ -139,13 +145,16 @@
 
 <script scoped>
 import { ref } from "vue";
-
-let hours_days = true;
+import axios from "axios";
 
 export default {
   data() {
     return {
-      phone: '',
+      title: "",
+      desc: "",
+      hourly_rate: 0,
+      daily_rate: 0,
+      phone: "",
       array_img: ["../assets/bank.png"],
       images: ref([
         "https://via.placeholder.com/150/0000FF", // Blue
@@ -158,24 +167,89 @@ export default {
   },
 
   methods: {
-    changeRoute(route) {
-      this.$emit('changeRoute', route);
+    async sigAds() {
+      try {
+        console.log(`
+            title = ${this.title}
+            desc = ${this.desc}
+            hourly_rate = ${this.hourly_rate}
+            daily_rate = ${this.daily_rate}`
+        );
+        this.hourly_rate = 1000;
+        this.daily_rate = this.hourly_rate * 24;
+
+        const response = await axios.post(
+          "http://185.112.83.36:8080/sigAds",
+          {
+            Image: [
+                ""
+            ],
+            Title: "Погрузчик",
+            Description: "ПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчик",
+            Hourly_rate: 1000,
+            Daily_rate: 23444,
+            Category_id: 1,
+            position: (1, 1),
+            Location: "Республика Северная Осетия - Алания, г.Владикавказ"
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // для отправки куки
+          }
+        );
+       console.log(response);
+      //  if (response.data.data.status == "fatal") {
+
+       // } else {
+
+        //}
+        this.changeRoute('home')
+      } catch (error) {
+        console.error("Ошибка при загрузке sigAds:", error);
+      }
     },
-  //   selectTypeTime(){
-  //     if (hours_days) {
-  //       document.getElementById("hour_block").style.height = "max-content";
-  //       document.getElementById("hour_block").style.visibility = "visible";
-  //         /* visibility: hidden;
-  // height: 0; */
-  // /* visibility: visible; */
-  // // height: max-content;
-  //       hours_days = false;
-  //     } else {
-  //       document.getElementById("hour_block").style.height = "0";
-  //       document.getElementById("hour_block").style.visibility = "hidden";
-  //       hours_days = true;
-  //     }
-  //   },
+
+    // /// Image
+    // handleFileChange(event) {
+    //   const file = event.target.files[0];
+    //   console.log(file);
+    //   if (file) {
+    //     this.selectedFile = file;
+    //   }
+    // },
+
+    // convertToBase64(event) {
+    //   handleFileChange(event);
+    //   if (this.selectedFile) {
+    //     const reader = new FileReader();
+    //     reader.onload = (e) => {
+    //       this.base64Image = e.target.result;
+    //     };
+    //     reader.readAsDataURL(this.selectedFile);
+    //   } else {
+    //     alert("Пожалуйста, выберите файл!");
+    //   }
+    // },
+    changeRoute(route) {
+      this.$emit("changeRoute", route);
+    },
+    //   selectTypeTime(){
+    //     if (hours_days) {
+    //       document.getElementById("hour_block").style.height = "max-content";
+    //       document.getElementById("hour_block").style.visibility = "visible";
+    //         /* visibility: hidden;
+    // height: 0; */
+    // /* visibility: visible; */
+    // // height: max-content;
+    //       hours_days = false;
+    //     } else {
+    //       document.getElementById("hour_block").style.height = "0";
+    //       document.getElementById("hour_block").style.visibility = "hidden";
+    //       hours_days = true;
+    //     }
+    //   },
     // getImagePath(imageFileName) {
     //   const images = require.context("@/assets/", false, /\.png$/);
     //   return images(`./${imageFileName}.png`);
@@ -222,23 +296,24 @@ export default {
   padding: 0.8vw 3vw;
   border-radius: 0.8vw;
   border: none;
+  cursor: pointer;
   background-color: black;
   color: white;
   font-weight: bold;
   font-size: var(--fs-18);
 }
 
-#uploade-photo{
-   opacity: 0;
-   position: relative;
-   z-index: 10;
+#uploade-photo {
+  opacity: 0;
+  position: relative;
+  z-index: 10;
 }
 
 .buttons {
   margin-top: 13vw;
 }
 
-#hour_block{
+#hour_block {
   margin-left: 21vw;
   /* visibility: visible; */
   /* visibility: hidden;
@@ -246,10 +321,10 @@ export default {
   /* height: max-content; */
 }
 
-.hour_input{
+.hour_input {
   border: none;
   border-radius: 0.6vw;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   width: 7vw;
   font-size: var(--fs-18);
   color: #929292;
@@ -262,6 +337,7 @@ export default {
   border-radius: 0.8vw;
   border: none;
   background-color: #d9d9d9;
+  cursor: pointer;
   color: black;
   font-weight: 200;
   font-size: var(--fs-18);
@@ -277,8 +353,8 @@ export default {
   width: 38vw !important;
 }
 
-.min-container{
-  background-color: #F1F1F1;
+.min-container {
+  background-color: #f1f1f1;
   background-image: url("../assets/icon_file.svg");
   background-repeat: no-repeat;
   background-position: center;
@@ -421,6 +497,7 @@ h2 {
   background-color: black;
   color: #f9cc33;
   padding: 1.4vw 5vw;
+  cursor: pointer;
   border-radius: 1vw;
   font-size: var(--fs-20);
   align-content: center;
@@ -526,6 +603,7 @@ h2 {
   box-sizing: border-box;
   color: black;
   background-color: #d9d9d9;
+  cursor: pointer;
   font-size: var(--fs-15);
   border: solid 0.2vw #d9d9d9;
   border-radius: 1vw;
@@ -568,6 +646,7 @@ h2 {
   color: #000000;
   background-color: white;
   border: solid 0.2vw #000000;
+  cursor: pointer;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
 }
@@ -579,6 +658,7 @@ h2 {
   color: #f9cc33;
   background-color: white;
   border: solid 0.2vw #f9cc33;
+  cursor: pointer;
   border-radius: 1vw;
   padding: 0.6vw 2.5vw;
 }

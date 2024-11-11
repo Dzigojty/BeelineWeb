@@ -288,6 +288,7 @@ export default {
   height: 3vw;
   width: 8vw;
   font-size: var(--fs-15);
+  cursor: pointer;
   background-color: #f9cc33;
   border-radius: 0.4vw;
   border: 1px #5B3700 solid;

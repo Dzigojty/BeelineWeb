@@ -39,7 +39,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get("http://localhost:8090/groupAdsByRented", {
+      const response = await axios.get("http://185.112.83.36:8080/groupAdsByRented", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -157,6 +157,7 @@ main {
   padding: 1.4vw 5vw;
   border-radius: 2vw;
   font-size: var(--fs-20);
+  cursor: pointer;
   align-content: center;
   align-items: center;
   align-self: center;
@@ -191,6 +192,7 @@ main {
 .product_button_date_active {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
+  cursor: pointer;
   border-radius: 10px;
   padding: 8px 40px;
 }
@@ -201,6 +203,7 @@ main {
   background-color: white;
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
+  cursor: pointer;
   padding: 0.6vw 2.5vw;
 }
 
@@ -259,6 +262,7 @@ main {
 .product_button {
   background-color: #f9cc33;
   font-size: var(--fs-20);
+  cursor: pointer;
   color: #141414;
 }
 
@@ -367,6 +371,7 @@ main {
   font-size: var(--fs-20);
   border-radius: 0.8vw;
   text-align: center;
+  cursor: pointer;
   padding: 0.2vw 0;
   margin: 1.2vw 2.5vw 0 2.5vw;
 }
@@ -405,6 +410,7 @@ main {
   border: 1px #585858 solid;
   background-color: #f9cc33;
   font-size: var(--fs-16);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.5vw 0;
@@ -576,6 +582,7 @@ main {
   color: #f9cc33;
   padding: 1.4vw 5vw;
   border-radius: 2vw;
+  cursor: pointer;
   font-size: var(--fs-20);
   align-content: center;
   align-items: center;
@@ -612,6 +619,7 @@ main {
   background-color: #f9cc33;
   border: solid 2px #f9cc33;
   border-radius: 10px;
+  cursor: pointer;
   padding: 8px 40px;
 }
 
@@ -621,6 +629,7 @@ main {
   background-color: white;
   border: solid 0.2vw #f9cc33;
   border-radius: 1vw;
+  cursor: pointer;
   padding: 0.6vw 2.5vw;
 }
 
@@ -680,6 +689,7 @@ main {
   background-color: #f9cc33;
   font-size: var(--fs-20);
   color: #141414;
+  cursor: pointer;
 }
 
 .product {
@@ -783,6 +793,7 @@ main {
   background-color: #e8e8e8;
   font-size: var(--fs-20);
   border-radius: 0.8vw;
+  cursor: pointer;
   text-align: center;
   padding: 0.2vw 0;
   margin: 1.2vw 2.5vw 0 2.5vw;
@@ -818,6 +829,7 @@ main {
   border: 1px #585858 solid;
   background-color: #f9cc33;
   font-size: var(--fs-16);
+  cursor: pointer;
   border-radius: 0.8vw;
   text-align: center;
   padding: 0.5vw 0;
