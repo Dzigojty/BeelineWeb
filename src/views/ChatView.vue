@@ -8,79 +8,60 @@
     <v-popup-change-deal-request-edit v-if="isInfoPopupChangeDeal" @closePopup="closePopup" />
     <div class="container-chat">
       <swiper-container class="swiper contacts" slides-per-view="5" :direction="'vertical'">
-        <swiper-slide :key="index" v-for="(chat, index) in chats"
-          :class="['swiper-el', { active: chatSelected === chat.Chat_id }]" @click="ChatSelect(chat.Chat_id)">
-          <div :class="[
-            {
-              backgroud_contact: true,
-              backgroud_contact_select: chatSelected === chat.Chat_id,
-            },
-          ]">
-            <div class="contact">
-              <img v-if="chat.avatar" :src="chat.avatar" alt="Avatar" class="contact_img" />
-              <img v-else src="../assets/user.png" class="contact_img" />
-              <div class="column_data">
-                <div class="contact_name">{{ chat.name_owner }}</div>
-                <div v-if="!!chat.text" class="button_status_message">
-                  Прочитанно
-                </div>
-                <div v-else class="button_new_message">Новое сообщение!</div>
-              </div>
-            </div>
-          </div>
-        </swiper-slide>
+        <swiper-slide
+  v-for="(chat, index) in chats"
+  :key="index"
+  :class="['swiper-el', { active: chatSelected === chat.Chat_id }]"
+  @click="ChatSelect(chat.Chat_id)"
+>
+  <div :class="[{ backgroud_contact: true, backgroud_contact_select: chatSelected === chat.Chat_id }]">
+    <div class="contact">
+      <img v-if="chat.avatar" :src="chat.avatar" alt="Avatar" class="contact_img" />
+      <img v-else src="../assets/user.png" class="contact_img" />
+      <div class="column_data">
+        <div class="contact_name">{{ chat.name_owner }}</div>
+        <div v-if="!!chat.text" class="button_status_message">
+          Прочитано
+        </div>
+        <div v-else class="button_new_message">Новое сообщение!</div>
+      </div>
+    </div>
+  </div>
+</swiper-slide>
+
       </swiper-container>
       <div class="dialog">
-        <div @v-if="message.uid != uid" class="notification">
+        <!-- <div @v-if="message.uid != uid" class="notification">
           <samp>Заказчик предложил изменить сроки аренды!</samp>
           <button @click="showPopupPopupChangeDeal">Открыть</button>
-        </div>
+        </div> -->
         <!-- <div @v-if="message.uid === uid" class="notification_mediator">
         <samp>Приняли решение?</samp>
         <button @click="showPopupModerDecision">Завершить спор</button>
         </div> -->
         <div class="panel">
           <div class="messages" ref="messagesRef">
-            <div class="inner">
-              <div :key="index" v-for="(message, index) in messages" class="message">
-                <div v-if="message.uid === uid" class="aligment_you">
-                  <div class="datetime_message margin-right_message">{{message.sent_at}}</div>
-                  <div class="message_you">
-                    {{ message.text }}
-                    <img class="message_you_end" src="../assets/message_end.png" />
-                  </div>
-                </div>
-                <!-- v-if="(message.type !== 'mediator') & (message.uid !== uid)" -->
-                <div v-if="message.uid !== uid" class="aligment_noyou">
-                  <img class="message_user" src="../assets/user.png" alt="" />
-                  <div class="message_noyou">
-                    {{ message.text }}
-                    <img class="message_noyou_end" src="../assets/message_end_noyou.png" />
-                  </div>
-                  <div class="datetime_message margin-left_message">{{message.sent_at}}</div>
-                </div>
-                <!-- v-if="(message.type === 'mediator') & (message.uid !== uid)" -->
-                <div v-if="(message.type === 'mediator') & (message.uid !== uid)" class="aligment_noyou">
-                  <img class="message_user" src="../assets/user.png" alt="" />
-                  <div class="message_mediator">
-                    {{ message.text }}
-                    <img class="message_noyou_end" src="../assets/message_end_mediator.png" />
-                  </div>
-                  <div class="datetime_message margin-left_message">{{message.sent_at}}</div>
-                </div>
-                <!-- <div v-if="message.uid === uid" class="message_you">
-                  You:&nbsp;
-                </div> -->
-                <!-- <div v-if="(message.type !== 'mediator') & (message.uid !== uid)" class="message_noyou">
-                  Them:&nbsp;
-                </div>
-                <div v-if="(message.type === 'mediator') & (message.uid !== uid)" class="message_mediator">
-                  Them:&nbsp;
-                </div> -->
-                <!-- <div class="text">{{ message.text }}</div> -->
-              </div>
-            </div>
-          </div>
+  <div class="inner">
+    <div v-for="(message, index) in messages" :key="index" class="message">
+      <div v-if="message.uid === user_id" class="aligment_you">
+        <div class="datetime_message margin-right_message">{{ message.date }}</div>
+        <div class="message_you">
+          {{ message.text }}
+          <img class="message_you_end" src="../assets/message_end.png" />
+        </div>
+      </div>
+      <div v-else class="aligment_noyou">
+        <img class="message_user" src="../assets/user.png" alt="" />
+        <div class="message_noyou">
+          {{ message.text }}
+          <img class="message_noyou_end" src="../assets/message_end_noyou.png" />
+        </div>
+        <div class="datetime_message margin-left_message">{{ message.date }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
           <form class="form" @submit.prevent="sendMessage">
             <div class="buttons">
               <button>
@@ -121,13 +102,13 @@ export default {
       }
 
       try {
-        this.messages.push({
-            uid: this.user_id,
-            text: this.text,
-            sent_at: new Date().toLocaleTimeString(),
-          });
-        const response = await axios.post("http://185.112.83.36:8080/sendMessage", {
-          Id_chat: selectedChat.id,
+        // this.messages.push({
+        //     uid: this.user_id,
+        //     text: this.text,
+        //     sent_at: new Date().toLocaleTimeString(),
+        //   });
+        const response = await axios.post("http://185.112.83.36:8090/sendMessage", {
+          Id_chat: this.chatSelected,
           Text: this.text,
         }, {
           headers: {
@@ -164,14 +145,45 @@ export default {
     showPopupPopupChangeDeal() {
       this.isInfoPopupChangeDeal = true;
     },
-    ChatSelect(index) {
-      this.chatSelected = index;
-      console.log(this.chatSelected);
-    },
+    async ChatSelect(chatId) {
+    this.chatSelected = chatId;
+    console.log(this.chatSelected)
+
+    try {
+      // Отправляем запрос на сервер
+      const response = await axios.post(
+        "http://185.112.83.36:8090/openChat",
+        { Id_chat: chatId },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true, // Для отправки cookies
+        }
+      );
+
+      // Проверяем структуру ответа
+      if (response.data && response.data.status === "success" && Array.isArray(response.data.data)) {
+        // Преобразуем данные
+        this.messages = response.data.data.map(message => ({
+          uid: message.User_id,
+          name: message.Name,
+          text: message.Text,
+          media: message.Media,
+          date: new Date(message.Date).toLocaleString(), // Преобразуем дату
+          media_pwd: message.Media_pwd,
+        }));
+      } else {
+        console.error("Неверный формат ответа или нет данных:", response.data);
+        this.messages = []; // Очистка сообщений в случае ошибки
+      }
+    } catch (error) {
+      console.error("Ошибка при запросе сообщений чата:", error.message);
+    }
+  },
+
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8080/printChat", {
+      const response = await axios.get("http://185.112.83.36:8090/printChat", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -366,7 +378,8 @@ body {
   display: flex;
   flex-direction: column;
   width: 73vw;
-  height: 38.5vw;
+  /* height: 38.5vw; */
+  height: 46vw;
 }
 
 .messages {

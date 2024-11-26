@@ -14,7 +14,7 @@
               }}, {{ selectedDate.day }}
               {{ monthNames[selectedDate.month - 1] }}
             </div>
-            <div :class="{ time_select: !isActive }" class="time">
+            <div :class="{ time_select: isActive }" class="time">
               {{ formatTime(selectedTime.hours) }} :
               {{ formatTime(selectedTime.minutes) }}
             </div>
@@ -24,16 +24,16 @@
             <div class="date">
               {{
                 getDayOfWeek(
-                  selectedDate.year,
-                  selectedDate.month,
-                  selectedDate.day
+                  selectedDate2.year,
+                  selectedDate2.month,
+                  selectedDate2.day
                 )
-              }}, {{ selectedDate.day }}
-              {{ monthNames[selectedDate.month - 1] }}
+              }}, {{ selectedDate2.day }}
+              {{ monthNames[selectedDate2.month - 1] }}
             </div>
-            <div :class="{ time_select: isActive }" class="time">
-              {{ formatTime(selectedTime.hours) }} :
-              {{ formatTime(selectedTime.minutes) }}
+            <div :class="{ time_select: !isActive }" class="time">
+              {{ formatTime(selectedTime2.hours) }} :
+              {{ formatTime(selectedTime2.minutes) }}
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@
           <div class="summa">2000</div>
         </div>
         <div class="container_center">
-          <button class="button_yellow_border">Заказать</button>
+          <button @click="toOrder" class="button_yellow_border">Заказать</button>
         </div>
       </div>
     </div>
@@ -145,6 +145,9 @@ export default {
     SwiperSlide,
   },
   methods: {
+    async toOrder(){
+      
+    },
     changeActive() {
       this.isActive = !this.isActive;
       console.log(this.isActive);
@@ -158,6 +161,17 @@ export default {
     let isActive = ref(true);
 
     let todayDate = new Date();
+    // Добавляем три года
+    let futureDate = new Date(
+      todayDate.getFullYear() + 3, // Увеличиваем год на 3
+      todayDate.getMonth(),       // Сохраняем текущий месяц
+      todayDate.getDate(),        // Сохраняем текущий день
+      todayDate.getHours(),       // Сохраняем текущий час
+      todayDate.getMinutes(),     // Сохраняем текущую минуту
+      todayDate.getSeconds(),     // Сохраняем текущую секунду
+      todayDate.getMilliseconds() // Сохраняем текущие миллисекунды
+    );
+
     //Конечная дата
     let endDate = ref({
       day: todayDate.getDate(),
@@ -179,6 +193,13 @@ export default {
       month: todayDate.getMonth() + 1, // getMonth() returns month index starting from 0
       year: todayDate.getFullYear(),
     });
+    const selectedDate2 = ref({
+      day: futureDate.getDate(),
+      month: futureDate.getMonth() + 12, // getMonth() returns month index starting from 0
+      year: futureDate.getFullYear() + 2,
+    });
+
+    const activeDate = computed(() => (isActive.value ? selectedDate.value : selectedDate2.value));
 
     const days = ref(Array.from({ length: 31 }, (_, i) => i + 1));
     const monthNames = [
@@ -225,15 +246,27 @@ export default {
     });
 
     const updateDay = (swiper) => {
-      selectedDate.value.day = filteredDays.value[swiper.realIndex];
+      if (isActive.value) {
+        selectedDate.value.day = filteredDays.value[swiper.realIndex];
+      } else {
+        selectedDate2.value.day = filteredDays.value[swiper.realIndex];
+      }
     };
 
     const updateMonth = (swiper) => {
-      selectedDate.value.month = filteredMonths.value[swiper.realIndex];
+      if (isActive.value) {
+        selectedDate.value.month = filteredMonths.value[swiper.realIndex];
+      } else {
+        selectedDate2.value.month = filteredMonths.value[swiper.realIndex];
+      }
     };
 
     const updateYear = (swiper) => {
-      selectedDate.value.year = years.value[swiper.realIndex];
+      if (isActive.value) {
+        selectedDate.value.year = years.value[swiper.realIndex];
+      } else {
+        selectedDate2.value.year = years.value[swiper.realIndex];
+      }
     };
 
     const getDayOfWeek = (year, month, day) => {
@@ -246,6 +279,13 @@ export default {
       minutes: new Date().getMinutes(),
     });
 
+    const selectedTime2 = ref({
+      hours: new Date().getHours(),
+      minutes: new Date().getMinutes(),
+    });
+
+    const activeTime = computed(() => (isActive.value ? selectedTime.value : selectedTime2.value));
+
     const hours = ref(Array.from({ length: 24 }, (_, i) => i));
     const minutes = ref(Array.from({ length: 60 }, (_, i) => i));
 
@@ -255,16 +295,26 @@ export default {
     };
 
     const updateHours = (swiper) => {
-      selectedTime.value.hours = hours.value[swiper.realIndex];
+      if (isActive.value) {
+        selectedTime.value.hours = hours.value[swiper.realIndex];
+      } else {
+        selectedTime2.value.hours = hours.value[swiper.realIndex];
+      }
     };
 
     const updateMinutes = (swiper) => {
-      selectedTime.value.minutes = minutes.value[swiper.realIndex];
+      if (isActive.value) {
+        selectedTime.value.minutes = minutes.value[swiper.realIndex];
+      } else {
+        selectedTime2.value.minutes = minutes.value[swiper.realIndex];
+      }
     };
 
     return {
       isActive,
+      activeDate,
       selectedDate,
+      selectedDate2,
       days,
       monthNames,
       months,
@@ -272,6 +322,8 @@ export default {
       filteredDays,
       filteredMonths,
       selectedTime,
+      selectedTime2,
+      activeTime,
       startDate,
       endDate,
       hours,

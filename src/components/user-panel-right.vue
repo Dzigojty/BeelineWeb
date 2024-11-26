@@ -3,7 +3,7 @@
     <div class="block_title_user">
       <img class="title_user" src="../assets/user.png" alt="" />
     </div>
-    <div class="shop_filter_name">Фамилия Имя</div>
+    <div class="shop_filter_name">{{Surname_or_Ind_num}} {{Name}}</div>
     <div class="shop_filter_rating">
       <div class="shop_filter_rating_name">5,0</div>
       <div class="filter_rating">
@@ -33,7 +33,45 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
+
 export default {
+  data(){
+    return {
+      // Login: null,
+      // Name: null,
+      // Surname_or_Ind_num: null,
+      // Patronomic_or_Addres_name: null,
+    }
+  },
+  setup() {
+    let Login = ref('');
+    let Name = ref('');
+    let Surname_or_Ind_num = ref('');
+    let Patronomic_or_Addres_name = ref('');
+
+    // Загружаем данные из localStorage при монтировании компонента
+    onMounted(() => {
+      const storedLogin = localStorage.getItem('Login');
+      const storedName = localStorage.getItem('Name');
+      const storedSurname_or_Ind_num = localStorage.getItem('Surname_or_Ind_num');
+      const storedPatronomic_or_Addres_name = localStorage.getItem('Patronomic_or_Addres_name');
+
+      if (storedLogin && storedName && storedSurname_or_Ind_num && storedPatronomic_or_Addres_name) {
+        Login.value = storedLogin;
+        Name.value = storedName;
+        Surname_or_Ind_num.value = storedSurname_or_Ind_num;
+        Patronomic_or_Addres_name.value = storedPatronomic_or_Addres_name;
+      }
+    });
+
+    return {
+      Login,
+      Name,
+      Surname_or_Ind_num,
+      Patronomic_or_Addres_name
+    };
+  },
   methods: {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
@@ -41,9 +79,16 @@ export default {
     exitUser() {
       this.$emit("exitUser");
     },
+    created(){
+      this.Login = localStorage.getItem('Login');
+      this.Name = localStorage.getItem('Name');
+      this.Surname_or_Ind_num = localStorage.getItem('Surname_or_Ind_num');
+      this.Patronomic_or_Addres_name = localStorage.getItem('Patronomic_or_Addres_name');
+    }
   },
-  setup() {},
-};
+}
+
+  
 </script>
 
 <style scoped>
@@ -449,6 +494,7 @@ a {
 .shop_filter_name {
   font-size: var(--fs-20);
   font-weight: bold;
+  text-align: center;
   margin: 1.5vw 0;
   align-content: flex-start;
 }

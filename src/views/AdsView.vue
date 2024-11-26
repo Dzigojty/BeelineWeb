@@ -5,11 +5,56 @@
     <div class="shop_product">
       <div class="shop_title">Объявления</div>
       <div class="block_flex">
-        <div class="grey_block select">Все</div>
-        <div class="grey_block">Арендованные</div>
-        <div class="grey_block">Архивированные</div>
+        <div @click="showModule('all')" :class="[ selectedModule == 'all' ? 'select' : '']" class="grey_block">Все</div>
+        <div @click="showModule('active')" class="grey_block" :class="[ selectedModule == 'active' ? 'select' : '']">Арендованные</div>
+        <div @click="showModule('noActive')" :class="[ selectedModule == 'noActive' ? 'select' : '']" class="grey_block">Архивированные</div>
       </div>
-      <div class="shop_list">
+      <div v-if="selectedModule == 'all'" v-for="(el, index) in array" :key="index" class="shop_list">
+        <a @click="selectProduct(el)" class="route-view">
+          <div class="product">
+            <img class="product_img" src="../assets/product2.png" alt="" />
+            <div class="product_des">
+              <div class="product_title">
+                <div>{{ el.Title }}</div>
+              </div>
+              <div class="product_price">от 2 500 ₽ за час</div>
+              <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
+            </div>
+          </div>
+        </a>
+        <div class="line-grey"></div>
+      </div>
+      <div v-if="selectedModule == 'active'" v-for="(el, index) in active" :key="index" class="shop_list">
+        <a @click="selectProduct(el)" class="route-view">
+          <div class="product">
+            <img class="product_img" src="../assets/product2.png" alt="" />
+            <div class="product_des">
+              <div class="product_title">
+                <div>{{ el.Title }}</div>
+              </div>
+              <div class="product_price">от 2 500 ₽ за час</div>
+              <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
+            </div>
+          </div>
+        </a>
+        <div class="line-grey"></div>
+      </div>
+      <div v-if="selectedModule == 'noActive'" v-for="(el, index) in noActive" :key="index" class="shop_list">
+        <a @click="selectProduct(el)" class="route-view">
+          <div class="product">
+            <img class="product_img" src="../assets/product2.png" alt="" />
+            <div class="product_des">
+              <div class="product_title">
+                <div>{{ el.Title }}</div>
+              </div>
+              <div class="product_price">от 2 500 ₽ за час</div>
+              <div class="grey_text">Объявление снято</div>
+            </div>
+          </div>
+        </a>
+        <div class="line-grey"></div>
+      </div>
+      <!-- <div class="shop_list">
         <a @click="selectProduct(product)"  class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
@@ -49,23 +94,73 @@
           </div>
         </a>
         <div class="line-grey"></div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
 import UserPanelRight from "../components/user-panel-right.vue";
+import axios from 'axios';
 
 export default {
+  data(){
+    return {
+      array: [],
+      active: [],
+      noActive: [],
+      selectedModule: 'all'
+    }
+  },
+  async created() {
+    try {
+      const response = await axios.get("http://185.112.83.36:8090/groupAdsByRented", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      });
+      console.log(response.data);
+      if (response.data.status == "success") {
+        this.active = response.data.data;
+      } else {
+      }
+    } catch (error) {
+      console.error("Ошибка при выводе :", error);
+    }
+
+    try {
+      const response = await axios.get("http://185.112.83.36:8090/groupAdsByArchived", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      });
+      console.log(response.data);
+      if (response.data.status == "success") {
+        this.noActive = response.data.data;
+      } else {
+        alert("Error els status:fatal");
+      }
+    } catch (error) {
+      console.error("Ошибка при выводе els:", error);
+    }
+
+    this.array = [...this.active, ...this.noActive]
+  },
   methods: {
+    showModule(selM){
+      this.selectedModule = selM;
+      console.log(this.selectedModule)
+    },
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
-     selectProduct(product) {
-      this.$emit('selectProduct', product);
+    selectProduct(product) {
+      console.log("product ADS")
+      console.log(product.Id)
+      this.$emit('selectProduct', product.Id);
     },
-
     exitUser() {
       this.$emit('exitUser');
     },
@@ -73,7 +168,6 @@ export default {
   components: {
     UserPanelRight,
   },
-  setup() {},
 };
 </script>
 

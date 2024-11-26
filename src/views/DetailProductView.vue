@@ -111,7 +111,7 @@
           />
         </div>
         <section class="author_rating">
-          <div class="product_button_chat">Написать</div>
+          <div class="product_button_chat" @click="clickChat()">Написать</div>
           <div class="product_button_date" @click="showPopup()">Выбрать дату</div>
 
           <div class="owner">
@@ -190,7 +190,7 @@ axios.defaults.withCredentials = true;
 
 export default {
   props: {
-    product: Object,
+    productId: Number,
   },
   data() {
     return {
@@ -213,19 +213,26 @@ export default {
     clickFavorite() {
       console.log(`ClickFav detail.Ads_id = ${this.detail.Ads_id}`)
       console.log(this.favorite)
-      if (this.favorite.find((prod) => prod.Ad_id === this.detail.Ads_id) === undefined) {
+      if (this.favorite.find((prod) => prod.Ads_id === this.detail.Ads_id) === undefined) {
         this.addFavorite(this.detail.Ads_id);
       } else {
         this.removeFavorite(this.detail.Ads_id);
       }
     },
+    changeRoute(newRoute) {
+      this.$emit("changeRoute", newRoute);
+    },
+    clickChat(){
+      
+      this.changeRoute('chat')
+    },
     async addFavorite(idProduct) {
       console.log(`addFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/sigFavAds",
+          "http://185.112.83.36:8090/sigFavAds",
           {
-            Ads_id: idProduct
+            Ads_id: idProduct,
           },
           {
             headers: {
@@ -249,9 +256,9 @@ export default {
       console.log(`removeFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/delFavAds",
+          "http://185.112.83.36:8090/delFavAds",
           {
-            Ads_id: 3
+            Ads_id: idProduct,
           },
           {
             headers: {
@@ -273,7 +280,7 @@ export default {
     },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -284,7 +291,7 @@ export default {
         } else {
           this.favorite = response.data.data.slice(0, this.perPage);
           this.adsFav =
-          this.favorite.find((prod) => prod.Ad_id === this.detail.Ads_id) != undefined;
+          this.favorite.find((prod) => prod.Ads_id === this.detail.Ads_id) != undefined;
         }
       } catch (error) {
         console.error("Ошибка при загрузке продуктов:", error);
@@ -328,11 +335,13 @@ export default {
     },
   },
   async created() {
+    console.log("Detail this.productId")
+    console.log(this.productId)
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8080/printAds",
+        "http://185.112.83.36:8090/printAds",
         {
-          Ads_id: this.product.Id,
+          Ads_id: this.productId,
         },
         {
           headers: {
@@ -351,7 +360,7 @@ export default {
     }
 
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -361,7 +370,7 @@ export default {
       } else {
         this.favorite = response.data.data.slice(0, this.perPage);
         this.adsFav =
-          this.favorite.find((prod) => prod.Ad_id === this.detail.Ads_id) != undefined;
+          this.favorite.find((prod) => prod.Ads_id === this.detail.Ads_id) != undefined;
         console.log(this.adsFav);
       }
     } catch (error) {

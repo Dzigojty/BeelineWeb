@@ -179,7 +179,7 @@ export default {
         this.daily_rate = this.hourly_rate * 24;
 
         const response = await axios.post(
-          "http://185.112.83.36:8080/sigAds",
+          "http://185.112.83.36:8090/sigAds",
           {
             Image: [
                 ""

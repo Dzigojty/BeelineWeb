@@ -5,12 +5,44 @@
     <div class="shop_product">
       <div class="shop_title">Мои заказы</div>
       <div class="block_flex">
-        <div class="grey_block select">Все</div>
-        <div class="grey_block">Действующие</div>
-        <div class="grey_block">Закрытые</div>
+        <div @click="showModule('all')" class='grey_block'  :class="[ selectedModule == 'all' ? 'select' : '']">Все</div>
+        <div @click="showModule('active')"  class='grey_block'   :class="[ selectedModule == 'active' ? 'select' : '']">Действующие</div>
+        <div @click="showModule('noActive')" class='grey_block'   :class="[ selectedModule == 'noActive' ? 'select' : '']">Закрытые</div>
       </div>
-      <div v-for="(el, index) in array" :key="index" class="shop_list">
-        <a @click="selectProduct(product)" class="route-view">
+      <div v-if="selectedModule == 'all'" v-for="(el, index) in array" :key="index" class="shop_list">
+        <a @click="selectProduct(el)" class="route-view">
+          <div class="product">
+            <img class="product_img" src="../assets/product2.png" alt="" />
+            <div class="product_des">
+              <div class="product_title">
+                <div>{{ el.Title }}</div>
+              </div>
+              <div class="product_price">от {{ el.Hourly_rate }} ₽ за час</div>
+              <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
+            </div>
+          </div>
+        </a>
+        <div class="line-grey"></div>
+      </div>
+
+      <div v-if="selectedModule == 'active'" v-for="(el, index) in active" :key="index" class="shop_list">
+        <a @click="selectProduct(el)" class="route-view">
+          <div class="product">
+            <img class="product_img" src="../assets/product2.png" alt="" />
+            <div class="product_des">
+              <div class="product_title">
+                <div>{{ el.Title }}</div>
+              </div>
+              <div class="product_price">от {{ el.Hourly_rate }} ₽ за час</div>
+              <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
+            </div>
+          </div>
+        </a>
+        <div class="line-grey"></div>
+      </div>
+
+      <div v-if="selectedModule == 'noActive'" v-for="(el, index) in noActive" :key="index" class="shop_list">
+        <a @click="selectProduct(el)" class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
@@ -35,27 +67,54 @@ export default {
   data() {
     return {
       array: [],
+      active: [],
+      noActive: [],
+      selectedModule: 'all'
     };
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupAdsByRented", {
+      const response = await axios.get("http://185.112.83.36:8090/groupOrdersByRented", {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       });
       console.log(response);
       console.log(response.data.data);
       if (response.data.status === "success") {
-        this.array = response.data.data;
+        this.active = response.data.data;
       } else {
         alert("Error favorites status:fatal");
       }
     } catch (error) {
       console.error("Ошибка при выводе favorites:", error);
     }
+
+    try {
+      const response = await axios.get("http://185.112.83.36:8090/groupOrdersByUnRented", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      });
+      console.log(response);
+      console.log(response.data.data);
+      if (response.data.status === "success") {
+        this.noActive = response.data.data;
+      } else {
+        alert("Error favorites status:fatal");
+      }
+    } catch (error) {
+      console.error("Ошибка при выводе favorites:", error);
+    }
+
+    this.array = [...this.active, ...this.noActive]
   },
   methods: {
+    showModule(selM){
+      this.selectedModule = selM;
+    },
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
@@ -63,7 +122,7 @@ export default {
       this.$emit("exitUser");
     },
     selectProduct(product) {
-      this.$emit("selectProduct", product);
+      this.$emit("selectProduct", product.Id);
     },
     exitUser() {
       this.$emit("exitUser");

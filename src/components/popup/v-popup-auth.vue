@@ -466,7 +466,7 @@ export default {
     async emailCode() {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/enterCodeFromEmail",
+          "http://185.112.83.36:8090/enterCodeFromEmail",
           {
             reg_code: Number(this.confirmationCode),
           },
@@ -509,15 +509,16 @@ export default {
       let costil = false;
 
       const response = await axios
-        .post("http://185.112.83.36:8080/login", form, {
+        .post("http://185.112.83.36:8090/login", form, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then(function (response) {
+          console.log("Auth resp");
           console.log(response);
 
-          if (response.data.status == "fatal") {
+          if (response.data.Status == "fatal") {
             alert("Вы ввели не действительные данные!");
           } else {
             alert("Вы авторизовались!");
@@ -525,19 +526,23 @@ export default {
             // Установка cookie на стороне клиента
             // Cookies.set("token", `${response.data.data.JWT}`, {
             //   // path: "/", // путь
-            //   // domain: "http://localhost:8080/", // замените на ваш домен
+            //   // domain: "http://localhost:8090/", // замените на ваш домен
             //   secure: true, // для HTTPS
             //   sameSite: "None", // для кросс-доменных запросов
             //   expires: 1 / 48, // срок действия, например, 30 мин
             // });
             Cookies.set("Refresh_token", `${response.data.data.Refresh_token}`, { expires: 7 });
-            Cookies.set("token", `${response.data.data.JWT}`, { expires: 7 });
-            localStorage.setItem('user', response.data.data.Information);
-            // location.reload(true);
+            Cookies.set("token", `${response.data.data.JWT}`, { expires: 0.0208 });
+            localStorage.setItem('Login', response.data.data.Information.Login);
+            localStorage.setItem('Name', response.data.data.Information.Name);
+            localStorage.setItem('Surname_or_Ind_num', response.data.data.Information.Surname_or_Ind_num);
+            localStorage.setItem('Patronomic_or_Addres_name', response.data.data.Information.Patronomic_or_Addres_name);
+            location.reload(true);
           }
         })
         .catch(function (error) {
           alert("Произошла ошибка!");
+          console.log("Auth error");
           console.log(error);
         });
 
@@ -559,7 +564,7 @@ export default {
     async submitEmail() {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/signupUserByEmail",
+          "http://185.112.83.36:8090/signupUserByEmail",
           {
             Email: this.Email,
           },
@@ -597,7 +602,7 @@ export default {
         }
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8080/signupNaturEmail",
+            "http://185.112.83.36:8090/signupNaturEmail",
             {
               Surname: this.Surname,
               Name: this.Name,
@@ -622,7 +627,7 @@ export default {
       } else {
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8080/signupLegalEmail",
+            "http://185.112.83.36:8090/signupLegalEmail",
             {
               Password_hash: this.Password_hash,
               Ind_num_taxp: this.Ind_num_taxp,

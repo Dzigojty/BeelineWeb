@@ -6,44 +6,18 @@
       <div class="shop_title">Избранное</div>
       <div class="block_flex">
         <div class="grey_block select">Объявления</div>
-        <div class="grey_block">Профили</div>
+        <!-- <div class="grey_block">Профили</div> -->
       </div>
       <div v-for="(favorite, index) in favorites" :key="index" class="shop_list">
-        <a @click="selectProduct(product)" class="route-view">
+        <a @click="selectProduct(favorite)" class="route-view">
           <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
+            <img class="product_img" :src="favorite.Ads_photo" alt="" />
             <div class="product_des">
               <div class="product_title">
                 <div>{{ favorite.Title }}</div>
               </div>
               <div class="product_price">от 2 500 ₽ за час</div>
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)" class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_r">Завтра с 17:00 до 17:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)" class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="grey_text">Объявление снято</div>
             </div>
           </div>
         </a>
@@ -67,33 +41,67 @@ export default {
       this.$emit("changeRoute", newRoute);
     },
     selectProduct(product) {
-      this.$emit("selectProduct", product);
+      this.$emit("selectProduct", product.Ads_id);
     },
     exitUser() {
       this.$emit("exitUser");
     },
   },
-  //http://185.112.83.36:8080/groupFavByRecent
+  //http://185.112.83.36:8090/groupFavByRecent
   components: {
     UserPanelRight,
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
+
       });
       console.log(response);
       console.log(response.data.data);
-      if (response.data.status === "success") {
-        this.favorites = response.data.data;
-      } else {
+     
+      if (response.data.status != "success") {
         alert("Error favorites status:fatal");
+        this.favorites = [];
+        return false;
+      } else if (response.data.message != "Чатов не найденно, либо они не созданны") {
+        this.favorites = response.data.data;
+        for (let index = 0; index < this.favorites.length; index++) {
+          this.favorites[index].Avatar = this.favorites[index].Avatar != 'File not found' ? `data:image/png;base64,${this.favorites[index].Avatar}` : '../assets/product2.png';
+          this.favorites[index].Ads_photo = this.favorites[index].Ads_photo != 'Error reading file' ? `data:image/png;base64,${this.favorites[index].Ads_photo}` : '../assets/product2.png';
+        }
+        consoel.log(this.favorites)
+        return true;
       }
     } catch (error) {
-      console.error("Ошибка при выводе favorites:", error);
+      console.error("Ошибка при загрузке чатов:", error);
+      return false;
     }
+
+
+
+
+    // try {
+    //   const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     withCredentials: true
+
+    //   });
+    //   console.log(response);
+    //   console.log(response.data.data);
+    //   if (response.data.status === "success") {
+    //     this.favorites = response.data.data;
+    //   } else {
+    //     alert("Error favorites status:fatal");
+    //   }
+    // } catch (error) {
+    //   console.error("Ошибка при выводе favorites:", error);
+    // }
   },
   setup() {},
 };

@@ -7,7 +7,6 @@
         ➤ Владикавказ, район, радиус
       </a>
       <ul v-if="auth" class="header_navigation-list">
-        <!-- <button @click="testSigAds">sigAds</button> -->
         <li @click="changeRoute('wallet')" class="header_navigation-item">
           <img src="./assets/wallet.png" alt="" width="20" height="20" />
           <a class="header_navigation-link">Кошелек</a>
@@ -96,7 +95,8 @@
   <HomeView v-if="route == 'home'" @selectProduct="selectProduct" :user_id="appMessage" />
   <DetailProductView
     v-if="route == 'detail'"
-    :product="selectedProduct"
+    :productId="selectedProduct"
+    @changeRoute="changeRoute"
     @goBack="goBack"
   />
   <FavoritView
@@ -201,9 +201,9 @@ export default {
   async created() {
     console.log("Server started and collections cleared.");
     let authB = false;
-    if(Cookies.get('token') == undefined) {
+    if(Cookies.get('token') == undefined && Cookies.get('Refresh_token') != undefined) {
       const response = await axios
-      .get("http://185.112.83.36:8080/refreshToken", {
+      .get("http://185.112.83.36:8090/refreshToken", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -213,23 +213,24 @@ export default {
         console.log(response);
         if (response.data.status == "fatal") {
           alert("Ошибка в ответе refreshToken!");
-        } else {
+        } else if(response.data != "") {
           alert("Вы авторизовались!");
           // Установка cookie на стороне клиента
-          Cookies.set("token", `${response.data.data.JWT}`, { expires: 7 });
+          Cookies.set("token", `${response.data.data.JWT}`, { expires: 0.0208 });
           Cookies.set("Refresh_token", `${response.data.data.Refresh_token}`, { expires: 7 });
           // Cookies.set("token", `${response.data.data.JWT}`, { expires: 7 });
-          localStorage.setItem('user', response.data.data);
           authB = true;
-        }
+        } 
       })
       .catch(function (error) {
         alert("Произошла ошибка!");
         console.log(error);
         authB = false;
       })
-    } else {
+    } else if(Cookies.get('token') != undefined) {
       authB = true;
+    } else {
+      authB = false;
     }
     this.auth = authB;
     console.log(this.auth)
@@ -252,6 +253,7 @@ export default {
       console.log(this.auth);
     },
     selectProduct(product) {
+      console.log(product)
       this.selectedProduct = product;
       this.route = "detail";
     },
@@ -266,35 +268,6 @@ export default {
       this.showPopupInfoAuth = true;
     },
     
-    async testSigAds() {
-      try {
-        const response = await axios.post(
-          "http://185.112.83.36:8080/sigAds",
-          {
-            Image: [""],
-            Title: "AZAAZAMATMAT",
-            Description: "AZAMAZAMATAT",
-            Hourly_rate: 1282,
-            Daily_rate: 28914,
-            Category_id: 1,
-            Location: "Республика 2Алания, г.МагасAZAMATAZAMATAZAMAT"
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(response);
-        if (response.data.data.status == "fatal") {
-
-        } else {
-
-        }
-      } catch (error) {
-        console.error("Ошибка при загрузке sigAds:", error);
-      }
-    },
     exitUser() {
       this.auth = false;
       this.deleteToken();
