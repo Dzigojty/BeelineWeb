@@ -64,10 +64,11 @@
 
           <form class="form" @submit.prevent="sendMessage">
             <div class="buttons">
-              <button>
+              <button >
                 <img src="../assets/button_chat_action.png" alt="" />
               </button>
-              <button>
+              <input type="file" @change="convertToBase64" accept="image/*">
+              <button >
                 <img src="../assets/button_chat_action1.png" alt="" />
               </button>
             </div>
@@ -94,6 +95,22 @@ export default {
     VPopupChangeDealRequestEdit,
   },
   methods: {
+    convertToBase64(event) {
+      const file = event.target.files[0]; // Получаем выбранный файл
+      if (!file) return; // Проверяем, что файл выбран
+
+      const reader = new FileReader(); // Создаем FileReader для чтения файла
+
+      // Обработчик завершения чтения файла
+      reader.onload = (e) => {
+        this.base64Image = e.target.result; // Сохраняем результат (Base64)
+      };
+
+      // Запускаем чтение файла в формате Base64
+      reader.readAsDataURL(file);
+    },
+
+
     async sendMessage() {
       const selectedChat = this.chats.find(chat => this.chatSelected == chat.Chat_id);
       if (!selectedChat) {
@@ -107,7 +124,7 @@ export default {
         //     text: this.text,
         //     sent_at: new Date().toLocaleTimeString(),
         //   });
-        const response = await axios.post("http://185.112.83.36:8090/sendMessage", {
+        const response = await axios.post("http://185.112.83.36:8080/sendMessage", {
           Id_chat: this.chatSelected,
           Text: this.text,
         }, {
@@ -152,13 +169,15 @@ export default {
     try {
       // Отправляем запрос на сервер
       const response = await axios.post(
-        "http://185.112.83.36:8090/openChat",
+        "http://185.112.83.36:8080/openChat",
         { Id_chat: chatId },
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true, // Для отправки cookies
         }
       );
+
+      console.log(response)
 
       // Проверяем структуру ответа
       if (response.data && response.data.status === "success" && Array.isArray(response.data.data)) {
@@ -183,7 +202,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8090/printChat", {
+      const response = await axios.get("http://185.112.83.36:8080/printChat", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -209,6 +228,7 @@ export default {
     return {
       avatar: '',
       text: '',
+      base64Image: null,
       user_id: 27,
       chatSelected: null,
       isInfoPopupModerDecision: false,

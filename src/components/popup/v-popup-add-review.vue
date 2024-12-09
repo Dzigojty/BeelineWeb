@@ -133,7 +133,7 @@ export default {
     async groupReviewOldOnesFirst() {
       try {
         const response = await axios.get(
-          "http://185.112.83.36:8090/groupReviewOldOnesFirst",
+          "http://185.112.83.36:8080/groupReviewOldOnesFirst",
           {
             headers: {
               "Content-Type": "application/json",
@@ -152,7 +152,7 @@ export default {
     async groupReviewNewOnesFirst() {
       try {
         const response = await axios.get(
-          "http://185.112.83.36:8090/groupReviewNewOnesFirst",
+          "http://185.112.83.36:8080/groupReviewNewOnesFirst",
           {
             headers: {
               "Content-Type": "application/json",
@@ -172,7 +172,7 @@ export default {
   async created() {
     try {
       const response = await axios.get(
-        "http://185.112.83.36:8090/groupReviewNewOnesFirst",
+        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
         {
           headers: {
             "Content-Type": "application/json",

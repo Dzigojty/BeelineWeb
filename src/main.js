@@ -1,24 +1,27 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { createYmaps } from 'vue-yandex-maps';
 import { register } from 'swiper/element/bundle';
 import VueTheMask from 'vue-the-mask';
 import VueCookies from 'vue-cookies';
+import YmapPlugin from 'vue-yandex-maps';
+
+const settings = {
+  apiKey: '4a56995b-c087-4e6c-80f8-174e8c052bc4', // Ваш токен API
+  lang: 'ru_RU', // Язык карты
+  coordorder: 'latlong', // Координаты в формате "широта, долгота"
+  debug: false, // Включить или выключить отладку
+  version: '2.1', // Версия API Yandex.Maps
+};
+
 
 // register Swiper custom elements
 register();
 
 const app = createApp(App);
 
-const settings = {
-  apiKey: '6e8b0885-8405-4bf3-b552-546dd840e044',
-  lang: 'ru_RU',
-  importModules: ['@yandex/ymaps3-controls@0.0.1'],
-  coordorder: 'latlong',
-}
-app.use(createYmaps, settings);
 app.use(router);
+app.use(YmapPlugin, settings); // Регистрируем плагин Yandex Maps
 
 // Регистрируем директиву маски
 app.use(VueTheMask);

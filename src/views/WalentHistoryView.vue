@@ -5,68 +5,191 @@
     <div class="shop_product">
       <div class="shop_title">История кошелька</div>
       <div class="block_flex">
-        <div class="grey_block select">Все</div>
-        <div class="grey_block">Зачисления</div>
-        <div class="grey_block">Списания</div>
+        <div @click="selectedModule = 'all'" :class="{select: selectedModule == 'all'}" class="grey_block">Все</div>
+        <div @click="selectedModule = 'active'" class="grey_block" :class="{select: selectedModule == 'active'}">Зачисления</div>
+        <div @click="selectedModule = 'noActive'" class="grey_block" :class="{select: selectedModule == 'noActive'}">Списания</div>
       </div>
       <div class="shop_list">
-        <div class="row">
-          <img class="user_img" src="../assets/user.png" alt="" />
-          <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
-            <div class="price">+ 2 500 ₽</div>
+        <div v-if="selectedModule == 'all'" v-for="(el, index) in array" :key="index" class="column">
+          <div class="row">
+            <img class="user_img" src="../assets/user.png" alt="" />
+            <div class="column col1">
+              <div class="name">Перевод от {{ el.User_name }}</div>
+              <div class="price">{{ el.Amount }} ₽</div>
+            </div>
+            <div class="column">
+              <div class="data">{{ el.date }}</div>
+              <div class="data">{{  el.time }}</div>
+            </div>
           </div>
-          <div class="column">
-            <div class="data">23.05.24</div>
-            <div class="data">14:40</div>
-          </div>
-        </div>
-        <div class="line-grey"></div>
-        <div class="row">
-          <img class="user_img" src="../assets/user.png" alt="" />
-          <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
-            <div class="price">+ 2 500 ₽</div>
-          </div>
-          <div class="column">
-            <div class="data">23.05.24</div>
-            <div class="data">14:40</div>
+          <div class="line-grey">
           </div>
         </div>
-        <div class="line-grey"></div>
-        <div class="row">
-          <img class="user_img" src="../assets/user.png" alt="" />
-          <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
-            <div class="price">+ 2 500 ₽</div>
+
+        <div v-if="selectedModule == 'noActive'" v-for="(el, index) in noActive" :key="index" class="column">
+          <div class="row">
+            <img class="user_img" src="../assets/user.png" alt="" />
+            <div class="column col1">
+              <div class="name">Перевод от {{ el.User_name }}</div>
+              <div class="price">{{ el.Amount }} ₽</div>
+            </div>
+            <div class="column">
+              <div class="data">{{ el.date }}</div>
+              <div class="data">{{  el.time }}</div>
+            </div>
           </div>
-          <div class="column">
-            <div class="data">23.05.24</div>
-            <div class="data">14:40</div>
-          </div>
-        </div>
-        <div class="line-grey"></div>
-        <div class="row">
-          <img class="user_img" src="../assets/user.png" alt="" />
-          <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
-            <div class="price">+ 2 500 ₽</div>
-          </div>
-          <div class="column">
-            <div class="data">23.05.24</div>
-            <div class="data">14:40</div>
+          <div class="line-grey">
           </div>
         </div>
-        <div class="line-grey"></div>
+
+        <div v-if="selectedModule == 'active'" v-for="(el, index) in active" :key="index" class="column">
+          <div class="row">
+            <img class="user_img" src="../assets/user.png" alt="" />
+            <div class="column col1">
+              <div class="name">Перевод от {{ el.User_name }}</div>
+              <div class="price">{{ el.Amount }} ₽</div>
+            </div>
+            <div class="column">
+              <div class="data">{{ el.date }}</div>
+              <div class="data">{{  el.time }}</div>
+            </div>
+          </div>
+          <div class="line-grey">
+          </div>
+        </div>
       </div>
+        <!-- <div class="row">
+          <img class="user_img" src="../assets/user.png" alt="" />
+          <div class="column col1">
+            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="price">+ 2 500 ₽</div>
+          </div>
+          <div class="column">
+            <div class="data">23.05.24</div>
+            <div class="data">14:40</div>
+          </div>
+        </div>
+        <div class="line-grey"></div>
+        <div class="row">
+          <img class="user_img" src="../assets/user.png" alt="" />
+          <div class="column col1">
+            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="price">+ 2 500 ₽</div>
+          </div>
+          <div class="column">
+            <div class="data">23.05.24</div>
+            <div class="data">14:40</div>
+          </div>
+        </div>
+        <div class="line-grey"></div>
+        <div class="row">
+          <img class="user_img" src="../assets/user.png" alt="" />
+          <div class="column col1">
+            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="price">+ 2 500 ₽</div>
+          </div>
+          <div class="column">
+            <div class="data">23.05.24</div>
+            <div class="data">14:40</div>
+          </div>
+        </div>
+        <div class="line-grey"></div>
+        <div class="row">
+          <img class="user_img" src="../assets/user.png" alt="" />
+          <div class="column col1">
+            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="price">+ 2 500 ₽</div>
+          </div>
+          <div class="column">
+            <div class="data">23.05.24</div>
+            <div class="data">14:40</div>
+          </div>
+        </div> -->
+        <!-- <div class="line-grey"></div> -->
     </div>
   </div>
 </template>
 
 <script>
 import UserPanelRight from "../components/user-panel-right.vue";
+import axios from "axios";
 
 export default {
+  data(){
+    return {
+      array: [],
+      active: [],
+      noActive: [],
+      selectedModule: 'all'
+    }
+  },
+  async created() {
+      //Списанные
+      let response = await axios
+      .post("http://185.112.83.36:8080/walletHistory", 
+        {
+          Type: 3,
+        },
+        {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      })
+      .then((response) => {
+        console.log(response);
+        if (response.data.status == "success") {
+          this.noActive = response.data.data;
+          for (let i = 0; i < this.noActive.length; i++) {
+            let date = new Date(this.noActive[i].Created_at);
+            this.noActive[i].date = `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getFullYear()).slice(-2)}`;
+            this.noActive[i].time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            this.noActive[i].Avatar = this.noActive[i].Avatar != '' ? `data:image/png;base64,${this.noActive[i].Avatar}` : '';
+            this.noActive[i].Avatar_path = this.noActive[i].Avatar_path != '' ? `data:image/png;base64,${this.noActive[i].Avatar_path}` : '';
+          }
+        } else {
+          alert("Error els status:fatal");
+        }
+      })
+      .catch(function (error) {
+        console.error("Ошибка при выводе els:", error);
+      })
+
+      //Зачисленные
+      response = await axios
+      .post("http://185.112.83.36:8080/walletHistory", 
+        {
+          Type: 2,
+        },
+        {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      })
+      .then((response) => {
+        console.log(response);
+        if (response.data.status == "success") {
+          this.active = response.data.data;
+          for (let i = 0; i < this.active.length; i++) {
+            let date = new Date(this.active[i].Created_at);
+            this.active[i].date = `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getFullYear()).slice(-2)}`;
+            this.active[i].time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            this.active[i].Avatar = this.active[i].Avatar != '' ? `data:image/png;base64,${this.active[i].Avatar}` : '';
+            this.active[i].Avatar_path = this.active[i].Avatar_path != '' ? `data:image/png;base64,${this.active[i].Avatar_path}` : '';
+          }
+        } else {
+          alert("Error els status:fatal");
+        }
+      })
+      .catch(function (error) {
+        console.error("Ошибка при выводе els:", error);
+      })
+
+
+      this.array = [...this.active, ...this.noActive]
+
+    },
   methods: {
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);

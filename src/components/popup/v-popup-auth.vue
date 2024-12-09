@@ -466,7 +466,7 @@ export default {
     async emailCode() {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/enterCodeFromEmail",
+          "http://185.112.83.36:8080/enterCodeFromEmail",
           {
             reg_code: Number(this.confirmationCode),
           },
@@ -509,7 +509,7 @@ export default {
       let costil = false;
 
       const response = await axios
-        .post("http://185.112.83.36:8090/login", form, {
+        .post("http://185.112.83.36:8080/login", form, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -526,7 +526,7 @@ export default {
             // Установка cookie на стороне клиента
             // Cookies.set("token", `${response.data.data.JWT}`, {
             //   // path: "/", // путь
-            //   // domain: "http://localhost:8090/", // замените на ваш домен
+            //   // domain: "http://localhost:8080/", // замените на ваш домен
             //   secure: true, // для HTTPS
             //   sameSite: "None", // для кросс-доменных запросов
             //   expires: 1 / 48, // срок действия, например, 30 мин
@@ -564,7 +564,7 @@ export default {
     async submitEmail() {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/signupUserByEmail",
+          "http://185.112.83.36:8080/signupUserByEmail",
           {
             Email: this.Email,
           },
@@ -602,7 +602,7 @@ export default {
         }
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8090/signupNaturEmail",
+            "http://185.112.83.36:8080/signupNaturEmail",
             {
               Surname: this.Surname,
               Name: this.Name,
@@ -627,7 +627,7 @@ export default {
       } else {
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8090/signupLegalEmail",
+            "http://185.112.83.36:8080/signupLegalEmail",
             {
               Password_hash: this.Password_hash,
               Ind_num_taxp: this.Ind_num_taxp,

@@ -3,8 +3,8 @@
     <div class="center">
       <div class="container">
         <div class="block-flex">
-          <div class="end_date_time" @click="changeActive()">
-            <div class="date">
+          <div class="end_date_time" >
+            <div :class="{ time_select: isActiveDate }" class="date" @click="changeActiveDate()">
               {{
                 getDayOfWeek(
                   selectedDate.year,
@@ -14,14 +14,14 @@
               }}, {{ selectedDate.day }}
               {{ monthNames[selectedDate.month - 1] }}
             </div>
-            <div :class="{ time_select: isActive }" class="time">
+            <div :class="{ time_select: isActiveTime }" @click="changeActiveTime()" class="time">
               {{ formatTime(selectedTime.hours) }} :
               {{ formatTime(selectedTime.minutes) }}
             </div>
           </div>
           <img class="arrow_right" src="../../assets/arrow_right.svg" alt="" />
-          <div class="end_date_time" @click="changeActive()">
-            <div class="date">
+          <div class="end_date_time">
+            <div :class="{ time_select: isActiveDate2 }" class="date" @click="changeActiveDate2()">
               {{
                 getDayOfWeek(
                   selectedDate2.year,
@@ -31,7 +31,7 @@
               }}, {{ selectedDate2.day }}
               {{ monthNames[selectedDate2.month - 1] }}
             </div>
-            <div :class="{ time_select: !isActive }" class="time">
+            <div :class="{ time_select: isActiveTime2 }"  @click="changeActiveTime2()" class="time">
               {{ formatTime(selectedTime2.hours) }} :
               {{ formatTime(selectedTime2.minutes) }}
             </div>
@@ -117,8 +117,16 @@
         </div>
         <div class="grey-line line_margin3"></div>
         <div class="container_summa">
+          <div v-if="isActiveTime || isActiveTime2">По часовая оплата</div>
+          <div v-if="isActiveTime || isActiveTime2">
+  <p>Количество часов: {{ durationHours }}</p>
+</div>
+<div  v-if="isActiveDate || isActiveDate2 ">
+  <p>Количество дней: {{ durationDays }}</p>
+</div>
+          <div v-if="isActiveDate || isActiveDate2">Дневная оплата</div>
           <div class="summa_text">Сумма к оплате:</div>
-          <div class="summa">2000</div>
+          <div class="summa">{{ totalCost }} ₽</div>
         </div>
         <div class="container_center">
           <button @click="toOrder" class="button_yellow_border">Заказать</button>
@@ -133,24 +141,213 @@
 import { ref, computed, watch } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
+import axios from "axios";
 
 export default {
   data() {
     return {
       startDate: this.startDate,
+      isActiveDate: true,
+      isActiveDate2: false,
+      isActiveTime: false,
+      isActiveTime2: false,
+      // hourlyRate: 500, // Стоимость за час
+      // dailyRate: 2000, // Стоимость за день
+      durationHours: 4, // Примерное количество часов (можно вычислять)
+      durationDays: 1, // Примерное количество дней (можно вычислять)
     };
   },
   components: {
     Swiper,
     SwiperSlide,
   },
+  props: {
+    idProduct: {
+      type: Number,
+      required: true,
+    },
+    hourlyRate: {
+      type: Number,
+      required: true,
+    },
+    dailyRate: {
+      type: Number,
+      required: true,
+    },
+  },
+  computed: {
+    durationDays() {
+    const startDate = new Date(
+      this.selectedDate.year,
+      this.selectedDate.month - 1, // Учитываем, что месяцы начинаются с 0
+      this.selectedDate.day
+    );
+
+    const endDate = new Date(
+      this.selectedDate2.year,
+      this.selectedDate2.month - 1,
+      this.selectedDate2.day
+    );
+
+    // Вычисляем разницу в миллисекундах и переводим в дни
+    const differenceInMs = endDate - startDate;
+    const days = differenceInMs / (1000 * 60 * 60 * 24);
+
+    return Math.ceil(days); // Округляем вверх до ближайшего целого дня
+  },
+
+    durationHours() {
+    const startDate = new Date(
+      0, // Год не важен, используем "нулевой" для расчётов
+      0, // Месяц
+      0, // День
+      this.selectedTime.hours,
+      this.selectedTime.minutes
+    );
+
+    const endDate = new Date(
+      0, // Год
+      0, // Месяц
+      0, // День
+      this.selectedTime2.hours,
+      this.selectedTime2.minutes
+    );
+
+    // Вычисляем разницу в миллисекундах и переводим в часы
+    const differenceInMs = endDate - startDate;
+
+    // Если разница отрицательная, добавляем 24 часа (для случаев, когда время конца раньше начала)
+    const hours = differenceInMs >= 0
+      ? differenceInMs / (1000 * 60 * 60)
+      : (differenceInMs + 24 * 60 * 60 * 1000) / (1000 * 60 * 60);
+    this.durationHours = Math.round(hours * 100) / 100;
+    return Math.round(hours * 100) / 100; // Округляем до 2-х знаков
+  },
+
+    totalCost() {
+      if (this.isActiveTime || this.isActiveTime2) {
+        // Рассчитать стоимость за часы
+        return this.hourlyRate * this.durationHours;
+      } else if (this.isActiveDate || this.isActiveDate2) {
+        // Рассчитать стоимость за дни
+        return this.dailyRate * this.durationDays;
+      }
+      return 0; // Если ничего не выбрано
+    },
+  },
+
   methods: {
-    async toOrder(){
+    async toOrder() {
+      // Преобразуем selectedDate и selectedDate2 в объекты Date
+      const startDate = new Date(
+          this.selectedDate.year,
+          this.selectedDate.month - 1, // Месяцы в Date начинаются с 0
+          this.selectedDate.day,
+          this.selectedTime.hours,
+          this.selectedTime.minutes
+        );
+
+        const endDate = new Date(
+          this.selectedDate2.year,
+          this.selectedDate2.month - 1,
+          this.selectedDate2.day,
+          this.selectedTime2.hours,
+          this.selectedTime2.minutes
+        );
+
+        // Генерируем Unix Timestamp
+        const startsAt = Math.floor(startDate.getTime() / 1000);
+        const endsAt = Math.floor(endDate.getTime() / 1000);
+
+      if(isActiveTime || isActiveTime2){
+        try {
+          // Выполняем запрос
+          const response = await axios.post(
+            "http://185.112.83.36:8080/regOrderHourly",
+            {
+              Ads_id: this.idProduct,
+              Starts_at: startsAt,
+              Ends_at: endsAt,
+              PositionX: 1.1,
+              PositionY: 1.1,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+
+          console.log(response);
+
+          if (response.data.status === "fatal") {
+            alert("Error regOrderDaily status:fatal");
+          } else {
+            this.getFavoritList();
+          }
+        } catch (error) {
+          console.error("Ошибка при регистрации заказа:", error);
+        }
+      } else if(isActiveDate || isActiveDate2) {
+        try {
+          // Выполняем запрос
+          const response = await axios.post(
+            "http://185.112.83.36:8080/regOrderDaily",
+            {
+              Ads_id: this.idProduct,
+              Starts_at: startsAt,
+              Ends_at: endsAt,
+              PositionX: 1.1,
+              PositionY: 1.1,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+
+          console.log(response);
+
+          if (response.data.status === "fatal") {
+            alert("Error regOrderDaily status:fatal");
+          } else {
+            this.getFavoritList();
+          }
+        } catch (error) {
+          console.error("Ошибка при регистрации заказа:", error);
+        }
+      }
       
     },
-    changeActive() {
-      this.isActive = !this.isActive;
-      console.log(this.isActive);
+    changeActiveDate() {
+      this.isActiveDate = true;
+      this.isActiveDate2 = false;
+      this.isActiveTime = false;
+      this.isActiveTime2 = false;
+    },
+
+    changeActiveDate2() {
+      this.isActiveDate = false;
+      this.isActiveDate2 = true;
+      this.isActiveTime = false;
+      this.isActiveTime2 = false;
+    },
+
+    changeActiveTime() {
+      this.isActiveDate = false;
+      this.isActiveDate2 = false;
+      this.isActiveTime = true;
+      this.isActiveTime2 = false;
+    },
+
+    changeActiveTime2() {
+      this.isActiveDate = false;
+      this.isActiveDate2 = false;
+      this.isActiveTime = false;
+      this.isActiveTime2 = true;
     },
 
     closeInfoPopup() {
@@ -158,7 +355,10 @@ export default {
     },
   },
   setup() {
-    let isActive = ref(true);
+    let isActiveDate = ref(true);
+    let isActiveDate2 = ref(false);
+    let isActiveTime = ref(false);
+    let isActiveTime2 = ref(false);
 
     let todayDate = new Date();
     // Добавляем три года
@@ -172,50 +372,46 @@ export default {
       todayDate.getMilliseconds() // Сохраняем текущие миллисекунды
     );
 
-    //Конечная дата
+    // Конечная дата
     let endDate = ref({
       day: todayDate.getDate(),
-      month: todayDate.getMonth() + 1, // getMonth() returns month index starting from 0
+      month: todayDate.getMonth() + 1, // getMonth() возвращает индекс месяца с 0
       year: todayDate.getFullYear(),
       hours: todayDate.getHours(),
       minutes: todayDate.getMinutes(),
     });
-    //Стартовая дата
+
+    // Стартовая дата
     let startDate = ref({
       day: todayDate.getDate(),
-      month: todayDate.getMonth() + 1, // getMonth() returns month index starting from 0
+      month: todayDate.getMonth() + 1, // getMonth() возвращает индекс месяца с 0
       year: todayDate.getFullYear(),
       hours: todayDate.getHours(),
       minutes: todayDate.getMinutes(),
     });
+
     const selectedDate = ref({
       day: todayDate.getDate(),
-      month: todayDate.getMonth() + 1, // getMonth() returns month index starting from 0
+      month: todayDate.getMonth() + 1,
       year: todayDate.getFullYear(),
     });
+
     const selectedDate2 = ref({
       day: futureDate.getDate(),
-      month: futureDate.getMonth() + 12, // getMonth() returns month index starting from 0
+      month: futureDate.getMonth() + 12,
       year: futureDate.getFullYear() + 2,
     });
 
-    const activeDate = computed(() => (isActive.value ? selectedDate.value : selectedDate2.value));
+    const activeDate = computed(() =>
+      isActiveDate.value ? selectedDate.value : selectedDate2.value
+    );
 
     const days = ref(Array.from({ length: 31 }, (_, i) => i + 1));
     const monthNames = [
-      "Январь",
-      "Февраль",
-      "Март",
-      "Апрель",
-      "Май",
-      "Июнь",
-      "Июль",
-      "Август",
-      "Сентябрь",
-      "Октябрь",
-      "Ноябрь",
-      "Декабрь",
+      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь",
     ];
+
     const dayOfWeekNames = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
     const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
     const years = ref(
@@ -231,7 +427,7 @@ export default {
       return days.value.slice(0, daysInMonth);
     });
 
-     watch(selectedDate, (newDate, oldDate) => {
+    watch(selectedDate, (newDate) => {
       const daysInMonth = getDaysInMonth(newDate.year, newDate.month);
       if (newDate.day > daysInMonth) {
         selectedDate.value.day = daysInMonth;
@@ -246,25 +442,28 @@ export default {
     });
 
     const updateDay = (swiper) => {
-      if (isActive.value) {
+      if (isActiveDate.value) {
         selectedDate.value.day = filteredDays.value[swiper.realIndex];
-      } else {
+      }
+      if (isActiveDate2.value) {
         selectedDate2.value.day = filteredDays.value[swiper.realIndex];
       }
     };
 
     const updateMonth = (swiper) => {
-      if (isActive.value) {
+      if (isActiveDate.value) {
         selectedDate.value.month = filteredMonths.value[swiper.realIndex];
-      } else {
+      }
+      if (isActiveDate2.value) {
         selectedDate2.value.month = filteredMonths.value[swiper.realIndex];
       }
     };
 
     const updateYear = (swiper) => {
-      if (isActive.value) {
+      if (isActiveDate.value) {
         selectedDate.value.year = years.value[swiper.realIndex];
-      } else {
+      }
+      if (isActiveDate2.value) {
         selectedDate2.value.year = years.value[swiper.realIndex];
       }
     };
@@ -284,34 +483,41 @@ export default {
       minutes: new Date().getMinutes(),
     });
 
-    const activeTime = computed(() => (isActive.value ? selectedTime.value : selectedTime2.value));
+    const activeTime = computed(() =>
+      isActiveTime.value ? selectedTime.value : selectedTime2.value
+    );
 
     const hours = ref(Array.from({ length: 24 }, (_, i) => i));
     const minutes = ref(Array.from({ length: 60 }, (_, i) => i));
 
-    //Для добавления нуля перед цифрами
+    // Для добавления нуля перед цифрами
     const formatTime = (time) => {
       return time < 10 ? `0${time}` : `${time}`;
     };
 
     const updateHours = (swiper) => {
-      if (isActive.value) {
+      if (isActiveTime.value) {
         selectedTime.value.hours = hours.value[swiper.realIndex];
-      } else {
+      }
+      if (isActiveTime2.value) {
         selectedTime2.value.hours = hours.value[swiper.realIndex];
       }
     };
 
     const updateMinutes = (swiper) => {
-      if (isActive.value) {
+      if (isActiveTime.value) {
         selectedTime.value.minutes = minutes.value[swiper.realIndex];
-      } else {
+      }
+      if (isActiveTime2.value) {
         selectedTime2.value.minutes = minutes.value[swiper.realIndex];
       }
     };
 
     return {
-      isActive,
+      isActiveDate,
+      isActiveDate2,
+      isActiveTime,
+      isActiveTime2,
       activeDate,
       selectedDate,
       selectedDate2,
@@ -376,7 +582,6 @@ export default {
 
 .container_summa {
   font-size: var(--fs-20);
-  display: flex;
 }
 
 .container_place {

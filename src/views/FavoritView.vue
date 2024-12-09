@@ -47,13 +47,13 @@ export default {
       this.$emit("exitUser");
     },
   },
-  //http://185.112.83.36:8090/groupFavByRecent
+  //http://185.112.83.36:8080/groupFavByRecent
   components: {
     UserPanelRight,
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -85,7 +85,7 @@ export default {
 
 
     // try {
-    //   const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+    //   const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
     //     headers: {
     //       "Content-Type": "application/json",
     //     },

@@ -22,7 +22,7 @@
         <img src="../assets/plus.png" alt="" />
         <span>Добавить реквизиты</span>
       </div>
-      <Router-link to="/walentHistory" class="history_link">
+      <Router-link @click="changeRoute('waletHistory')" to="/walentHistory" class="history_link">
         История кошелька
       </Router-link>
     </div>
@@ -45,7 +45,7 @@
           <div class="name">5 000 ₽</div>
         </div>
       </div>
-      <Router-link to="/walentHistory" class="history_link">
+      <Router-link @click="changeRoute('waletHistory')" to="/walentHistory" class="history_link">
         Смотреть историю
       </Router-link>
     </div>

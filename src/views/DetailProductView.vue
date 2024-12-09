@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <v-popup-fitback v-if="isInfoPopupRatingView" @closePopup="closeInfoPopup" />
-    <v-popup v-if="isInfoPopupView" @closePopup="closeInfoPopup" />
+    <v-popup :dailyRate="detail.Daily_rate" :hourlyRate="detail.Hourly_rate" :idProduct="productId" v-if="isInfoPopupView" @closePopup="closeInfoPopup" />
     <div class="detailProduct">
       <div class="block">
         <a @click="goBack" class="route-view">
@@ -39,19 +39,7 @@
             {{ detail.Location }}
           </div>
           <div class="desc_map">
-            <yandex-map
-              v-model="map"
-              :settings="{
-                location: {
-                  center: [37.617644, 55.755819],
-                  zoom: 9,
-                },
-              }"
-              width="100%"
-              height="500px"
-            >
-              <yandex-map-default-scheme-layer />
-            </yandex-map>
+      
           </div>
           <!-- <div class="desc_title">Отзывы заказчиков</div>
 
@@ -182,7 +170,7 @@ import { ref } from "vue";
 import axios from "axios";
 import vPopup from "../components/popup/v-popup.vue";
 import vPopupFitback from "../components/popup/v-popup-fitback.vue";
-import { YandexMap, YandexMapDefaultSchemeLayer } from "vue-yandex-maps";
+// import { YandexMap, YandexMapDefaultSchemeLayer } from "vue-yandex-maps";
 axios.defaults.xsrfCookieName = 'token'
 axios.defaults.xsrfHeaderName = "token"
 
@@ -203,6 +191,10 @@ export default {
       adsFav: 0,
       reviews: [],
       reviewsLength: 0,
+      mapSettings: {
+        center: [55.751244, 37.618423], // Центр карты (Москва)
+        zoom: 10, // Уровень приближения
+      },
     };
   },
   components: {
@@ -230,7 +222,7 @@ export default {
       console.log(`addFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/sigFavAds",
+          "http://185.112.83.36:8080/sigFavAds",
           {
             Ads_id: idProduct,
           },
@@ -256,7 +248,7 @@ export default {
       console.log(`removeFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/delFavAds",
+          "http://185.112.83.36:8080/delFavAds",
           {
             Ads_id: idProduct,
           },
@@ -280,7 +272,7 @@ export default {
     },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -339,7 +331,7 @@ export default {
     console.log(this.productId)
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8090/printAds",
+        "http://185.112.83.36:8080/printAds",
         {
           Ads_id: this.productId,
         },
@@ -349,6 +341,7 @@ export default {
           },
         }
       );
+      console.log(response)
       if (response.data.status != "success") console.log(response);
       this.detail = response.data.data;
       this.reviews = response.data.data.Customer_reviews;
@@ -360,7 +353,7 @@ export default {
     }
 
     try {
-      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -515,6 +508,11 @@ export default {
   margin-top: 4vw;
 }
 
+yandex-map {
+  display: block;
+  width: 100%; /* Убедитесь, что карта имеет размеры */
+  height: 500px;
+}
 .product_button_otsiz {
   margin-top: 1vw;
   text-align: center;
