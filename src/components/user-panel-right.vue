@@ -78,6 +78,8 @@ export default {
     },
     exitUser() {
       this.$emit("exitUser");
+      location.reload(true);
+
     },
     created(){
       this.Login = localStorage.getItem('Login');

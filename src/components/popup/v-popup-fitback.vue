@@ -1,16 +1,16 @@
 <template>
-  <v-popup-add-review v-if="isInfoPopupAddReview" @closePopup="closeInfoPopup" />
+  <v-popup-add-review :idProduct="idProduct" v-if="isInfoPopupAddReview" @closePopup="closeInfoPopup" />
   <div class="v-popup-fitback">
     <div class="center">
       <div class="title">Отзывы о пользователе</div>
       <div class="rating_title">
-        <samp>5,0</samp>
+        <samp>{{rating_num}}</samp>
         <div v-for="n in 5" :key="n" class="rating_container">
           <img
             src="../../assets/star_yellow.png"
             alt="Звезда"
             class="rating_big"
-            v-if="n <= 5"
+            v-if="n <= rating_num"
           />
           <img
             src="../../assets/star_grey.png"
@@ -20,7 +20,12 @@
           />
         </div>
       </div>
-      <div class="text_desc">на основании {{reviews.length}} оценок</div>
+      <div class="text_desc" v-if="reviewsCounter && reviews != null">
+        на основании {{ reviews.length }} оценок
+      </div>
+      <div class="text_desc" v-else>
+        Нет оценок
+      </div>
       <div class="flex_block s-b">
         <div class="matrix_rating">
           <div class="rating_line">
@@ -57,7 +62,7 @@
               />
             </div>
             <div class="rat_line"></div>
-            <samp>0</samp>
+            <samp>{{stars[1]}}</samp>
           </div>
           <div class="rating_line">
             <div v-for="n in 5" :key="n" class="rating_container">
@@ -75,7 +80,7 @@
               />
             </div>
             <div class="rat_line"></div>
-            <samp>{{stars[0]}}</samp>
+            <samp>{{stars[2]}}</samp>
           </div>
           <div class="rating_line">
             <div v-for="n in 5" :key="n" class="rating_container">
@@ -93,7 +98,7 @@
               />
             </div>
             <div class="rat_line"></div>
-            <samp>{{stars[0]}}</samp>
+            <samp>{{stars[3]}}</samp>
           </div>
           <div class="rating_line">
             <div v-for="n in 5" :key="n" class="rating_container">
@@ -111,23 +116,23 @@
               />
             </div>
             <div class="rat_line"></div>
-            <samp>{{stars[0]}}</samp>
+            <samp>{{stars[4]}}</samp>
           </div>
         </div>
         <button @click="addReviewPopap" class="grey_button">Добавить отзыв</button>
       </div>
       <div class="container_selected">
-        <select v-model="selected" class="selecte_fileter" name="filter" id="">
-          <option>Сначала новые</option>
-          <option>Сначала старые</option>
+        <select v-model="selected" @change="onFilterChange" class="selecte_fileter" name="filter" id="">
+          <option value="new">Сначала новые</option>
+          <option value="old">Сначала старые</option>
         </select>
       </div>
       <div class="container_comments">
         <div v-for="(review, index) in reviews" :key="index" class="container_comment">
-          <img class="comment_img" src="../../assets/user.png" alt="" />
+          <img class="comment_img" :src="'data:image/png;base64,'+review.Review_avatar" alt="" />
           <div class="comment_desc">
             <div class="name">{{ review.Name }}</div>
-            <div class="date">6 апреля</div>
+            <div class="date">{{ formatDate(review.Updated_at_comment) }}</div>
             <div class="flex_block">
               <div v-for="n in 5" :key="n" class="rating_container">
                 <img
@@ -165,9 +170,21 @@ export default {
     return {
       isInfoPopupAddReview: false,
       reviews: [],
-      selected: "Сначала новые",
-      stars: [0,0,0,0,0]
+      rating_num: 0,
+      selected: "new", // По умолчанию "Сначала новые"
+      stars: [0, 0, 0, 0, 0],
     };
+  },
+  props: {
+    idProduct: {
+      type: Number,
+      required: true,
+    },
+  },
+  computed: {
+    reviewsCounter() {
+      return this.apiData?.reviews || []; // Используем пустой массив, если данные ещё не загружены
+    },
   },
   components: {
     Swiper,
@@ -175,6 +192,22 @@ export default {
     vPopupAddReview,
   },
   methods: {
+    formatDate(unixTimestamp) {
+      if (!unixTimestamp) return 'Дата неизвестна'; // Обработка некорректных данных
+      try {
+        const timestamp = unixTimestamp * 1000; // Переводим в миллисекунды
+        const date = new Date(timestamp);
+        const formatter = new Intl.DateTimeFormat('ru-RU', {
+          day: 'numeric',
+          month: 'long',
+        });
+        return formatter.format(date);
+      } catch (error) {
+        console.error('Ошибка при форматировании даты:', error);
+        return 'Дата неизвестна';
+      }
+    },
+
     //add review
     closeInfoPopup() {
       this.isInfoPopupView = false;
@@ -201,10 +234,22 @@ export default {
     closeInfoPopup() {
       this.$emit("closePopup");
     },
+    // Метод для обработки изменения фильтра
+    async onFilterChange() {
+      if (this.selected === "new") {
+        await this.groupReviewNewOnesFirst();
+      } else if (this.selected === "old") {
+        await this.groupReviewOldOnesFirst();
+      }
+    },
     async groupReviewOldOnesFirst() {
+      console.log("groupReviewOldOnesFirst");
       try {
-        const response = await axios.get(
-          "http://185.112.83.36:8080/groupReviewOldOnesFirst",
+        const response = await axios.post(
+          "http://185.112.83.36:8090/groupReviewOldOnesFirst",
+          {
+            ads_id: this.idProduct,
+          },
           {
             headers: {
               "Content-Type": "application/json",
@@ -212,18 +257,19 @@ export default {
           }
         );
         if (response.data.status === "success") {
-          this.reviews = response.data.data;
+          this.reviews = response.data.data.Review_list;
         } else {
           alert("Error groupReviewLowRatOnesFirst status:fatal");
         }
       } catch (error) {
-        console.error("Ошибка при выводе отзывав:", error);
+        console.error("Ошибка при выводе отзывов:", error);
       }
     },
     async groupReviewNewOnesFirst() {
+      console.log("groupReviewNewOnesFirst");
       try {
         const response = await axios.get(
-          "http://185.112.83.36:8080/groupReviewNewOnesFirst",
+          "http://185.112.83.36:8090/groupReviewNewOnesFirst",
           {
             headers: {
               "Content-Type": "application/json",
@@ -231,35 +277,48 @@ export default {
           }
         );
         if (response.data.status === "success") {
-          this.reviews = response.data.data;
+          this.reviews = response.data.data.Review_list;
+          console.log(this.reviews[0]);
         } else {
           alert("Error groupReviewLowRatOnesFirst status:fatal");
         }
       } catch (error) {
-        console.error("Ошибка при выводе отзывав:", error);
+        console.error("Ошибка при выводе отзывов:", error);
       }
     },
   },
   async created() {
+    console.log(this.idProduct)
     try {
-      const response = await axios.get(
-        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
+      const response = await axios.post(
+        "http://185.112.83.36:8090/groupReviewNewOnesFirst",
+        {
+          ads_id: this.idProduct,
+        },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-      if (response.data.status === "success") {
-        this.reviews = response.data.data;
-      } else {
-        alert("Error groupReviewLowRatOnesFirst status:fatal");
-      }
+      console.log(response);
+      console.log(response.data.status);
+      if (response.data.status != "success") console.log("fatalLLLLLLLLLLLL");
+      this.reviews = response.data.data.Review_list;
+      console.log(this.reviews);
+      this.stars[4] = response.data.data.Star_five;
+      this.stars[3] = response.data.data.Star_four;
+      this.stars[2] = response.data.data.Star_thre;
+      this.stars[1] = response.data.data.Star_two;
+      this.stars[0] = response.data.data.Star_one;
+      this.rating_num = response.data.data.Rating_num;
     } catch (error) {
-      console.error("Ошибка при выводе отзывав:", error);
+      console.error(
+        "Ошибка при загрузке отзывов:",
+        error.response ? error.response.data : error.message
+      );
     }
   },
-  setup() {},
 };
 </script>
 

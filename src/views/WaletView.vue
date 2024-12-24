@@ -1044,5 +1044,6 @@ main {
 .shop {
   display: flex;
   justify-content: space-evenly;
+  padding: 0 7vw;
 }
 </style>

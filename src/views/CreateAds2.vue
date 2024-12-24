@@ -26,7 +26,7 @@
             <div class="flex_block">
               <div class="grey_text_tr">Цена</div>
               <input
-                v-model="hourly_rate"
+                v-model="Rate"
                 class="filter_block"
                 type="text"
                 style="margin-right: 2vw"
@@ -34,26 +34,31 @@
 
               <div class="checkbox">
                 <input
+                  v-model="priceType"
                   class="custom-checkbox"
                   type="radio"
                   id="hours"
                   name="daysOrHours"
+                  value="час"
                 />
                 <label for="hours">Почасовая</label>
               </div>
               <div class="checkbox">
                 <input
+                  v-model="priceType"
                   class="custom-checkbox"
                   type="radio"
                   id="days"
                   name="daysOrHours"
+                  value="день"
                 />
                 <label for="days">Сутки</label>
               </div>
             </div>
+
             <div id="hour_block">
-              <input v-model="hourTo" class="hour_input" type="text" placeholder="С 6:00" />
-              <input v-model="hourFrom" class="hour_input" type="text" placeholder="До 18:00" />
+              <input v-model="hourTo" class="hour_input" type="time" placeholder="С 6:00" />
+              <input v-model="hourFrom" class="hour_input" type="time" placeholder="До 18:00" />
             </div>
             <div class="flex_block" style="margin-bottom: 12vw">
               <div>
@@ -65,9 +70,17 @@
                   class="filter_block downloade_file"
                   id="uploade-photo"
                   type="file"
+                  multiple
+                  @change="handleFileUpload"
                 />
               </div>
             </div>
+            <div class="preview-container">
+              <div v-for="(image, index) in uploadedImages" :key="index" class="image-preview">
+                <img :src="image" @click="deleteFile(index)" alt="Загруженное фото" />
+              </div>
+            </div>
+
 
             <div class="flex_block" style="margin-bottom: 15vw">
               <div class="grey_text_tr">Описание объявления</div>
@@ -150,10 +163,12 @@ import axios from "axios";
 export default {
   data() {
     return {
+      uploadedImages: [], // Список загруженных изображений
+      priceType: '',
       title: "",
       desc: "",
-      hourly_rate: 0,
-      daily_rate: 0,
+      Rate: 0,
+      // daily_rate: 0,
       phone: "",
       array_img: ["../assets/bank.png"],
       images: ref([
@@ -165,32 +180,59 @@ export default {
       ]),
     };
   },
-
   methods: {
-    async sigAds() {
-      try {
-        console.log(`
-            title = ${this.title}
-            desc = ${this.desc}
-            hourly_rate = ${this.hourly_rate}
-            daily_rate = ${this.daily_rate}`
-        );
-        this.hourly_rate = 1000;
-        this.daily_rate = this.hourly_rate * 24;
+    deleteFile(id) {
+      this.uploadedImages.splice(id, 1);
+      console.log(this.uploadedImages);
+    },
+    handleFileUpload(event) {
+      const files = event.target.files;
 
-        const response = await axios.post(
-          "http://185.112.83.36:8080/sigAds",
-          {
-            Image: [
-                ""
-            ],
-            Title: "Погрузчик",
-            Description: "ПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчикПогрузчик",
-            Hourly_rate: 1000,
-            Daily_rate: 23444,
+      // Ограничение на количество загружаемых изображений
+      if (files.length > 30) {
+        alert("Вы можете загрузить не более 30 изображений");
+        return;
+      }
+
+      Array.from(files).forEach((file) => {
+        // Проверка типа файла
+        if (!file.type.startsWith("image/")) {
+          alert(`Файл ${file.name} не является изображением`);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.uploadedImages.push(e.target.result); // Добавляем base64 строку
+        };
+        reader.readAsDataURL(file); // Конвертируем в base64
+      });
+    },
+
+    async sigAds() {
+      console.log({
+            Image: this.uploadedImages, // Загруженные изображения в base64
+            Title: this.title,
+            Description: this.desc,
+            Hourly_rate: this.priceType === 'час' ? this.Rate : 0,
+            Daily_rate: this.priceType === 'день' ? this.Rate : 0,
             Category_id: 1,
             position: (1, 1),
             Location: "Республика Северная Осетия - Алания, г.Владикавказ"
+          });
+      try {
+        // Отправляем base64 изображения в виде массива
+        const response = await axios.post(
+          "http://185.112.83.36:8090/sigAds",
+          {
+            Title: this.title,
+            Description: this.desc,
+            Hourly_rate: this.priceType === 'час' ? this.Rate : 0,
+            Daily_rate: this.priceType === 'день' ? this.Rate : 0,
+            Category_id: 1,
+            PositionX: 1.1,
+            PositionY: 1.1,
+            Image: this.uploadedImages, // Загруженные изображения в base64
           },
           {
             headers: {
@@ -199,17 +241,14 @@ export default {
             withCredentials: true, // для отправки куки
           }
         );
-       console.log(response);
-      //  if (response.data.data.status == "fatal") {
 
-       // } else {
-
-        //}
-        this.changeRoute('home')
+        console.log(response.data);
+        this.changeRoute('home'); // Переход на другую страницу после отправки
       } catch (error) {
-        console.error("Ошибка при загрузке sigAds:", error);
+        console.error("Ошибка при отправке:", error);
       }
     },
+
 
     // /// Image
     // handleFileChange(event) {
@@ -815,4 +854,26 @@ li::before {
   margin-top: 4vw;
   font-size: var(--fs-20);
 }
+
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.image-preview {
+  margin: 0.5rem;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 </style>

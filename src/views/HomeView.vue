@@ -96,7 +96,7 @@
         <div class="shop_list">
           <div :key="prod.id" v-for="prod in displayedProducts" @click="selectProduct(prod)" class="route-view">
             <div class="product">
-              <img class="product_img" src="../assets/product2.png" alt="" />
+              <img class="product_img" :src="prod.Ads_photo != 'Error reading file' ? `data:image/png;base64,${prod.Ads_photo}` : require('@/assets/product2.png')" alt="" />
               <div class="product_des">
                 <div class="product_title">
                   <div>{{ prod.Title }}</div>
@@ -105,7 +105,7 @@
                   <img v-else @click="clickFavorite(prod)" src="../assets/star_grey.png" alt="" />
                 </div>
                 <div v-if="prod.Hourly_rate != undefined" class="product_price">от {{ prod.Hourly_rate }} ₽ за час</div>
-                <div v-else class="product_price">от {{ prod.Daily_rate }} ₽ за день</div>
+                <div v-if="prod.Daily_rate != undefined" class="product_price">от {{ prod.Daily_rate }} ₽ за смену</div>
                 <button class="product_button_date">Выбрать дату</button>
                 <div class="product_des_text">
                   Автокран Ивановец - это марка автокранов, производимых заводом “ИМЗ
@@ -119,7 +119,7 @@
                 <!-- <div class="product_create_at">{{ formatCreationTime(prod.created_at) }}</div> -->
               </div>
               <section class="author_rating">
-                <img class="author_img" src="../assets/user.png" alt="" />
+                <img class="author_img" :src="prod.Avatar_photo != null ? `data:image/png;base64,${prod.Avatar_photo}` : require('@/assets/user.png')" alt="" />
                 <div class="author_name">{{ prod.Name }}</div>
                 <div class="rating_user">
                   <samp>5,0</samp>
@@ -161,43 +161,20 @@ export default {
       user_id: 29,
       selectedIndex: null, // Индекс выбранного слайда
       selectedPodcategory: null, // Выбранная подкатегория
-      category_id: -1, // ID выбранной категории
+      category_id: [], // ID выбранной категории
+      Category: [],
       starYellow: require("@/assets/star_yellow.png"),
       starGrey: require("@/assets/star_grey.png"),
       favorite: [],
-      // categories: [
-      //   "Подъемная техника",
-      //   "Землеройная техника",
-      //   "Дорожно-строительная техника",
-      //   "Грузовой транспорт",
-      //   "Погрузочная техника",
-      //   "Прицепы",
-      //   "Сельхозтехника",
-      //   "Строительная техника",
-      //   "Другое",
-      // ],
       selectedCategory: "",
-      priceFrom: -1,
-      priceTo: -1,
-      rentalFrom: "",
-      rentalTo: "",
-      region: "",
+      priceFrom: 1,
+      priceTo: 99999,
+      rentalFrom: '21.06.1970',
+      rentalTo: '21.06.2026',
+      region: [1, 2],
       rating: 0,
       currentPage: 1,
       prods: [
-        // {
-        //   id: 0,
-        //   title: "",
-        //   description:
-        //     "Автокран Ивановец - это марка автокранов, производимых заводом “ИМЗ АВТОКРАН” в Иваново. Эти автокраны отличаются высокой надежностью, производительностью и долговечностью. Они широко используются в различных отраслях промышленности и строительства.",
-        //   status: "Занят: 10.05 - 15.05",
-        //   file_path: "",
-        //   hourly_rate: 120,
-        //   category_id: "",
-        //   name: "",
-        //   Owner_id: 29,
-        //   created_at: 1724335213382,
-        // },
       ],
       loading: true,
       perPage: 4,
@@ -859,16 +836,16 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8080/sortProductListHourlyRate",
+        "http://185.112.83.36:8090/sortProductListHourlyRate",
         {
           Category: [],
           LowNum: 1,
-          HigNum: 300,
+          HigNum: 9999999,
           LowDate: 1452585372,
           HigDate: 1489308972,
           Position: [1, 2],
           Distance: 999999,
-          Rating: 1,
+          Rating: 0,
         },
         {
           headers: {
@@ -883,6 +860,8 @@ export default {
       } else {
         this.prods = response.data.data;
         this.displayedProducts = this.prods.slice(0, this.perPage);
+        console.log("displayedProducts")
+        console.log(this.displayedProducts)
       }
     } catch (error) {
       console.error("Ошибка при загрузке продуктов:", error);
@@ -893,7 +872,7 @@ export default {
     try {
       console.log("groupFavByRecent");
 
-      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -917,70 +896,70 @@ export default {
     favoriteStateF() {
       return false;
     },
-    clickFavorite() {
-      console.log(`ClickFav detail.Ads_id = ${this.detail.Ads_id}`)
-      console.log(this.favorite)
-      if (this.favorite.find((prod) => prod.Ads_id === this.detail.Ads_id) === undefined) {
-        this.addFavorite(this.detail.Ads_id);
-      } else {
-        this.removeFavorite(this.detail.Ads_id);
-      }
-    },
-    async addFavorite(idProduct) {
-      console.log(`addFavorite ${idProduct}`);
-      try {
-        const response = await axios.post(
-          "http://185.112.83.36:8080/sigFavAds",
-          {
-            Ads_id: idProduct
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true, // для отправки куки
-          }
-        );
-        console.log(response)
+    // clickFavorite() {
+    //   console.log(`ClickFav detail.Ads_id = ${this.detail.Ads_id}`)
+    //   console.log(this.favorite)
+    //   if (this.favorite.find((prod) => prod.Ads_id === this.detail.Ads_id) === undefined) {
+    //     this.addFavorite(this.detail.Ads_id);
+    //   } else {
+    //     this.removeFavorite(this.detail.Ads_id);
+    //   }
+    // },
+    // async addFavorite(idProduct) {
+    //   console.log(`addFavorite ${idProduct}`);
+    //   try {
+    //     const response = await axios.post(
+    //       "http://185.112.83.36:8090/sigFavAds",
+    //       {
+    //         Ads_id: idProduct
+    //       },
+    //       {
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //         withCredentials: true, // для отправки куки
+    //       }
+    //     );
+    //     console.log(response)
 
-        if (response.data.status === "fatal") {
-          alert("Error addFavorite status:fatal");
-        } else {
-          this.getFavoritList();
-        }
-      } catch (error) {
-        console.error("Ошибка при добавлении в избранное:", error);
-      }
-    },
-    async removeFavorite(idProduct) {
-      console.log(`removeFavorite ${idProduct}`);
-      try {
-        const response = await axios.post(
-          "http://185.112.83.36:8080/delFavAds",
-          {
-            Ads_id: idProduct,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true, // для отправки куки
-          }
-        );
-        console.log(response)
+    //     if (response.data.status === "fatal") {
+    //       alert("Error addFavorite status:fatal");
+    //     } else {
+    //       this.getFavoritList();
+    //     }
+    //   } catch (error) {
+    //     console.error("Ошибка при добавлении в избранное:", error);
+    //   }
+    // },
+    // async removeFavorite(idProduct) {
+    //   console.log(`removeFavorite ${idProduct}`);
+    //   try {
+    //     const response = await axios.post(
+    //       "http://185.112.83.36:8090/delFavAds",
+    //       {
+    //         Ads_id: idProduct,
+    //       },
+    //       {
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //         withCredentials: true, // для отправки куки
+    //       }
+    //     );
+    //     console.log(response)
 
-        if (response.data.status === "fatal") {
-          alert("Error removeFavirite status:fatal");
-        } else {
-          this.getFavoritList();
-        }
-      } catch (error) {
-        console.error("Ошибка при удалении из избранного:", error);
-      }
-    },
+    //     if (response.data.status === "fatal") {
+    //       alert("Error removeFavirite status:fatal");
+    //     } else {
+    //       this.getFavoritList();
+    //     }
+    //   } catch (error) {
+    //     console.error("Ошибка при удалении из избранного:", error);
+    //   }
+    // },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -1006,13 +985,16 @@ export default {
         this.selectedPodcategory = null; // Сбросить выбранную подкатегорию при выборе нового слайда
       }
     },
-    selectSubcategory(subSlide) {
-      // Переключаем активный статус подкатегории и устанавливаем category_id
-      subSlide.active = !subSlide.active;
-      this.category_id = subSlide.active ? subSlide.category_id : -1;
-      console.log("Selected Subcategory:", subSlide.name);
-      console.log("Category ID:", this.category_id);
-    },
+    // selectSubcategory(subSlide) {
+    //   // Переключаем активный статус подкатегории и устанавливаем category_id
+    //   subSlide.active = !subSlide.active;
+
+    //   if(subSlide.active) this.category_id.push(subSlide.category_id);
+
+    //   console.log("Selected Subcategory:", subSlide.name);
+    //   console.log("Category ID:");
+    //   console.log("Category ID:", this.category_id);
+    // },
 
     formatCreationTime(createdAt) {
       const date = new Date(createdAt);
@@ -1031,11 +1013,12 @@ export default {
       const end = start + this.perPage;
       this.displayedProducts.push(...this.prods.slice(start, end));
     },
-    selectCategory(category) {
-      this.category_id = category;
-    },
+    // selectCategory(category) {
+    //   this.category_id.push(category);
+    // },
     setRating(star) {
-      this.rating = star;
+      if(star == this.rating) this.rating = 0;
+      else this.rating = star;
     },
     async applyFilters() {
       let partsDateFrom = this.rentalFrom.split(".");
@@ -1057,7 +1040,6 @@ export default {
       console.log(this.sortRadio);
 
       if(this.sortRadio) {
-        this.category_id = 1
         console.log("sortProductListDailyRate")
         console.log(this.category_id)
         console.log(this.priceFrom)
@@ -1067,27 +1049,17 @@ export default {
         console.log(this.rating)
         try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/sortProductListDailyRate",
-          // {
-          //   Category: [1],
-          //   LowNum: this.priceFrom,
-          //   HigNum: this.priceTo,
-          //   LowDate: partsDateFrom,
-          //   HigDate: partsDateTo,
-          //   Position: [1, 2],
-          //   Distance: 999999,
-          //   Rating: this.rating,
-          // },
+          "http://185.112.83.36:8090/sortProductListDailyRate",
           {
-              Category: [1],
+              Category: this.category_id,
               LowNum: this.priceFrom,
               HigNum: this.priceTo,
-              LowDate: 1452585372,
-              HigDate: 1489308972,
-              Position: [1, 2],
+              LowDate: partsDateFrom,
+              HigDate: partsDateTo,
+              Position: this.region,
               Distance: 999999,
-              Rating: 1,
-            },
+              Rating: this.rating,
+          },
           {
             headers: {
               "Content-Type": "application/json",
@@ -1109,7 +1081,6 @@ export default {
 
       } else {
         console.log("sortProductListHourlyRate")
-        this.category_id = 1
         console.log(this.category_id)
         console.log(this.priceFrom)
         console.log(this.priceTo)
@@ -1118,9 +1089,9 @@ export default {
         console.log(this.rating)
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8080/sortProductListHourlyRate",
+            "http://185.112.83.36:8090/sortProductListHourlyRate",
             {
-              Category: [Number(this.category_id)],
+              Category: this.category_id,
               LowNum: Number(this.priceFrom),
               HigNum: Number(this.priceTo),
               LowDate: Number(partsDateFrom),
@@ -1162,7 +1133,7 @@ export default {
       
 
       /*try {
-        const response = await axios.post("http://185.112.83.36:8080", filters);
+        const response = await axios.post("http://185.112.83.36:8090", filters);
         console.log("Filters applied:", response.data);
       } catch (error) {
         console.error("Error applying filters:", error);
@@ -1184,11 +1155,29 @@ export default {
       }
     },
     selectSubcategory(subSlide) {
-      this.selectedPodcategory = subSlide;
-      subSlide.active = !subSlide.active;
-      this.category_id = subSlide.category_id;
-      console.log("Selected Subcategory:", this.selectedPodcategory);
-      console.log(this.category_id);
+      // this.selectedPodcategory = subSlide;
+      // subSlide.active = !subSlide.active;
+      // this.category_id = subSlide.category_id;
+      // console.log("Selected Subcategory:", this.selectedPodcategory);
+      // console.log(this.category_id);
+
+
+       // Переключаем активный статус подкатегории и устанавливаем category_id
+       subSlide.active = !subSlide.active;
+      console.log(subSlide.active);
+      if(subSlide.active){
+        console.log('push')
+        this.category_id.push(subSlide.category_id)
+      }
+      else{
+        console.log('remove');
+        this.category_id = this.category_id.filter(item => item != subSlide.category_id);
+      } 
+
+      console.log("Selected Subcategory:", subSlide.name);
+      console.log("Category ID:");
+      console.log("Category ID:", this.category_id);
+      this.category_id.forEach(e=>(console.log(e)))
     },
   },
 
@@ -1420,6 +1409,7 @@ main {
 .shop {
   display: flex;
   justify-content: center;
+  padding: 0 7vw;
 }
 
 .shop_product {

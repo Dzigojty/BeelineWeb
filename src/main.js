@@ -4,6 +4,7 @@ import router from './router'
 import { register } from 'swiper/element/bundle';
 import VueTheMask from 'vue-the-mask';
 import VueCookies from 'vue-cookies';
+import { createPinia } from 'pinia';
 import YmapPlugin from 'vue-yandex-maps';
 
 const settings = {
@@ -19,7 +20,8 @@ const settings = {
 register();
 
 const app = createApp(App);
-
+const pinia = createPinia();
+app.use(pinia); // Инициализация Pinia
 app.use(router);
 app.use(YmapPlugin, settings); // Регистрируем плагин Yandex Maps
 

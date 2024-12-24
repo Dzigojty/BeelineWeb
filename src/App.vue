@@ -41,7 +41,7 @@
             height="40"
           />
           <a to="/myOrder" class="header_navigation-link header_navigation-name">
-            Имя Фамилия
+            {{ name }}
           </a>
         </li>
       </ul>
@@ -95,7 +95,8 @@
   <HomeView v-if="route == 'home'" @selectProduct="selectProduct" :user_id="appMessage" />
   <DetailProductView
     v-if="route == 'detail'"
-    :productId="selectedProduct"
+    @selectProduct="selectProduct"
+    :idProduct="selectedProduct"
     @changeRoute="changeRoute"
     @goBack="goBack"
   />
@@ -164,6 +165,7 @@ import SettingView from "../src/views/SettingView.vue";
 import SearchField from "./components/search-field.vue";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { useWebSocketStore } from '@/stores/webSocketStore.js';
 
 export default {
   components: {
@@ -188,6 +190,7 @@ export default {
   },
   data() {
     return {
+      name: '',
       user: null,
       auth: false,
       isCategories: false,
@@ -203,7 +206,7 @@ export default {
     let authB = false;
     if(Cookies.get('token') == undefined && Cookies.get('Refresh_token') != undefined) {
       const response = await axios
-      .get("http://185.112.83.36:8080/refreshToken", {
+      .get("http://185.112.83.36:8090/refreshToken", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -212,7 +215,7 @@ export default {
       .then(function (response) {
         console.log(response);
         if (response.data.status == "fatal") {
-          alert("Ошибка в ответе refreshToken!");
+          // alert("Ошибка в ответе refreshToken!");
         } else if(response.data != "") {
           alert("Вы авторизовались!");
           // Установка cookie на стороне клиента
@@ -220,6 +223,9 @@ export default {
           Cookies.set("Refresh_token", `${response.data.data.Refresh_token}`, { expires: 7 });
           // Cookies.set("token", `${response.data.data.JWT}`, { expires: 7 });
           authB = true;
+          // Устанавливаем токен и подключаем WebSocket
+          const webSocketStore = useWebSocketStore();
+          webSocketStore.setTokenAndConnect(response.data.data.JWT);
         } 
       })
       .catch(function (error) {
@@ -229,6 +235,7 @@ export default {
       })
     } else if(Cookies.get('token') != undefined) {
       authB = true;
+      this.name = localStorage.getItem('Name');
     } else {
       authB = false;
     }
@@ -267,11 +274,13 @@ export default {
     showPopupAuth() {
       this.showPopupInfoAuth = true;
     },
-    
     exitUser() {
       this.auth = false;
-      this.deleteToken();
+      Cookies.remove('token');
+      Cookies.remove('Refresh_token');
+      location.reload(true);
     },
+
     closePopupAuth() {
       this.showPopupInfoAuth = false;
     },

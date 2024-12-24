@@ -276,6 +276,7 @@ main {
 .shop {
   display: flex;
   justify-content: center;
+  padding: 0 7vw;
 }
 
 .shop_product {

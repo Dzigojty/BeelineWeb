@@ -11,12 +11,13 @@
       <div v-for="(favorite, index) in favorites" :key="index" class="shop_list">
         <a @click="selectProduct(favorite)" class="route-view">
           <div class="product">
-            <img class="product_img" :src="favorite.Ads_photo" alt="" />
+            <img class="product_img" :src="favorite.Ads_photo !== '../assets/product2.png' ? `data:image/png;base64,${favorite.Ads_photo}` : require('@/assets/product2.png')" alt="" />
             <div class="product_des">
               <div class="product_title">
                 <div>{{ favorite.Title }}</div>
               </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
+              <div v-if="favorite.Hourly_rate != 0" class="product_price">от {{ favorite.Hourly_rate }} ₽ за час</div>
+                <div v-if="favorite.Daily_rate != 0" class="product_price">от {{ favorite.Daily_rate }} ₽ за смену</div>
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
             </div>
           </div>
@@ -41,24 +42,24 @@ export default {
       this.$emit("changeRoute", newRoute);
     },
     selectProduct(product) {
+      console.log(product)
       this.$emit("selectProduct", product.Ads_id);
     },
     exitUser() {
       this.$emit("exitUser");
     },
   },
-  //http://185.112.83.36:8080/groupFavByRecent
+  //http://185.112.83.36:8090/groupFavByRecent
   components: {
     UserPanelRight,
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true
-
       });
       console.log(response);
       console.log(response.data.data);
@@ -67,7 +68,7 @@ export default {
         alert("Error favorites status:fatal");
         this.favorites = [];
         return false;
-      } else if (response.data.message != "Чатов не найденно, либо они не созданны") {
+      } else if(response.data.data[0].Ads_id != 0) {
         this.favorites = response.data.data;
         for (let index = 0; index < this.favorites.length; index++) {
           this.favorites[index].Avatar = this.favorites[index].Avatar != 'File not found' ? `data:image/png;base64,${this.favorites[index].Avatar}` : '../assets/product2.png';
@@ -85,7 +86,7 @@ export default {
 
 
     // try {
-    //   const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+    //   const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
     //     headers: {
     //       "Content-Type": "application/json",
     //     },
@@ -311,6 +312,7 @@ main {
 .shop {
   display: flex;
   justify-content: center;
+  padding: 0 7vw;
 }
 
 .shop_product {
@@ -724,6 +726,7 @@ main {
 .shop {
   display: flex;
   justify-content: center;
+  padding: 0 7vw;
 }
 
 .shop_product {

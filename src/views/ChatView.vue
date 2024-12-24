@@ -9,25 +9,25 @@
     <div class="container-chat">
       <swiper-container class="swiper contacts" slides-per-view="5" :direction="'vertical'">
         <swiper-slide
-  v-for="(chat, index) in chats"
-  :key="index"
-  :class="['swiper-el', { active: chatSelected === chat.Chat_id }]"
-  @click="ChatSelect(chat.Chat_id)"
->
-  <div :class="[{ backgroud_contact: true, backgroud_contact_select: chatSelected === chat.Chat_id }]">
-    <div class="contact">
-      <img v-if="chat.avatar" :src="chat.avatar" alt="Avatar" class="contact_img" />
-      <img v-else src="../assets/user.png" class="contact_img" />
-      <div class="column_data">
-        <div class="contact_name">{{ chat.name_owner }}</div>
-        <div v-if="!!chat.text" class="button_status_message">
-          Прочитано
-        </div>
-        <div v-else class="button_new_message">Новое сообщение!</div>
-      </div>
-    </div>
-  </div>
-</swiper-slide>
+          v-for="(chat, index) in chats"
+          :key="index"
+          :class="['swiper-el', { active: chatSelected === chat.Chat_id }]"
+          @click="ChatSelect(chat.Chat_id)"
+        >
+          <div :class="[{ backgroud_contact: true, backgroud_contact_select: chatSelected === chat.Chat_id }]">
+            <div class="contact">
+              <img v-if="chat.avatar" :src="chat.avatar" alt="Avatar" class="contact_img" />
+              <img v-else src="../assets/user.png" class="contact_img" />
+              <div class="column_data">
+                <div class="contact_name">{{ chat.info }}</div>
+                <div v-if="!!chat.text" class="button_status_message">
+                  Прочитано
+                </div>
+                <div v-else class="button_new_message">Новое сообщение!</div>
+              </div>
+            </div>
+          </div>
+        </swiper-slide>
 
       </swiper-container>
       <div class="dialog">
@@ -40,35 +40,41 @@
         <button @click="showPopupModerDecision">Завершить спор</button>
         </div> -->
         <div class="panel">
-          <div class="messages" ref="messagesRef">
-  <div class="inner">
-    <div v-for="(message, index) in messages" :key="index" class="message">
-      <div v-if="message.uid === user_id" class="aligment_you">
-        <div class="datetime_message margin-right_message">{{ message.date }}</div>
-        <div class="message_you">
-          {{ message.text }}
-          <img class="message_you_end" src="../assets/message_end.png" />
-        </div>
-      </div>
-      <div v-else class="aligment_noyou">
-        <img class="message_user" src="../assets/user.png" alt="" />
-        <div class="message_noyou">
-          {{ message.text }}
-          <img class="message_noyou_end" src="../assets/message_end_noyou.png" />
-        </div>
-        <div class="datetime_message margin-left_message">{{ message.date }}</div>
-      </div>
-    </div>
-  </div>
-</div>
+          <div class="messages" id="messages" ref="messagesRef">
+            <div class="inner">
+              <!-- Список сообщений -->
+              <div
+                v-for="(message, index) in sortedMessages"
+                :key="index"
+                class="message"
+              >
+                <div v-if="message.uid == user_id" class="aligment_you">
+                  <div class="datetime_message margin-right_message">{{ message.date }}</div>
+                  <div class="message_you">
+                    {{ message.text }}
+                    <img class="message_you_end" src="../assets/message_end.png" />
+                  </div>
+                </div>
+                <div v-else class="aligment_noyou">
+                  <img class="message_user" src="../assets/user.png" alt="" />
+                  <div :class="{ message_noyou: message.role == 1 , message_mediator: message.role == 2}">
+                    <!-- <div class="message_noyou"> -->
+                      {{ message.text }}
+                      <img v-if="message.role == 1" class="message_noyou_end" src="../assets/message_end_noyou.png" />
+                      <img v-if="message.role == 2" class="message_noyou_end" src="../assets/message_end_mediator.png" />
+                    </div>
+                  <div class="datetime_message margin-left_message">{{ message.date }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <form class="form" @submit.prevent="sendMessage">
             <div class="buttons">
-              <button >
+              <button>
                 <img src="../assets/button_chat_action.png" alt="" />
               </button>
-              <input type="file" @change="convertToBase64" accept="image/*">
-              <button >
+              <button>
                 <img src="../assets/button_chat_action1.png" alt="" />
               </button>
             </div>
@@ -94,7 +100,79 @@ export default {
     VPopupChangeDeal,
     VPopupChangeDealRequestEdit,
   },
+  mounted() {
+    // Прокрутить к началу при загрузке чата
+    // this.scrollToBottom();
+    this.initChats(); // Инициализация соединения с WebSocket
+  },
+  watch: {
+    // Обновление при изменении списка сообщений
+    // messages() {
+    //   this.scrollToBottom();
+    // },
+  },
+  computed: {
+    // Сортировка сообщений: от старых к новым
+    sortedMessages() {
+      return [...this.messages].sort((a, b) => new Date(a.date) - new Date(b.date));
+    },
+  },
   methods: {
+    // scrollToBottom() {
+    //   console.log('scrollToBottom')
+    //   console.log(this.$refs.messagesRef)
+    //   const messagesContainer = this.$refs.messagesRef;
+    //   if (messagesContainer) {
+    //     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    //   }
+    //   var block = document.getElementById("messages");
+    //   block.scrollTop = block.scrollHeight;
+    // },
+    scrollToTop() {
+      const messagesContainer = this.$refs.messagesRef;
+      if (messagesContainer) {
+        messagesContainer.scrollTop = 0;
+      }
+    },
+
+    initChats(){
+      //connect to Sockets Bay
+      const token = Cookies.get('token');
+      var sockets_bay_url = `ws://185.112.83.36:8090/handleWebSocket?token=${token}`;
+      this.websocket      = new WebSocket(sockets_bay_url);
+      
+      this.websocket.onopen    = this.onSocketOpen;
+      this.websocket.onmessage = this.onSocketMessage;
+      this.websocket.onerror   = this.onSockerError;
+    },
+    onSocketOpen(evt){
+      // alert("[open] Соединение установлено");
+      // console.log("onSocketOpen");
+      this.connection_ready = true;
+    },
+    onSocketMessage(evt){
+      // alert(`Получено сообщение: ${evt.data}`); // Выводим полученные данные
+      // console.log("onSocketMessage");
+      try {
+        var received = JSON.parse(evt.data); // Разбираем JSON
+        this.messages.push({
+            avatar: received.Avatar,
+            uid: received.User_id,
+            name: received.Name,
+            text: received.Text,
+            date: new Date(received.Sent_at).toLocaleTimeString(),
+          });
+      } catch (error) {
+        console.error("Ошибка при разборе сообщения:", error);
+      }
+    },
+
+
+    onSocketError(evt){
+      console.log(`Ошибка WebSocket: ${evt.message || evt}`);
+      this.connection_error = true;
+    },
+
     convertToBase64(event) {
       const file = event.target.files[0]; // Получаем выбранный файл
       if (!file) return; // Проверяем, что файл выбран
@@ -119,12 +197,7 @@ export default {
       }
 
       try {
-        // this.messages.push({
-        //     uid: this.user_id,
-        //     text: this.text,
-        //     sent_at: new Date().toLocaleTimeString(),
-        //   });
-        const response = await axios.post("http://185.112.83.36:8080/sendMessage", {
+        const response = await axios.post("http://185.112.83.36:8090/sendMessage", {
           Id_chat: this.chatSelected,
           Text: this.text,
         }, {
@@ -136,13 +209,14 @@ export default {
 
         // Проверим весь ответ от сервера
         console.log("Ответ от сервера:", response);
+        // this.scrollToBottom();
 
         // Дополнительная проверка данных
         if (response && response.data && response.data.status === "success") {
           this.messages.push({
             uid: this.user_id,
             text: this.text,
-            sent_at: new Date().toLocaleTimeString(),
+            date: new Date().toLocaleTimeString(),
           });
           this.text = ""; // Очистка поля ввода после отправки
         } else {
@@ -169,7 +243,7 @@ export default {
     try {
       // Отправляем запрос на сервер
       const response = await axios.post(
-        "http://185.112.83.36:8080/openChat",
+        "http://185.112.83.36:8090/openChat",
         { Id_chat: chatId },
         {
           headers: { "Content-Type": "application/json" },
@@ -181,14 +255,22 @@ export default {
 
       // Проверяем структуру ответа
       if (response.data && response.data.status === "success" && Array.isArray(response.data.data)) {
-        // Преобразуем данные
-        this.messages = response.data.data.map(message => ({
-          uid: message.User_id,
-          name: message.Name,
-          text: message.Text,
-          media: message.Media,
-          date: new Date(message.Date).toLocaleString(), // Преобразуем дату
-          media_pwd: message.Media_pwd,
+        this.messages = response.data.data
+          .map(message => ({
+            uid: message.User_id,
+            name: message.Name,
+            role: message.User_role,
+            text: message.Text,
+            media: message.Media,
+            date: new Date(message.Date), // Оставляем объект Date для сортировки
+            media_pwd: message.Media_pwd,
+          }))
+          .sort((a, b) => a.date - b.date); // Сортируем по дате, самые новые в конце
+
+        // Если нужно форматировать дату для отображения:
+        this.messages = this.messages.map(message => ({
+          ...message,
+          date: message.date.toLocaleString(), // Преобразуем дату в строку
         }));
       } else {
         console.error("Неверный формат ответа или нет данных:", response.data);
@@ -201,8 +283,9 @@ export default {
 
   },
   async created() {
+    this.user_id = localStorage.getItem('Id')
     try {
-      const response = await axios.get("http://185.112.83.36:8080/printChat", {
+      const response = await axios.get("http://185.112.83.36:8090/printChat", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -217,6 +300,8 @@ export default {
           this.chats[index].avatar = this.chats[index].avatar != '' ? `data:image/png;base64,${this.chats[index].avatar}` : '';
         }
         consoel.log(this.chats)
+    // this.scrollToBottom();
+
         return true;
       }
     } catch (error) {
@@ -227,9 +312,11 @@ export default {
   data() {
     return {
       avatar: '',
+      connection_error : false , 
+      connection_ready : false , 
       text: '',
       base64Image: null,
-      user_id: 27,
+      user_id: null,
       chatSelected: null,
       isInfoPopupModerDecision: false,
       isInfoPopupChangeDeal: false,
@@ -408,6 +495,7 @@ body {
   overflow-x: scroll;
   overflow-y: none;
   background-color: white;
+  overflow: overlay;
 }
 
 .inner {
@@ -571,5 +659,25 @@ input {
   .submit img {
     height: 3.9vw;
   }
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.messages{
+ overflow-x: scroll;
+ transform:rotateX(180deg);
+                -moz-transform:rotateX(180deg); /* Mozilla */
+                -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+                -ms-transform:rotateX(180deg); /* IE 9+ */
+                -o-transform:rotateX(180deg); /* Opera */
+}
+.inner{
+   transform:rotateX(180deg);
+                -moz-transform:rotateX(180deg); /* Mozilla */
+                -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+                -ms-transform:rotateX(180deg); /* IE 9+ */
+                -o-transform:rotateX(180deg); /* Opera */
 }
 </style>

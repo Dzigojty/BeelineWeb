@@ -259,11 +259,14 @@ export default {
         const startsAt = Math.floor(startDate.getTime() / 1000);
         const endsAt = Math.floor(endDate.getTime() / 1000);
 
-      if(isActiveTime || isActiveTime2){
+        console.log(this.isActiveTime)
+        console.log(this.isActiveTime2)
+
+      if(this.isActiveTime || this.isActiveTime2){
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://185.112.83.36:8080/regOrderHourly",
+            "http://185.112.83.36:8090/regOrderHourly",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,
@@ -282,18 +285,18 @@ export default {
           console.log(response);
 
           if (response.data.status === "fatal") {
-            alert("Error regOrderDaily status:fatal");
+            alert("Error regOrderHourly status:fatal");
           } else {
-            this.getFavoritList();
+            alert(response.data.message)
           }
         } catch (error) {
           console.error("Ошибка при регистрации заказа:", error);
         }
-      } else if(isActiveDate || isActiveDate2) {
+      } else if(this.isActiveDate || this.isActiveDate2) {
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://185.112.83.36:8080/regOrderDaily",
+            "http://185.112.83.36:8090/regOrderDaily",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,
@@ -314,7 +317,7 @@ export default {
           if (response.data.status === "fatal") {
             alert("Error regOrderDaily status:fatal");
           } else {
-            this.getFavoritList();
+            alert(response.data.message)
           }
         } catch (error) {
           console.error("Ошибка при регистрации заказа:", error);

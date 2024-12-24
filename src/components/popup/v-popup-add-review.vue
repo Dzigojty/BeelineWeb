@@ -2,7 +2,7 @@
   <div class="v-popup-add-review">
     <div class="center">
       <div class="title">Чем все закончилось?</div>
-      <form action="">
+      <form @submit.prevent="submitForm">
         <div class="flex-block">
           <div class="status-options">
             <label v-for="option in options" :key="option.value" class="status-option">
@@ -11,7 +11,6 @@
                 name="status"
                 :value="option.value"
                 v-model="selectedStatus"
-                @change="handleChange"
               />
               <span
                 :class="['status-dot', option.value === selectedStatus ? 'selected' : '']"
@@ -26,12 +25,12 @@
           <div class="rating">
             <div class="title" style="margin: 0 0 1vw 0">Оцените пользователя</div>
             <div class="rating_title">
-              <div v-for="n in 5" :key="n" class="rating_container">
+              <div v-for="n in 5" :key="n" class="rating_container" @click="setRating(n)">
                 <img
                   src="../../assets/star_yellow.png"
                   alt="Звезда"
                   class="rating_big"
-                  v-if="n <= 5"
+                  v-if="n <= rating"
                 />
                 <img
                   src="../../assets/star_grey.png"
@@ -47,8 +46,8 @@
         <div style="margin-bottom: 4vw">
           <div class="title" style="margin: 2vw 0 1.5vw 0">Напишите отзыв</div>
           <textarea
-            placeholder="В тексте не должно содержаться оскорблений, ненормативной лексики и чужой личной информации, такой как фамилия, контактные данные и адрес."
-            v-model="desc"
+            placeholder="Введите ваш отзыв..."
+            v-model="comment"
             id="story"
             class="filter_block textarea"
             name="story"
@@ -58,7 +57,7 @@
           <div class="text_desc">Не более 2 000 символов</div>
         </div>
         <div class="center-block">
-          <button>Отправить</button>
+          <button type="submit">Отправить</button>
         </div>
       </form>
     </div>
@@ -67,128 +66,88 @@
 </template>
 
 <script>
-import { Swiper, SwiperSlide } from "swiper/vue";
-import "swiper/swiper-bundle.css";
 import axios from "axios";
+
 export default {
   data() {
     return {
-      reviews: [],
-      selected: "Сначала новые",
-      stars: [0, 0, 0, 0, 0],
-      selectedStatus: "", // переменная для хранения выбранного значения
+      selectedStatus: "", // выбранный статус
+      rating: 0, // выбранный рейтинг
+      comment: "", // текст отзыва
       options: [
         {
-          value: "done",
+          value: "1",
           title: "Услуга оказана",
           description: "Исполнитель получил деньги",
         },
         {
-          value: "not_done",
+          value: "2",
           title: "Работа не выполнена",
           description: "После того как вы договорились о сделке",
         },
         {
-          value: "no_agreement",
+          value: "3",
           title: "Не договорились",
           description: "Не подошли условия или квалификация",
         },
         {
-          value: "no_contact",
+          value: "4",
           title: "Не общались",
           description: "Не удалось связаться",
         },
       ],
     };
   },
-  components: {
-    Swiper,
-    SwiperSlide,
+  props: {
+    idProduct: {
+      type: Number,
+      required: true,
+    },
   },
   methods: {
-    handleChange() {
-      console.log(this.selectedStatus); // выводим выбранное значение в консоль
+    setRating(n) {
+      this.rating = n; // Установить рейтинг при клике на звезду
     },
-
-    closeInfoPopup() {
-      this.$emit("closePopup");
-    },
-
-    groupReview() {
-      console.log("@click=groupReview");
-      switch (selected) {
-        case "Сначала новые":
-          groupReviewNewOnesFirst();
-          break;
-        case "Сначала старые":
-          groupReviewOldOnesFirst();
-          break;
-        default:
-          break;
+    async submitForm() {
+      if (!this.selectedStatus || !this.rating || !this.comment) {
+        alert("Пожалуйста, заполните все поля!");
+        return;
       }
-    },
-    closeInfoPopup() {
-      this.$emit("closePopup");
-    },
-    async groupReviewOldOnesFirst() {
+      console.log(this.idProduct)
+      console.log(this.rating)
+      console.log(this.comment)
+      console.log(this.selectedStatus)
       try {
-        const response = await axios.get(
-          "http://185.112.83.36:8080/groupReviewOldOnesFirst",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.data.status === "success") {
-          this.reviews = response.data.data;
-        } else {
-          alert("Error groupReviewLowRatOnesFirst status:fatal");
-        }
-      } catch (error) {
-        console.error("Ошибка при выводе отзывав:", error);
-      }
-    },
-    async groupReviewNewOnesFirst() {
-      try {
-        const response = await axios.get(
-          "http://185.112.83.36:8080/groupReviewNewOnesFirst",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.data.status === "success") {
-          this.reviews = response.data.data;
-        } else {
-          alert("Error groupReviewLowRatOnesFirst status:fatal");
-        }
-      } catch (error) {
-        console.error("Ошибка при выводе отзывав:", error);
-      }
-    },
-  },
-  async created() {
-    try {
-      const response = await axios.get(
-        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
+        const response = await axios.post("http://185.112.83.36:8090/sigReview", {
+          Ads_id: this.idProduct,
+          Rating: this.rating,
+          Comment: this.comment,
+          State: parseInt(this.selectedStatus, 10),
+        },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data.status === "success") {
-        this.reviews = response.data.data;
-      } else {
-        alert("Error groupReviewLowRatOnesFirst status:fatal");
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
       }
-    } catch (error) {
-      console.error("Ошибка при выводе отзывав:", error);
-    }
+      );
+        console.log(response)
+
+        if (response.data.status === "success") {
+          alert("Отзыв успешно отправлен!");
+          this.closeInfoPopup();
+        } else {
+          alert("Ошибка при отправке отзыва: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("Ошибка при отправке отзыва:", error);
+        alert("Произошла ошибка при отправке отзыва. Попробуйте снова.");
+      }
+    },
+    closeInfoPopup() {
+      this.$emit("closePopup");
+    },
   },
-  setup() {},
 };
 </script>
 

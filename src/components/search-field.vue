@@ -11,7 +11,7 @@
       @input="inputFinder"
     />
     <ul v-if="filteredItems.length">
-      <li @click="selectProduct(prod)" v-for="item in filteredItems" :key="item">{{ item }}</li>
+      <li @click="selectProduct(item.Ads_id)" v-for="item in filteredItems" :key="item">{{ item.Title }}</li>
     </ul>
     <div class="finder_button">Поиск</div>
   </div>
@@ -39,6 +39,7 @@ export default {
       this.filteredItems = [];
     },
     selectProduct(product) {
+      console.log('selectProduct Serch product');
       console.log(product);
       this.$emit("selectProduct", product);
     },
@@ -51,7 +52,7 @@ export default {
       } else {
         console.log(this.query);
         try {
-          const response = await axios.post('http://185.112.83.36:8080/searchForTech',
+          const response = await axios.post('http://185.112.83.36:8090/searchForTech',
           {
             "Title": this.query,
           }, 
@@ -63,7 +64,8 @@ export default {
           );
           console.log(response);
           for (let index = 0; index < 5; index++) {
-            this.filteredItems.push(response.data.data[index].Title);
+            console.log(response.data.data[index]);
+            this.filteredItems.push({Ads_id: response.data.data[index].Ads_id, Title: response.data.data[index].Title});
           }
 
           console.log(this.filteredItems)

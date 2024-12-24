@@ -17,7 +17,8 @@
               <div class="product_title">
                 <div>{{ el.Title }}</div>
               </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
+              <div v-if="el.Hourly_rate != 0" class="product_price">от {{ el.Hourly_rate }} ₽ за час</div>
+              <div v-if="el.Daily_rate != 0" class="product_price">от {{ el.Daily_rate }} ₽ за смену</div>
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
             </div>
           </div>
@@ -32,7 +33,8 @@
               <div class="product_title">
                 <div>{{ el.Title }}</div>
               </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
+              <div v-if="el.Hourly_rate != 0" class="product_price">от {{ el.Hourly_rate }} ₽ за час</div>
+              <div v-if="el.Daily_rate != 0" class="product_price">от {{ el.Daily_rate }} ₽ за смену</div>
               <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
             </div>
           </div>
@@ -40,61 +42,21 @@
         <div class="line-grey"></div>
       </div>
       <div v-if="selectedModule == 'noActive'" v-for="(el, index) in noActive" :key="index" class="shop_list">
-        <a @click="selectProduct(el)" class="route-view">
+        <a class="route-view">
           <div class="product">
             <img class="product_img" src="../assets/product2.png" alt="" />
             <div class="product_des">
               <div class="product_title">
                 <div>{{ el.Title }}</div>
               </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
+              <<div v-if="el.Hourly_rate != 0" class="product_price">от {{ el.Hourly_rate }} ₽ за час</div>
+              <div v-if="el.Daily_rate != 0" class="product_price">от {{ el.Daily_rate }} ₽ за смену</div>
               <div class="grey_text">Объявление снято</div>
             </div>
           </div>
         </a>
         <div class="line-grey"></div>
       </div>
-      <!-- <div class="shop_list">
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_g">Сегодня с 8:00 до 12:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="product_status_r">Завтра с 17:00 до 17:30</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-        <a @click="selectProduct(product)"  class="route-view">
-          <div class="product">
-            <img class="product_img" src="../assets/product2.png" alt="" />
-            <div class="product_des">
-              <div class="product_title">
-                <div>Аренда и услуги автокрана</div>
-              </div>
-              <div class="product_price">от 2 500 ₽ за час</div>
-              <div class="grey_text">Объявление снято</div>
-            </div>
-          </div>
-        </a>
-        <div class="line-grey"></div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -114,7 +76,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupAdsByRented", {
+      const response = await axios.get("http://185.112.83.36:8090/groupAdsByRented", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -130,7 +92,7 @@ export default {
     }
 
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupAdsByArchived", {
+      const response = await axios.get("http://185.112.83.36:8090/groupAdsByArchived", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -375,6 +337,7 @@ main {
 .shop {
   display: flex;
   justify-content: center;
+  padding: 0 7vw;
 }
 
 .shop_product {

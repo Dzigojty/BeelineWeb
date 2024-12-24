@@ -126,16 +126,16 @@ export default {
   async created() {
       //Списанные
       let response = await axios
-      .post("http://185.112.83.36:8080/walletHistory", 
+      .post("http://185.112.83.36:8090/walletHistory", 
         {
           Type: 3,
         },
         {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true
-      })
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true
+        })
       .then((response) => {
         console.log(response);
         if (response.data.status == "success") {
@@ -148,7 +148,7 @@ export default {
             this.noActive[i].Avatar_path = this.noActive[i].Avatar_path != '' ? `data:image/png;base64,${this.noActive[i].Avatar_path}` : '';
           }
         } else {
-          alert("Error els status:fatal");
+          this.noActive = [];
         }
       })
       .catch(function (error) {
@@ -157,7 +157,7 @@ export default {
 
       //Зачисленные
       response = await axios
-      .post("http://185.112.83.36:8080/walletHistory", 
+      .post("http://185.112.83.36:8090/walletHistory", 
         {
           Type: 2,
         },
@@ -179,7 +179,7 @@ export default {
             this.active[i].Avatar_path = this.active[i].Avatar_path != '' ? `data:image/png;base64,${this.active[i].Avatar_path}` : '';
           }
         } else {
-          alert("Error els status:fatal");
+          this.active = [];
         }
       })
       .catch(function (error) {
@@ -445,6 +445,7 @@ main {
 .shop {
   display: flex;
   justify-content: center;
+  padding: 0 7vw;
 }
 
 .shop_product {
@@ -873,6 +874,7 @@ main {
 .shop {
   display: flex;
   justify-content: center;
+  padding: 0 7vw;
 }
 
 .shop_product {

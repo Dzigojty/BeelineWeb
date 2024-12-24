@@ -1,7 +1,7 @@
 <template>
   <div class="main">
-    <v-popup-fitback v-if="isInfoPopupRatingView" @closePopup="closeInfoPopup" />
-    <v-popup :dailyRate="detail.Daily_rate" :hourlyRate="detail.Hourly_rate" :idProduct="productId" v-if="isInfoPopupView" @closePopup="closeInfoPopup" />
+    <v-popup-fitback v-if="isInfoPopupRatingView" :idProduct="idProduct" @closePopup="closeInfoPopup" />
+    <v-popup :dailyRate="detail.Daily_rate" :hourlyRate="detail.Hourly_rate" :idProduct="idProduct" v-if="isInfoPopupView" @closePopup="closeInfoPopup" />
     <div class="detailProduct">
       <div class="block">
         <a @click="goBack" class="route-view">
@@ -41,15 +41,19 @@
           <div class="desc_map">
       
           </div>
-          <!-- <div class="desc_title">Отзывы заказчиков</div>
+          <div class="desc_title">Отзывы заказчиков</div>
 
           <div class="otsivi" id="otsivi">
             <div v-for="(review, index) in reviews" :key="index" class="ontsiv">
               <div class="ontsiv">
-                <img class="author_img user_margin" src="../assets/user.png" alt="" />
+                <img
+                  class="author_img user_margin"
+                  :src="'data:image/png;base64,' + review.Review_avatar"
+                  alt=""
+                />
                 <div class="chat_block">
-                  <div class="user_name">{{ review.Name }}</div>
-                  <div class="rating_user_samp">6 апреля</div>
+                  <div class="user_name">{{ review.Review_name }}</div>
+                  <div class="rating_user_samp">{{ formatDate(review.Updated_at_comment) }}</div>
                   <div class="rating_user">
                     <div v-for="n in 5" :key="n" class="rating_star">
                       <img
@@ -59,7 +63,7 @@
                       />
                       <img src="../assets/star_grey.png" alt="Пустая звезда" v-else />
                     </div>
-                    <samp class="rating_user_samp">Сделка состоялась </samp>
+                    <samp class="rating_user_samp">Сделка состоялась</samp>
                   </div>
                   <div class="comment_title">Комментарий</div>
                   <div class="comment">{{ review.Comment }}</div>
@@ -68,21 +72,22 @@
             </div>
           </div>
           <div
-            @click="showReviews"
+            @click="showPopupRating()"
             id="showReviews"
             class="product_button_otsiz min-size"
           >
             Читать еще {{ reviewsLength }} отзывов
-          </div> -->
+          </div>
         </div>
       </div>
       <div class="action">
         <div class="flex-row">
-          <div class="desc_title">
-            {{ detail.Hourly_rate }} ₽ за час<br />
-            {{ detail.Daily_rate }} ₽ за день
-          </div>
-          <div class="product_status_g">Свободен</div>
+          <!-- <div class="desc_title">
+            {{ detail.Hourly_rate }} ₽ за час
+          </div> -->
+          <div v-if="detail.Hourly_rate != 0" class="desc_title">{{ detail.Hourly_rate }} ₽ за час</div>
+          <div v-if="detail.Daily_rate != 0" class="desc_title">{{ detail.Daily_rate }} ₽ за смену</div>
+          <div class="product_status_g">{{ detail.Duration }}</div>
           <img
             @click="clickFavorite"
             class="desc_star"
@@ -103,64 +108,42 @@
           <div class="product_button_date" @click="showPopup()">Выбрать дату</div>
 
           <div class="owner">
-            <div class="author_name">{{ detail.Owner_host_name }}</div>
-            <img class="author_img" src="../assets/user.png" alt="" />
+            <div class="author_name">{{ detail.Owner_name }}</div>
+            <img class="author_img" :src="detail.Avatar" alt="" />
           </div>
           <div class="rating_user">
-            <samp class="rating_user_samp">5,0</samp>
-            <div class="rating_star">
-              <img src="../assets/star_yellow.png" alt="" /><img
-                src="../assets/star_yellow.png"
-                alt=""
-              /><img src="../assets/star_yellow.png" alt="" /><img
-                src="../assets/star_yellow.png"
-                alt=""
-              /><img src="../assets/star_yellow.png" alt="" />
+            <div class="rating_user">
+              <samp class="rating_user_samp">{{ detail.Owner_rating }}</samp>
+              <div class="rating_star">
+                <img
+                  v-for="n in 5"
+                  :key="n"
+                  :src="n <= Math.round(detail.Owner_rating) ? require(`@/assets/star_yellow.png`) : require('@/assets/star_grey.png')"
+                  :alt="n <= Math.round(detail.Owner_rating) ? 'Желтая звезда' : 'Серая звезда'"
+                />
+              </div>
             </div>
           </div>
-          <samp @click="showPopupRating()" class="rating_user_samp">3 отзыва</samp>
-          <div class="product_button_otsiz">11 объявлений пользователя</div>
+
+          <samp class="rating_user_samp">0 отзывов</samp>
+          <div class="product_button_otsiz">{{ detail.Ads_count }} объявлений пользователя</div>
           <div class="grafic">График работ: с 8:00 до 22:00</div>
         </section>
       </div>
     </div>
     <div class="recomendations">
       <div class="desc_title margin-top">Похожие объявления</div>
-      <div class="recomendation_list">
-        <div class="recomendation">
+      <div class="recomendation_list" >
+        <div class="recomendation" v-for="prod in displayedProducts" @click="selectProduct(prod)">
           <img src="../assets/product2.png" alt="" />
-          <div class="recomendation_price">от 2 000 ₽ за смену</div>
+          <div v-if="prod.Hourly_rate != 0" class="recomendation_price">от {{prod.Hourly_rate}} ₽ за час</div>
+          <div v-if="prod.Daily_rate != 0" class="recomendation_price">от {{prod.Daily_rate}} ₽ за смену</div>
           <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
-            марта 13:05
-          </div>
-        </div>
-        <div class="recomendation">
-          <img src="../assets/product2.png" alt="" />
-          <div class="recomendation_price">от 2 000 ₽ за смену</div>
-          <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
-            марта 13:05
-          </div>
-        </div>
-        <div class="recomendation">
-          <img src="../assets/product2.png" alt="" />
-          <div class="recomendation_price">от 2 000 ₽ за смену</div>
-          <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
-            марта 13:05
-          </div>
-        </div>
-        <div class="recomendation">
-          <img src="../assets/product2.png" alt="" />
-          <div class="recomendation_price">от 2 000 ₽ за смену</div>
-          <div class="recomendation_desc">
-            Республика Северная Осетия — Владикавказ, Затеречный район, р-н Затеречный 13
-            марта 13:05
+            {{prod.Title}}
           </div>
         </div>
       </div>
-      <button class="button_show_more">Показать еще</button>
+      <button @click="loadMore" v-if="canLoadMore" class="button_show_more">Показать еще</button>
     </div>
   </div>
 </template>
@@ -178,7 +161,7 @@ axios.defaults.withCredentials = true;
 
 export default {
   props: {
-    productId: Number,
+    idProduct: Number,
   },
   data() {
     return {
@@ -187,7 +170,11 @@ export default {
       map: null,
       coordinates: [],
       detail: {},
+      currentPage: 1,
       favorite: [],
+      perPage: 4,
+      displayedProducts: [],
+      prods: [],
       adsFav: 0,
       reviews: [],
       reviewsLength: 0,
@@ -197,11 +184,48 @@ export default {
       },
     };
   },
+  computed: {
+    canLoadMore() {
+      console.log("prods:", this.prods);
+      console.log("displayedProducts:", this.displayedProducts);
+      if (!this.prods || !Array.isArray(this.prods)) {
+        console.error("prods не определен или не является массивом");
+        return false;
+      }
+      return this.displayedProducts.length < this.prods.length;
+    }
+  },
   components: {
     vPopup,
     vPopupFitback,
   },
   methods: {
+    loadMore() {
+      this.currentPage++;
+      const start = this.displayedProducts.length;
+      const end = start + this.perPage;
+      this.displayedProducts.push(...this.prods.slice(start, end));
+    },
+    selectProduct(product) {
+      console.log("product.Id")
+      console.log(product.Id)
+      this.$emit("selectProduct", product.Id);
+    },
+    formatDate(unixTimestamp) {
+      if (!unixTimestamp) return 'Дата неизвестна'; // Обработка некорректных данных
+      try {
+        const timestamp = unixTimestamp * 1000; // Переводим в миллисекунды
+        const date = new Date(timestamp);
+        const formatter = new Intl.DateTimeFormat('ru-RU', {
+          day: 'numeric',
+          month: 'long',
+        });
+        return formatter.format(date);
+      } catch (error) {
+        console.error('Ошибка при форматировании даты:', error);
+        return 'Дата неизвестна';
+      }
+    },
     clickFavorite() {
       console.log(`ClickFav detail.Ads_id = ${this.detail.Ads_id}`)
       console.log(this.favorite)
@@ -215,14 +239,42 @@ export default {
       this.$emit("changeRoute", newRoute);
     },
     clickChat(){
-      
+      this.createChat()
       this.changeRoute('chat')
     },
+
+    async createChat() {
+      console.log(`addFavorite ${this.idProduct}`);
+      try {
+        const response = await axios.post(
+          "http://185.112.83.36:8090/sigChat",
+          {
+            Ads_id: this.idProduct,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // для отправки куки
+          }
+        );
+        console.log(response)
+
+        if (response.data.status === "fatal") {
+          alert("Error addFavorite status:fatal");
+        } else {
+          alert("Создан новый чат")
+        }
+      } catch (error) {
+        console.error("Ошибка при добавлении в избранное:", error);
+      }
+    },
+    
     async addFavorite(idProduct) {
       console.log(`addFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/sigFavAds",
+          "http://185.112.83.36:8090/sigFavAds",
           {
             Ads_id: idProduct,
           },
@@ -248,7 +300,7 @@ export default {
       console.log(`removeFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/delFavAds",
+          "http://185.112.83.36:8090/delFavAds",
           {
             Ads_id: idProduct,
           },
@@ -272,7 +324,7 @@ export default {
     },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -325,15 +377,39 @@ export default {
     goBack() {
       this.$emit("goBack");
     },
+    async loadProducts() {
+      try {
+        const response = await axios.post(
+          "http://185.112.83.36:8090/sortProductListCategoriez",
+          { Category: [this.detail.Category_id] },
+          { headers: { "Content-Type": "application/json" } }
+        );
+
+        if (response.data.status === "fatal") {
+          console.error("Ошибка загрузки данных:", response.data.message);
+          this.prods =  []
+          return;
+        }
+
+        // Предположим, данные находятся в response.data.data
+        this.prods = Array.isArray(response.data.data) ? response.data.data : [] 
+
+        // Инициализация отображаемых продуктов
+        this.displayedProducts = this.prods.slice(0, this.perPage);
+      } catch (error) {
+        console.error("Ошибка при загрузке продуктов:", error);
+        this.prods = []; // На случай ошибки оставляем массив пустым
+      }
+    },
   },
   async created() {
-    console.log("Detail this.productId")
-    console.log(this.productId)
+    console.log("Detail this.idProduct")
+    console.log(this.idProduct)
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8080/printAds",
+        "http://185.112.83.36:8090/printAds",
         {
-          Ads_id: this.productId,
+          Ads_id: this.idProduct,
         },
         {
           headers: {
@@ -343,8 +419,21 @@ export default {
       );
       console.log(response)
       if (response.data.status != "success") console.log(response);
+
       this.detail = response.data.data;
-      this.reviews = response.data.data.Customer_reviews;
+      this.detail.Avatar = this.detail.Avatar != 'File not found' ? `data:image/png;base64,${this.detail.Avatar}` : '../assets/user.png';
+      this.reviews = response.data.data.reviews;
+      
+      // Update images based on API response
+      console.log("this.images");
+      console.log(this.images);
+      if (response.data.data.Imags.length > 0) {
+        this.images = response.data.data.Imags.map(img => `data:image/png;base64,${img}`);
+      } else {
+        this.images = [require("@/assets/product2.png")];
+      }
+      this.currentImage = this.images[0];
+
     } catch (error) {
       console.error(
         "Ошибка при загрузке продукта:",
@@ -352,8 +441,32 @@ export default {
       );
     }
 
+
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+      const response = await axios.post(
+        "http://185.112.83.36:8090/groupReviewNewOnesFirst",
+        {
+          ads_id: this.idProduct,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response)
+      if (response.data.status != "success") console.log(response);
+      this.reviewsLength = response.data.data.Review_list.length;
+    } catch (error) {
+      console.error(
+        "Ошибка при загрузке продукта:",
+        error.response ? error.response.data : error.message
+      );
+    }
+
+
+    try {
+      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -369,6 +482,9 @@ export default {
     } catch (error) {
       console.error("Ошибка при загрузке избранного:", error);
     }
+  
+    this.loadProducts();
+
   },
   setup() {
     const images = ref([
@@ -454,12 +570,16 @@ export default {
 }
 
 .recomendation_list {
-  display: flex;
+  display: grid;
+  grid-template-columns: 20vw 20vw 20vw 20vw;
+  grid-template-rows: 26vw;
+  gap: 2vw;
 }
 
 .recomendation {
   width: 20vw;
   margin-right: 2.5vw;
+  cursor: pointer;
 }
 
 .recomendation img {
