@@ -2,6 +2,9 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
-    proxy: 'http://localhost:8090'
-  }
+    // disableHostCheck: true,
+    allowedHosts: 'all',
+    proxy: 'https://tehnika-test.ru/',
+  },
+  publicPath: '/'
 })
