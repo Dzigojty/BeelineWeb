@@ -836,7 +836,7 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8090/sortProductListHourlyRate",
+        "http://185.112.83.36:8080/sortProductListHourlyRate",
         {
           Category: [],
           LowNum: 1,
@@ -872,7 +872,7 @@ export default {
     try {
       console.log("groupFavByRecent");
 
-      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -909,7 +909,7 @@ export default {
     //   console.log(`addFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://185.112.83.36:8090/sigFavAds",
+    //       "http://185.112.83.36:8080/sigFavAds",
     //       {
     //         Ads_id: idProduct
     //       },
@@ -935,7 +935,7 @@ export default {
     //   console.log(`removeFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://185.112.83.36:8090/delFavAds",
+    //       "http://185.112.83.36:8080/delFavAds",
     //       {
     //         Ads_id: idProduct,
     //       },
@@ -959,7 +959,7 @@ export default {
     // },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -1049,7 +1049,7 @@ export default {
         console.log(this.rating)
         try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/sortProductListDailyRate",
+          "http://185.112.83.36:8080/sortProductListDailyRate",
           {
               Category: this.category_id,
               LowNum: this.priceFrom,
@@ -1089,7 +1089,7 @@ export default {
         console.log(this.rating)
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8090/sortProductListHourlyRate",
+            "http://185.112.83.36:8080/sortProductListHourlyRate",
             {
               Category: this.category_id,
               LowNum: Number(this.priceFrom),
@@ -1133,7 +1133,7 @@ export default {
       
 
       /*try {
-        const response = await axios.post("http://185.112.83.36:8090", filters);
+        const response = await axios.post("http://185.112.83.36:8080", filters);
         console.log("Filters applied:", response.data);
       } catch (error) {
         console.error("Error applying filters:", error);

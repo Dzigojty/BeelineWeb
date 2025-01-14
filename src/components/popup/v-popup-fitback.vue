@@ -246,7 +246,7 @@ export default {
       console.log("groupReviewOldOnesFirst");
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/groupReviewOldOnesFirst",
+          "http://185.112.83.36:8080/groupReviewOldOnesFirst",
           {
             ads_id: this.idProduct,
           },
@@ -269,7 +269,7 @@ export default {
       console.log("groupReviewNewOnesFirst");
       try {
         const response = await axios.get(
-          "http://185.112.83.36:8090/groupReviewNewOnesFirst",
+          "http://185.112.83.36:8080/groupReviewNewOnesFirst",
           {
             headers: {
               "Content-Type": "application/json",
@@ -291,7 +291,7 @@ export default {
     console.log(this.idProduct)
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8090/groupReviewNewOnesFirst",
+        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
         {
           ads_id: this.idProduct,
         },

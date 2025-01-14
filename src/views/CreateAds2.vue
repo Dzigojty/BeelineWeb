@@ -223,7 +223,7 @@ export default {
       try {
         // Отправляем base64 изображения в виде массива
         const response = await axios.post(
-          "http://185.112.83.36:8090/sigAds",
+          "http://185.112.83.36:8080/sigAds",
           {
             Title: this.title,
             Description: this.desc,

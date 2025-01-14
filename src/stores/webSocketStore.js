@@ -14,7 +14,7 @@ export const useWebSocketStore = defineStore('webSocket', () => {
       return;
     }
 
-    const url = `ws://185.112.83.36:8090/handleWebSocket?token=${token.value}`;
+    const url = `ws://185.112.83.36:8080/handleWebSocket?token=${token.value}`;
     socket.value = new WebSocket(url);
 
     socket.value.onopen = () => {

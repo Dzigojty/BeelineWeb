@@ -247,7 +247,7 @@ export default {
       console.log(`addFavorite ${this.idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/sigChat",
+          "http://185.112.83.36:8080/sigChat",
           {
             Ads_id: this.idProduct,
           },
@@ -274,7 +274,7 @@ export default {
       console.log(`addFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/sigFavAds",
+          "http://185.112.83.36:8080/sigFavAds",
           {
             Ads_id: idProduct,
           },
@@ -300,7 +300,7 @@ export default {
       console.log(`removeFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/delFavAds",
+          "http://185.112.83.36:8080/delFavAds",
           {
             Ads_id: idProduct,
           },
@@ -324,7 +324,7 @@ export default {
     },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -380,7 +380,7 @@ export default {
     async loadProducts() {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8090/sortProductListCategoriez",
+          "http://185.112.83.36:8080/sortProductListCategoriez",
           { Category: [this.detail.Category_id] },
           { headers: { "Content-Type": "application/json" } }
         );
@@ -407,7 +407,7 @@ export default {
     console.log(this.idProduct)
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8090/printAds",
+        "http://185.112.83.36:8080/printAds",
         {
           Ads_id: this.idProduct,
         },
@@ -444,7 +444,7 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8090/groupReviewNewOnesFirst",
+        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
         {
           ads_id: this.idProduct,
         },
@@ -466,7 +466,7 @@ export default {
 
 
     try {
-      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },

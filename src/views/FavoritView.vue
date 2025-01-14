@@ -49,13 +49,12 @@ export default {
       this.$emit("exitUser");
     },
   },
-  //http://185.112.83.36:8090/groupFavByRecent
   components: {
     UserPanelRight,
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -65,7 +64,6 @@ export default {
       console.log(response.data.data);
      
       if (response.data.status != "success") {
-        alert("Error favorites status:fatal");
         this.favorites = [];
         return false;
       } else if(response.data.data[0].Ads_id != 0) {
@@ -86,7 +84,7 @@ export default {
 
 
     // try {
-    //   const response = await axios.get("http://185.112.83.36:8090/groupFavByRecent", {
+    //   const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
     //     headers: {
     //       "Content-Type": "application/json",
     //     },

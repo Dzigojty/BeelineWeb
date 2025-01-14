@@ -74,7 +74,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8090/groupOrdersByRented", {
+      const response = await axios.get("http://185.112.83.36:8080/groupOrdersByRented", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -92,7 +92,7 @@ export default {
     }
 
     try {
-      const response = await axios.get("http://185.112.83.36:8090/groupOrdersByUnRented", {
+      const response = await axios.get("http://185.112.83.36:8080/groupOrdersByUnRented", {
         headers: {
           "Content-Type": "application/json",
         },

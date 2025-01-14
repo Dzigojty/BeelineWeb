@@ -52,7 +52,7 @@ export default {
       } else {
         console.log(this.query);
         try {
-          const response = await axios.post('http://185.112.83.36:8090/searchForTech',
+          const response = await axios.post('http://185.112.83.36:8080/searchForTech',
           {
             "Title": this.query,
           }, 

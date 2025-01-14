@@ -138,7 +138,7 @@ export default {
     initChats(){
       //connect to Sockets Bay
       const token = Cookies.get('token');
-      var sockets_bay_url = `ws://185.112.83.36:8090/handleWebSocket?token=${token}`;
+      var sockets_bay_url = `ws://185.112.83.36:8080/handleWebSocket?token=${token}`;
       this.websocket      = new WebSocket(sockets_bay_url);
       
       this.websocket.onopen    = this.onSocketOpen;
@@ -197,7 +197,7 @@ export default {
       }
 
       try {
-        const response = await axios.post("http://185.112.83.36:8090/sendMessage", {
+        const response = await axios.post("http://185.112.83.36:8080/sendMessage", {
           Id_chat: this.chatSelected,
           Text: this.text,
         }, {
@@ -243,7 +243,7 @@ export default {
     try {
       // Отправляем запрос на сервер
       const response = await axios.post(
-        "http://185.112.83.36:8090/openChat",
+        "http://185.112.83.36:8080/openChat",
         { Id_chat: chatId },
         {
           headers: { "Content-Type": "application/json" },
@@ -285,7 +285,7 @@ export default {
   async created() {
     this.user_id = localStorage.getItem('Id')
     try {
-      const response = await axios.get("http://185.112.83.36:8090/printChat", {
+      const response = await axios.get("http://185.112.83.36:8080/printChat", {
         headers: {
           "Content-Type": "application/json",
         },

@@ -118,7 +118,7 @@ export default {
       console.log(this.comment)
       console.log(this.selectedStatus)
       try {
-        const response = await axios.post("http://185.112.83.36:8090/sigReview", {
+        const response = await axios.post("http://185.112.83.36:8080/sigReview", {
           Ads_id: this.idProduct,
           Rating: this.rating,
           Comment: this.comment,
