@@ -7,7 +7,7 @@
         <samp class="link">Отложить.</samp>
       </div>
       <div class="padding">
-        <div class="title">Чью сторону принимает медиатор?</div>
+        <div class="title">Изменить срок аренды?</div>
           <div class="time-block">
             <div class="end_date_time" @click="changeActive()">
               <div class="date">
@@ -100,6 +100,7 @@ export default {
   },
   methods: {
     closeInfoPopup() {
+      console.log("closePopupclosePopup")
       this.$emit("closePopup");
     },
     showTextPopupOwner() {
@@ -401,18 +402,20 @@ export default {
 }
 
 .center {
-  width: 44vw;
-  padding: 2vw;
+  width: 42vw;
+  padding: 1vw;
   align-self: center;
   justify-content: center;
   align-items: center;
-  border-radius: 1.5vw;
+  border-radius: 0.3vw;
   background-color: white;
+  border: 0.1vw solid black;
+  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-change-deal {
   position: fixed;
-  z-index: 10;
+  z-index: 11;
   display: flex;
   justify-content: center;
   align-content: center;

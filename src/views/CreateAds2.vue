@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <div class="detailProduct">
       <div class="block">
         <a @click="changeRoute('createAds1')" class="route-view">
           <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
@@ -14,7 +13,7 @@
               <input v-model="title" class="input" type="text" />
             </div>
             <div class="sm_title">Название объявления</div>
-            <div class="flex_block">
+            <div class="flex_block" style="height: 2vw;">
               <div class="grey_text_tr">Тип оборудования</div>
               <input v-model="type" class="filter_block" type="text" />
             </div>
@@ -60,7 +59,7 @@
               <input v-model="hourTo" class="hour_input" type="time" placeholder="С 6:00" />
               <input v-model="hourFrom" class="hour_input" type="time" placeholder="До 18:00" />
             </div>
-            <div class="flex_block" style="margin-bottom: 12vw">
+            <div class="flex_block" style="margin-bottom: 5.8vw">
               <div>
                 <div class="grey_text_tr">Фотографии</div>
                 <div class="grey_text_tr">Не более 30</div>
@@ -82,7 +81,7 @@
             </div>
 
 
-            <div class="flex_block" style="margin-bottom: 15vw">
+            <div class="flex_block" style="margin-bottom: 10.8vw">
               <div class="grey_text_tr">Описание объявления</div>
               <textarea
               v-model="desc"
@@ -104,7 +103,7 @@
               />
             </div>
             <div class="sm_title">Контакты</div>
-            <div class="flex_block" style="margin-bottom: 2vw; margin-top: 2vw">
+            <div class="flex_block" style="margin-bottom: 1vw;">
               <div class="grey_text_tr">Телефон</div>
               <input
                 v-model="phone"
@@ -152,7 +151,6 @@
           </div>
         </form>
       </div>
-    </div>
   </div>
 </template>
 
@@ -214,24 +212,26 @@ export default {
             Image: this.uploadedImages, // Загруженные изображения в base64
             Title: this.title,
             Description: this.desc,
-            Hourly_rate: this.priceType === 'час' ? this.Rate : 0,
-            Daily_rate: this.priceType === 'день' ? this.Rate : 0,
+            Hourly_rate: this.priceType === 'час' ? parseInt(this.Rate) : 0,
+            Daily_rate: this.priceType === 'день' ? parseInt(this.Rate) : 0,
             Category_id: 1,
             position: (1, 1),
             Location: "Республика Северная Осетия - Алания, г.Владикавказ"
           });
       try {
+        console.log("Отправка запроса sigAds ")
         // Отправляем base64 изображения в виде массива
         const response = await axios.post(
-          "http://185.112.83.36:8080/sigAds",
+          "http://localhost:8080/sigAds",
           {
             Title: this.title,
             Description: this.desc,
-            Hourly_rate: this.priceType === 'час' ? this.Rate : 0,
-            Daily_rate: this.priceType === 'день' ? this.Rate : 0,
+            Hourly_rate: this.priceType === 'час' ? parseInt(this.Rate)  : 0,
+            Daily_rate: this.priceType === 'день' ? parseInt(this.Rate)  : 0,
             Category_id: 1,
-            PositionX: 1.1,
-            PositionY: 1.1,
+            PositionX: 1,
+            PositionY: 1,
+            Location: "Республика Северная Осетия - Алания, г.Владикавказ",
             Image: this.uploadedImages, // Загруженные изображения в base64
           },
           {
@@ -242,8 +242,14 @@ export default {
           }
         );
 
-        console.log(response.data);
-        this.changeRoute('home'); // Переход на другую страницу после отправки
+        console.log(response);
+
+        if(response.data.state == 'fatal') {
+            console.error("FATAL sigAds")
+        } else {
+          console.log(response);
+          this.changeRoute('home'); // Переход на другую страницу после отправки
+        }
       } catch (error) {
         console.error("Ошибка при отправке:", error);
       }
@@ -332,28 +338,30 @@ export default {
 
 <style scoped>
 .black_button {
-  padding: 0.8vw 3vw;
-  border-radius: 0.8vw;
+  padding: 0.3vw 0.3vw;
+  border-radius: 0.3vw;
   border: none;
   cursor: pointer;
   background-color: black;
   color: white;
   font-weight: bold;
-  font-size: var(--fs-18);
+  font-size: var(--fs-14);
+  width: 16vw;
 }
 
 #uploade-photo {
   opacity: 0;
   position: relative;
   z-index: 10;
+  height: 7vw;
 }
 
 .buttons {
-  margin-top: 13vw;
+  margin-top: 5vw;
 }
 
 #hour_block {
-  margin-left: 21vw;
+  margin-left: 12vw;
   /* visibility: visible; */
   /* visibility: hidden;
   height: 0; */
@@ -362,25 +370,25 @@ export default {
 
 .hour_input {
   border: none;
-  border-radius: 0.6vw;
+  border-radius: 0.3vw;
   background-color: #f1f1f1;
-  width: 7vw;
-  font-size: var(--fs-18);
+  width: 5.8vw;
+  font-size: var(--fs-14);
   color: #929292;
-  padding: 0.8vw 1vw;
+  padding: 0.3vw 0.3vw;
   margin-left: 1vw;
 }
 
 .grey_button {
-  padding: 0.8vw 3vw;
-  border-radius: 0.8vw;
+  padding: 0.3vw 4vw;
+  border-radius: 0.3vw;
   border: none;
   background-color: #d9d9d9;
   cursor: pointer;
   color: black;
   font-weight: 200;
-  font-size: var(--fs-18);
-  margin-left: 2vw;
+  font-size: var(--fs-14);
+  margin-left: 1vw;
 }
 
 .flex-block {
@@ -389,7 +397,8 @@ export default {
 
 .textarea {
   height: 11vw;
-  width: 38vw !important;
+  resize: none;
+  width: 16vw !important;
 }
 
 .min-container {
@@ -397,9 +406,11 @@ export default {
   background-image: url("../assets/icon_file.svg");
   background-repeat: no-repeat;
   background-position: center;
+  height: 7vw;
   height: max-content;
-  border-radius: 1vw;
-  background-size: 3vw;
+  border-radius: 0.3vw;
+  background-size: 1.6vw;
+  width: 16.6vw;
 }
 
 .custom-checkbox {
@@ -418,13 +429,15 @@ export default {
   display: inline-flex;
   align-items: center;
   user-select: none;
+  font-size: var(--fs-14);
+  margin-right: 1vw;
 }
 
 .align {
   text-align: center;
   padding: 0 !important;
   margin: 0 !important;
-  margin-right: 9vw !important;
+  margin-right: 4.6vw !important;
 }
 
 .downloade_file {
@@ -432,27 +445,27 @@ export default {
 }
 
 .sm_title {
-  font-size: var(--fs-25);
+  font-size: var(--fs-16);
   color: #141414;
   font-weight: 600;
-  margin-top: 2.5vw;
+  margin-top: 0.5vw;
 }
 
 /* создание в label псевдоэлемента before со следующими стилями */
 .custom-checkbox + label::before {
   content: "";
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  flex-shrink: 0;
-  flex-grow: 0;
-  background-color: #d9d9d9;
-  border-radius: 0.25em;
-  margin-right: 0.5em;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 50% 50%;
-  border-radius: 50%;
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    flex-shrink: 0;
+    flex-grow: 0;
+    background-color: #d9d9d9;
+    border-radius: 0.25em;
+    margin-right: 0.5em;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 50% 50%;
+    border-radius: 50%;
 }
 
 /* стили при наведении курсора на checkbox */
@@ -468,14 +481,15 @@ export default {
 
 .input_small {
   border: 1px #929292 solid;
-  width: 20vw;
-  padding: 0.6vw 1vw;
+  width: 16vw;
+  padding: 0.3vw 0.3vw;
 }
 
 .input {
   border: 1px #929292 solid;
-  width: 40vw;
-  padding: 0.6vw 1vw;
+  width: 15.5vw;
+  padding: 0.3vw 0.3vw;
+  font-size: var(--fs-14);
 }
 
 /* стили для чекбокса, находящегося в фокусе */
@@ -506,14 +520,15 @@ body {
 }
 
 .checkbox {
-  margin-bottom: 1em;
-  margin-right: 3vw;
+  /* margin-bottom: 1em;
+  margin-right: 3vw; */
 }
 
 .shop_title {
-  font-size: var(--fs-48);
+  font-size: var(--fs-20);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .desc_field {
@@ -547,7 +562,8 @@ h2 {
 }
 
 .main {
-  margin: 0 5vw;
+  margin: 0 auto;
+  width: 48vw;
 }
 
 .comment_title {
@@ -575,11 +591,11 @@ h2 {
 }
 
 .grey_text_tr {
-  font-size: var(--fs-18);
+  font-size: var(--fs-14);
   color: #929292;
   align-self: flex-start;
-  margin-right: 2vw;
-  width: 20vw;
+  margin-right: 0vw;
+  width: 13vw;
 }
 
 .recomendation_list {
@@ -651,15 +667,16 @@ h2 {
 
 .filter_block {
   background-color: #f1f1f1;
-  border-radius: 1vw;
-  padding-top: 0.8vw;
-  padding-bottom: 0.8vw;
-  padding-left: 1.5vw;
-  padding-right: 3vw;
-  border: none;
-  width: 15vw;
-  font-size: var(--fs-20);
-  padding: 2vw;
+    border-radius: 0.3vw;
+    padding-top: 0.8vw;
+    padding-bottom: 0.8vw;
+    padding-left: 1.5vw;
+    padding-right: 3vw;
+    border: none;
+    width: 16vw;
+    font-size: var(--fs-14);
+    padding: 0.3vw;
+    margin-bottom: 0vw;
 }
 
 /* .column .filter_block {
@@ -757,8 +774,8 @@ li::before {
   margin-top: 1vw;
   display: flex;
   align-content: flex-start;
-  height: 3.5vw;
-  margin-bottom: 1.5vw;
+  height: 1.8vw;
+  margin-bottom: 0.5vw;
 }
 
 .desc_text {
@@ -841,11 +858,11 @@ li::before {
 
 .arrow_back {
   border-radius: 50%;
-  height: 2.5vw;
-  padding: 0.8vw 0.7vw;
-  box-shadow: 0 0 1vw rgba(0, 0, 0, 0.25);
+  height: 1.5vw;
+  padding: 0.5vw 0.4vw;
+  box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.25);
   margin-top: 2vw;
-  margin-right: 5vw;
+  margin-right: 2vw;
 }
 
 .min-size {

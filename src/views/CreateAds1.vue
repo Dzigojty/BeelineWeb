@@ -5,42 +5,40 @@
     @changeRoute="changeRoute('createAds2')"
   />
   <div class="main">
-    <div class="detailProduct">
-      <div class="block">
-        <a @click="changeRoute('home')" class="route-view">
-          <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
-        </a>
-        <div class="crateAds">
-          <div class="shop_title">Новое объявление</div>
-          <h2>Параметры</h2>
-          <div class="field_block">
-            <div class="field_name">Тип техники</div>
-            <input class="filter_block" type="text" />
-            <div class="desc_field">Например, “Трактор”</div>
-            <div class="field_name">Категория</div>
-            <div class="flex_block">
-              <input
-                class="filter_block filter_block_check"
-                type="text"
-                readonly="true"
-                value="Сельхозтехника"
-                @click="changeRoute('createAds2')"
-              />
-              <input
-                class="filter_block filter_block_check"
-                type="text"
-                readonly="true"
-                value="Строительная техника"
-                @click="changeRoute('createAds2')"
-              />
-              <input
-                class="filter_block filter_block_check"
-                type="text"
-                readonly="true"
-                value="Другая категория"
-                @click="showCategory"
-              />
-            </div>
+    <div class="block">
+      <a @click="changeRoute('home')" class="route-view">
+        <img class="arrow_back" src="../assets/arrow_back.png" alt="" />
+      </a>
+      <div class="crateAds">
+        <div class="shop_title">Новое объявление</div>
+        <h2>Параметры</h2>
+        <div class="field_block">
+          <div class="field_name">Тип техники</div>
+          <input class="filter_block" type="text" />
+          <div class="desc_field">Например, “Трактор”</div>
+          <div class="field_name">Категория</div>
+          <div class="flex_block">
+            <input
+              class="filter_block filter_block_check"
+              type="text"
+              readonly="true"
+              value="Сельхозтехника"
+              @click="changeRoute('createAds2')"
+            />
+            <input
+              class="filter_block filter_block_check"
+              type="text"
+              readonly="true"
+              value="Строительная техника"
+              @click="changeRoute('createAds2')"
+            />
+            <input
+              class="filter_block filter_block_check"
+              type="text"
+              readonly="true"
+              value="Другая категория"
+              @click="showCategory"
+            />
           </div>
         </div>
       </div>
@@ -75,6 +73,7 @@ export default {
     },
     
     closePopup() {
+      console.log("popup")
       this.isCategories = false;
     },
   },
@@ -104,25 +103,26 @@ export default {
 
 <style scoped>
 .shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-20);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .desc_field {
   color: #929292;
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
 }
 
 .field_name {
   color: #141414;
-  margin: 1vw 0;
+  margin: 0.5vw 0 0.2vw 0;
   font-weight: 600;
+  font-size: var(--fs-14);
 }
 
 h2 {
-  font-size: var(--fs-40);
+  font-size: var(--fs-16);
 }
 
 .button_show_more {
@@ -141,7 +141,8 @@ h2 {
 }
 
 .main {
-  margin: 0 5vw;
+  margin: 0 auto;
+  width: 34vw;
 }
 
 .comment_title {
@@ -241,15 +242,13 @@ h2 {
 
 .filter_block {
   background-color: #f1f1f1;
-  border-radius: 1vw;
-  padding-top: 0.8vw;
-  padding-bottom: 0.8vw;
-  padding-left: 1.5vw;
-  padding-right: 3vw;
+  border-radius: 0.3vw;
+  padding-top: 0.2vw;
+  padding-bottom: 0.2vw;
   border: none;
-  width: 50vw;
-  font-size: var(--fs-20);
-  margin-right: 1vw;
+  width: 29vw;
+  font-size: var(--fs-10);
+  margin-right: 0.4vw;
 }
 
 /* .column .filter_block {
@@ -311,7 +310,6 @@ h2 {
 
 .block {
   display: flex;
-  margin-left: 5vw;
 }
 
 .action {
@@ -428,11 +426,11 @@ li::before {
 
 .arrow_back {
   border-radius: 50%;
-  height: 2.5vw;
-  padding: 0.8vw 0.7vw;
-  box-shadow: 0 0 1vw rgba(0, 0, 0, 0.25);
+  height: 1.5vw;
+  padding: 0.5vw 0.4vw;
+  box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.25);
   margin-top: 2vw;
-  margin-right: 5vw;
+  margin-right: 2vw;
 }
 
 .min-size {

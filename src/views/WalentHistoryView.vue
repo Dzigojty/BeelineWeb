@@ -14,7 +14,7 @@
           <div class="row">
             <img class="user_img" src="../assets/user.png" alt="" />
             <div class="column col1">
-              <div class="name">Перевод от {{ el.User_name }}</div>
+              <div class="name">{{ el.User_name }}</div>
               <div class="price">{{ el.Amount }} ₽</div>
             </div>
             <div class="column">
@@ -30,7 +30,7 @@
           <div class="row">
             <img class="user_img" src="../assets/user.png" alt="" />
             <div class="column col1">
-              <div class="name">Перевод от {{ el.User_name }}</div>
+              <div class="name">{{ el.User_name }}</div>
               <div class="price">{{ el.Amount }} ₽</div>
             </div>
             <div class="column">
@@ -46,7 +46,7 @@
           <div class="row">
             <img class="user_img" src="../assets/user.png" alt="" />
             <div class="column col1">
-              <div class="name">Перевод от {{ el.User_name }}</div>
+              <div class="name">  {{ el.User_name }}</div>
               <div class="price">{{ el.Amount }} ₽</div>
             </div>
             <div class="column">
@@ -61,7 +61,7 @@
         <!-- <div class="row">
           <img class="user_img" src="../assets/user.png" alt="" />
           <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="name">  РОМАН РОМАНОВИЧ</div>
             <div class="price">+ 2 500 ₽</div>
           </div>
           <div class="column">
@@ -73,7 +73,7 @@
         <div class="row">
           <img class="user_img" src="../assets/user.png" alt="" />
           <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="name">  РОМАН РОМАНОВИЧ</div>
             <div class="price">+ 2 500 ₽</div>
           </div>
           <div class="column">
@@ -85,7 +85,7 @@
         <div class="row">
           <img class="user_img" src="../assets/user.png" alt="" />
           <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="name">  РОМАН РОМАНОВИЧ</div>
             <div class="price">+ 2 500 ₽</div>
           </div>
           <div class="column">
@@ -97,7 +97,7 @@
         <div class="row">
           <img class="user_img" src="../assets/user.png" alt="" />
           <div class="column col1">
-            <div class="name">Перевод от РОМАН РОМАНОВИЧ</div>
+            <div class="name">  РОМАН РОМАНОВИЧ</div>
             <div class="price">+ 2 500 ₽</div>
           </div>
           <div class="column">
@@ -126,7 +126,7 @@ export default {
   async created() {
       //Списанные
       let response = await axios
-      .post("http://185.112.83.36:8080/walletHistory", 
+      .post("http://localhost:8080/walletHistory", 
         {
           Type: 3,
         },
@@ -157,7 +157,7 @@ export default {
 
       //Зачисленные
       response = await axios
-      .post("http://185.112.83.36:8080/walletHistory", 
+      .post("http://localhost:8080/walletHistory", 
         {
           Type: 2,
         },
@@ -235,7 +235,7 @@ main {
 
 .line-grey {
   background: #d9d9d9;
-  margin: 2vw 0;
+  margin: 1vw 0;
   height: 1px;
 }
 
@@ -279,23 +279,23 @@ main {
 
 .name {
   color: #141414;
-  font-size: var(--fs-15);
+  font-size: var(--fs-14);
   margin-bottom: 0.3vw;
 }
 
 .price {
   color: #f9cc33;
-  font-size: var(--fs-25);
+  font-size: var(--fs-18);
 }
 
 .col1 {
   margin-left: 0.8vw;
-  margin-right: 26vw;
+  margin-right: 20vw;
 }
 
 .data {
   color: #141414;
-  font-size: var(--fs-15);
+  font-size: var(--fs-14);
 }
 
 .data:first-child {
@@ -436,10 +436,10 @@ main {
 }
 
 .shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-20);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .shop {
@@ -449,8 +449,8 @@ main {
 }
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -469,12 +469,13 @@ main {
 }
 
 .grey_block {
-  color: #141414;
-  background-color: #d9d9d9;
-  border-radius: 1vw;
   width: min-content;
-  margin-right: 1vw;
-  padding: 0.3vw 1vw;
+  margin-right: 1.5vw;
+  border-radius: 0.3vw;
+  width: min-content;
+  margin-right: 0.5vw;
+  font-size: var(--fs-10);
+  padding: 0.3vw 0.3vw;
 }
 
 .title_user {
@@ -700,7 +701,7 @@ main {
 
 .line-grey {
   background: #d9d9d9;
-  margin: 2vw 0;
+  margin: 1vw 0;
   height: 1px;
 }
 
@@ -865,10 +866,10 @@ main {
 }
 
 .shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-20);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .shop {
@@ -878,8 +879,8 @@ main {
 }
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -900,7 +901,7 @@ main {
 .grey_block {
   color: rgba(20, 20, 20, 0.561);
   width: min-content;
-  margin-right: 3vw;
+  /* margin-right: 3vw; */
 }
 
 .title_user {

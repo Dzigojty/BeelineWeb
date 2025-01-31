@@ -34,7 +34,7 @@
         Введите номер телефона или адрес электронной почты, указанного при регистрации, на
         который Вам будет направлен код для смены пароля или письмо с инструкцией.
       </div>
-      <form @submit.prevent="requestPassword">
+      <form @submit.prevent="validateEmail">
         <input v-model="passwordRecoveryForm.emailOrPhone" type="text" placeholder="Телефон, почта" />
         <span v-if="errors.emailOrPhone" class="error">{{ errors.emailOrPhone }}</span>
         <div class="center-block">
@@ -47,13 +47,27 @@
     <div v-if="showAuth == 'passwordRequst'" class="center">
       <div class="title">Восстановление пароля</div>
       <form @submit.prevent="validateCode">
-        <input v-model="recoveryCode" type="text" placeholder="Код" />
-        <span v-if="errors.recoveryCode" class="error">{{ errors.recoveryCode }}</span>
+        <input v-model="confirmationCode" type="text" placeholder="Код" />
+        <span v-if="errors.passConfirmationCode" class="error">{{ errors.passConfirmationCode }}</span>
         <div class="center-block">
           <button type="submit" class="submit">Отправить</button>
         </div>
       </form>
     </div>
+
+     <!-- Восстановление пароля Ввод пароля -->
+     <div v-if="showAuth == 'passwordRequstPassword'" class="center">
+      <div class="title">Восстановление пароля</div>
+      <form @submit.prevent="sendCodeForRecoveryPassWithEmail">
+        <input v-model="passwordRecoveryForm.password" type="password" placeholder="Пароль" />
+        <input v-model="passwordRecoveryForm.confirmPassword" type="password" placeholder="Подтверждение пароля" />
+        <span v-if="errors.passConfirmationCode" class="error">{{ errors.passConfirmationCode }}</span>
+        <div class="center-block">
+          <button type="submit" class="submit">Отправить</button>
+        </div>
+      </form>
+    </div>
+    
 
     <!-- Шаги регистрации -->
     <!-- <div v-if="showAuth == 'register_Phone'" class="center">
@@ -99,7 +113,7 @@
       <form @submit.prevent="validateProfileType">
         <div class="small-text-black margin-bottom">Выберите тип профиля</div>
         <div class="flex-block space-e">
-          <div class="check-block" @click="profileType = 'personal'">
+          <div class="check-block" :class="{ active: profileType == 'personal' }" @click="profileType = 'personal'">
             Для личного пользования
           </div>
           <div class="check-block" :class="{ active: profileType == 'business' }" @click="profileType = 'business'">
@@ -132,7 +146,7 @@
 
     <div v-if="showAuth == 'register_email'" class="center">
       <div class="title">Регистрация</div>
-      <form @submit.prevent="validateEmail">
+      <form @submit.prevent="validateEmailVostanov">
         <input v-model="Email" required type="email" placeholder="Введите почту" />
         <span v-if="errors.email" class="error">{{ errors.email }}</span>
         <div class="small-text m-b">Вы сможете скрыть почту в объявлениях</div>
@@ -224,14 +238,14 @@
         <div class="small-text-black mb">Подтверждение данных</div>
         <div class="small-text-black-c-b">Выберите способ, который вам удобнее.</div>
         <div>
-          <div class="check-block w100 pad" @click="profileType = 'recvez'">
+          <div class="check-block w100 pad" :class="{ active: profileType == 'recvez' }" @click="profileType = 'recvez'">
             <div class="title-check-block">Реквизиты компании</div>
             <div class="text-check-block">
               Введите ИНН и оплатите хотя бы 1 ₽ со счёта компании. Деньги придут в ваш
               кошелёк на сайте.
             </div>
           </div>
-          <div class="check-block w100 pad" @click="profileType = 'passport'">
+          <div class="check-block w100 pad" :class="{ active: profileType == 'recvez' }" @click="profileType = 'passport'">
             <div class="title-check-block">Паспорт</div>
             <div class="text-check-block">
               Селфи с оригинальным паспортом. Данные будут защищены, другие пользователи
@@ -369,6 +383,8 @@ export default {
       },
       passwordRecoveryForm: {
         emailOrPhone: "",
+        password: "",
+        confirmPassword: "",
       },
       password: "",
       confirmPassword: "",
@@ -395,6 +411,7 @@ export default {
       this.validationError = null; // Сброс ошибок при новой загрузке
 
       if (file) {
+
         // Проверка типа файла
         if (!file.type.startsWith("image/")) {
           this.validationError = "Файл должен быть изображением.";
@@ -408,35 +425,29 @@ export default {
         }
 
         // Если проверка пройдена, сохраняем файл и конвертируем в Base64
+        
         this.selectedFile = file;
-        this.convertToBase64(file);
+
+        if ((file instanceof Blob)) {
+          console.log("Файл типа Blob:", file);
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            this.base64Image = reader.result;
+          };
+          reader.onerror = (error) => {
+            console.error("Ошибка при конвертации в Base64: ", error);
+            this.validationError = "Не удалось преобразовать файл в Base64.";
+          };
+          this.validateSelectedFile();
+        } else {
+          console.error("Выбранный объект не является Blob");
+          this.validationError = "Ошибка: Выбранный файл недействителен.";
+        }
       } else {
         this.validationError = "Файл не выбран.";
       }
     },
-
-    convertToBase64(file) {
-      if (!(file instanceof Blob)) {
-        console.error("Передан неправильный формат файла");
-        this.validationError = "Произошла ошибка при загрузке файла.";
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.base64Image = reader.result;
-      };
-      reader.onerror = (error) => {
-        console.error("Ошибка при конвертации в Base64: ", error);
-        this.validationError = "Не удалось загрузить изображение.";
-      };
-    },
-
-
-
-
-
 
     validateINN() {
       this.errors = {};
@@ -463,10 +474,10 @@ export default {
       }
     },
 
-    async emailCode() {
+    async sendCode() {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/enterCodeFromEmail",
+          "http://localhost:8080/enterCodeFromEmail",
           {
             reg_code: Number(this.confirmationCode),
           },
@@ -478,7 +489,7 @@ export default {
           }
         );
 
-        console.log(response.data); // Выводим ответ сервера в консоль
+        console.log(response); // Выводим ответ сервера в консоль
 
         // Проверяем статус в ответе сервера
         if (response.data.status !== "success") {
@@ -496,6 +507,43 @@ export default {
         this.emailCodeStatus = false;
         console.log(`3. emailCodeStatus: ${this.emailCodeStatus}`);
       }
+      console.log("this.emailCodeStatus", this.emailCodeStatus)
+    },
+
+    async emailCode() {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/enterCodeFromEmail",
+          {
+            reg_code: Number(this.confirmationCode),
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // для отправки куки
+          }
+        );
+
+        console.log(response); // Выводим ответ сервера в консоль
+
+        // Проверяем статус в ответе сервера
+        if (response.data.status !== "success") {
+          this.emailCodeStatus = false;
+          console.log(`1. emailCodeStatus: ${this.emailCodeStatus}`);
+          return;
+        }
+
+        alert("Код введен правильно!");
+        this.emailCodeStatus = true;
+        console.log(`2. emailCodeStatus: ${this.emailCodeStatus}`);
+      } catch (error) {
+        alert("Произошла ошибка!");
+        console.error(error);
+        this.emailCodeStatus = false;
+        console.log(`3. emailCodeStatus: ${this.emailCodeStatus}`);
+      }
+      console.log("this.emailCodeStatus", this.emailCodeStatus)
     },
 
     async LoginSubmit() {
@@ -509,7 +557,7 @@ export default {
       let costil = false;
 
       const response = await axios
-        .post("http://185.112.83.36:8080/login", form, {
+        .post("http://localhost:8080/login", form, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -562,12 +610,12 @@ export default {
       // Завершение процесса регистрации или переход на другую страницу
     },
 
-    async submitEmail() {
+    async submitEmail(Email) {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/signupUserByEmail",
+          "http://localhost:8080/signupUserByEmail",
           {
-            Email: this.Email,
+            Email: Email,
           },
           {
             headers: {
@@ -575,12 +623,12 @@ export default {
             },
           }
         );
-        console.log(response.data); // Выводим ответ сервера в консоль
+        console.log(response); // Выводим ответ сервера в консоль
         if (response.data.status != "success") {
           return false;
         }
         alert("Сообщение отправленно на почту!");
-        Cookies.set("token", `${response.data.data.ValidToken_jwt}`, { expires: 1 / 48 });
+        Cookies.set("request_token", `${response.data.data}`, { expires: 1 / 48 });
         return true;
       } catch (error) {
         alert("Произошла ошибка!");
@@ -603,7 +651,7 @@ export default {
         }
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8080/signupNaturEmail",
+            "http://localhost:8080/signupNaturEmail",
             {
               Surname: this.Surname,
               Name: this.Name,
@@ -628,7 +676,7 @@ export default {
       } else {
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8080/signupLegalEmail",
+            "http://localhost:8080/signupLegalEmail",
             {
               Password_hash: this.Password_hash,
               Ind_num_taxp: this.Ind_num_taxp,
@@ -697,10 +745,12 @@ export default {
 
       if (Object.keys(this.errors).length === 0) {
         console.log(this.confirmationCode);
+        console.log("this.emailCodeStatus1");
         this.emailCode();
+        console.log("this.emailCodeStatus2");
+        console.log(this.emailCodeStatus);
         if (this.emailCodeStatus) {
-          console.log(this.emailCodeStatus);
-          this.ChangeShowAuth("register_email_confirm");
+          this.ChangeShowAuth("register_password");
         }
       }
     },
@@ -735,12 +785,83 @@ export default {
       }
     },
 
+    // validatePassword() {
+    //   const passwordStrength = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/.test(this.password);
+    //   this.errors = {};
+    //   if (!this.password) {
+    //     this.errors.password = "Введите пароль.";
+    //   } else if (!passwordStrength) {
+    //     this.errors.password = "Пароль должен быть не менее 8 символов и содержать Заглавные и строчные буквы.";
+    //   }
+
+    //   if (!this.confirmPassword) {
+    //     this.errors.confirmPassword = "Повторите пароль.";
+    //   } else if (this.confirmPassword !== this.password) {
+    //     this.errors.confirmPassword = "Пароли не совпадают.";
+    //   }
+
+    //   this.Password_hash = this.password;
+
+    //   if (Object.keys(this.errors).length === 0) {
+    //     this.ChangeShowAuth("register_type_user");
+    //   }
+    // },
+
+    sendCodeForRecoveryPassWithEmail() {
+      console.log(this.passwordRecoveryForm.password);
+      const passwordStrength = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/.test(this.passwordRecoveryForm.password);
+      this.errors = {};
+      console.log(this.passwordRecoveryForm)
+      if (!this.passwordRecoveryForm.password) {
+        this.errors.passwordRecoveryForm = "Введите пароль.";
+      } else if (passwordStrength) {
+        this.errors.passwordRecoveryForm = "Пароль должен быть не менее 8 символов и содержать Заглавные и строчные буквы.";
+      }
+
+      if (!this.passwordRecoveryForm.confirmPassword) {
+        this.errors.passwordRecoveryForm = "Повторите пароль.";
+      } else if (this.passwordRecoveryForm.confirmPassword !== this.passwordRecoveryForm.password) {
+        this.errors.passwordRecoveryForm = "Пароли не совпадают.";
+      }
+
+      this.Password_hash = this.password;
+      console.log("Object.keys(this.errors).length", Object.keys(this.errors).length);
+      if (Object.keys(this.errors).length == 0) {
+        this.sendCodeForRecoveryPassWithEmailReq();
+        this.ChangeShowAuth("login");
+      }
+    },
+
+    async sendCodeForRecoveryPassWithEmailReq(){
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/sendCodeForRecoveryPassWithEmail",
+          {
+            Passwd_1: this.passwordRecoveryForm.password,
+            Passwd_2: this.passwordRecoveryForm.confirmPassword,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // для отправки куки
+          }
+        );
+        alert("Пароль успешно изменен!");
+        console.log(response.data); // Выводим ответ сервера в консоль
+      } catch (error) {
+        alert("Произошла ошибка!");
+        console.error(error);
+      }
+    },
+
     validatePassword() {
+      console.log(this.password);
       const passwordStrength = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/.test(this.password);
       this.errors = {};
       if (!this.password) {
         this.errors.password = "Введите пароль.";
-      } else if (!passwordStrength) {
+      } else if (passwordStrength) {
         this.errors.password = "Пароль должен быть не менее 8 символов и содержать Заглавные и строчные буквы.";
       }
 
@@ -751,13 +872,13 @@ export default {
       }
 
       this.Password_hash = this.password;
-
-      if (Object.keys(this.errors).length === 0) {
+      console.log("Object.keys(this.errors).length", Object.keys(this.errors).length);
+      if (Object.keys(this.errors).length == 0) {
         this.ChangeShowAuth("register_type_user");
       }
     },
 
-    validateEmail() {
+    validateEmailVostanov() {
       this.errors = {};
       if (!this.Email) {
         this.errors.email = "Введите адрес электронной почты.";
@@ -766,17 +887,61 @@ export default {
       }
 
       if (Object.keys(this.errors).length === 0) {
-        if (this.submitEmail()) {
+        if (this.submitEmail(this.Email)) {
           this.ChangeShowAuth("register_email_confirm_code");
         }
       }
     },
 
-    requestPassword() {
-      if (this.validatePasswordRecoveryForm()) {
-        this.$emit("passwordRequested");
+    validateEmail() {
+      this.errors = {};
+      if (!this.passwordRecoveryForm.emailOrPhone) {
+        this.errors.email = "Введите адрес электронной почты.";
+      } else if (!this.isValidEmail(this.passwordRecoveryForm.emailOrPhone)) {
+        this.errors.email = "Введите корректный email.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        if (this.submitEmail(this.passwordRecoveryForm.emailOrPhone)) {
+          this.ChangeShowAuth("passwordRequst");
+        }
       }
     },
+
+    validateCode() {
+      this.errors = {};
+      if (!this.confirmationCode) {
+        this.errors.passConfirmationCode = "Введите код подтверждения.";
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        this.emailCode();
+        if (this.emailCodeStatus) {
+          this.ChangeShowAuth("passwordRequstPassword");
+        }
+      }
+    },
+
+    // validateCode() {
+    //   this.errors = {};
+    //   if (!this.passwordRecoveryForm.emailOrPhone) {
+    //     this.errors.email = "Введите адрес электронной почты.";
+    //   } else if (!this.isValidEmail(this.passwordRecoveryForm.emailOrPhone)) {
+    //     this.errors.email = "Введите корректный email.";
+    //   }
+
+    //   if (Object.keys(this.errors).length === 0) {
+    //     if (this.submitEmail()) {
+    //       this.ChangeShowAuth("passwordRequst");
+    //     }
+    //   }
+    // },
+
+    // requestPassword() {
+    //   if (this.validatePasswordRecoveryForm()) {
+    //     this.$emit("passwordRequested");
+    //   }
+    // },
 
     isValidEmail(value) {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -824,7 +989,7 @@ export default {
 
       return Object.keys(this.errors).length === 0;
     },
-    validatePasswordRecoveryForm() {
+    validatePasswordRecoveryFormVostanov() {
       this.errors = {};
 
       if (!this.passwordRecoveryForm.emailOrPhone) {
@@ -895,8 +1060,10 @@ li::marker {
 }
 
 .title-check-block {
-  font-size: var(--fs-15);
-  font-weight: 600;
+  font-weight: 700;
+  text-align: center;
+  font-size: var(--fs-20);
+  margin-bottom: 1vw;
 }
 
 .text-check-block {
@@ -915,6 +1082,7 @@ li::marker {
 }
 
 .check-block {
+  cursor: pointer;
   background-color: #f1f1f1;
   width: 13vw;
   height: 8vw;
@@ -937,6 +1105,10 @@ li::marker {
   background-color: #f9cc33;
 }
 
+.active {
+  background-color: #f9cc33;
+}
+
 .link {
   font-size: var(--fs-15);
   color: black;
@@ -945,11 +1117,12 @@ li::marker {
 }
 
 .submit {
-  padding: 0.6vw 5vw;
-  background-color: #f9cc33;
-  border: none;
-  border-radius: 1vw;
-  margin: 1.5vw 0;
+    padding: 0.2vw 3vw;
+    background-color: #f9cc33;
+    border: none;
+    border-radius: 0.4vw;
+    margin: 0.5vw 0;
+    font-size: var(--fs-14);
 }
 
 .small-text-black {
@@ -958,7 +1131,7 @@ li::marker {
 }
 
 .small-text {
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
   color: #3333337a;
 }
 
@@ -967,11 +1140,11 @@ li::marker {
 }
 
 .m-b {
-  margin-bottom: 1vw;
+  margin-bottom: 0.5vw;
 }
 
 .small-text samp {
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
   color: #3333337a;
   text-align: center;
 }
@@ -982,7 +1155,7 @@ li::marker {
 }
 
 .m-t {
-  margin-top: 1.8vw;
+  margin-top: 0vw;
 }
 
 .min-context {
@@ -1024,7 +1197,7 @@ li::marker {
 
 .other-auth-img {
   border-radius: 50%;
-  width: 2.5vw;
+  width: 1.5vw;
 }
 
 input::placeholder {
@@ -1033,14 +1206,17 @@ input::placeholder {
 
 input {
   display: block;
-  border: 1px #f9cc33 solid;
-  padding-top: 0.8vw;
-  padding-bottom: 0.8vw;
-  padding-right: 2vw;
-  padding-left: 2vw;
-  border-radius: 1vw;
-  width: 26vw;
-  margin-bottom: 1.5vw;
+  border: 1px solid #f9cc33;
+  padding-top: .2vw;
+  padding-bottom: .2vw;
+  padding-right: 1vw;
+  padding-left: 1vw;
+  border-radius: 0.4vw;
+  width: 86%;
+  margin-bottom: 1vw;
+  font-size: var(--fs-14);
+  margin: 0 auto;
+  margin-bottom: 0.6vw;
 }
 
 button {
@@ -1054,18 +1230,21 @@ button {
 .title {
   font-weight: bold;
   text-align: center;
-  font-size: var(--fs-30);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-16);
+  margin-bottom: 1vw;
 }
 
 .center {
-  width: 30vw;
-  padding: 2vw;
+  max-width: 300px;
+  padding: 1vw;
+  min-width: 150px;
   align-self: center;
   justify-content: center;
   align-items: center;
-  border-radius: 1.5vw;
-  background-color: white;
+  border-radius: 1vw;
+  background-color: #FFFFFF;
+  border: 0.3vw solid black;
+  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-auth {

@@ -87,7 +87,18 @@
           </div> -->
           <div v-if="detail.Hourly_rate != 0" class="desc_title">{{ detail.Hourly_rate }} ₽ за час</div>
           <div v-if="detail.Daily_rate != 0" class="desc_title">{{ detail.Daily_rate }} ₽ за смену</div>
-          <div class="product_status_g">{{ detail.Duration }}</div>
+          <div v-if="detail?.Duration" 
+              :class="{ product_status_r: detail.Duration.includes('Занят'), 
+                        product_status_g: !detail.Duration.includes('Занят') }">
+            {{ detail.Duration }}
+          </div>
+          <div class="product_status_g" v-else>
+            Информация отсутствует
+          </div>
+
+          <!-- <div class="product_status_r">
+            {{ detail.Duration }}
+          </div> -->
           <img
             @click="clickFavorite"
             class="desc_star"
@@ -134,7 +145,7 @@
     <div class="recomendations">
       <div class="desc_title margin-top">Похожие объявления</div>
       <div class="recomendation_list" >
-        <div class="recomendation" v-for="prod in displayedProducts" @click="selectProduct(prod)">
+        <div class="recomendation" v-for="prod in displayedProducts" @click="selectProduct(prod.Id)">
           <img src="../assets/product2.png" alt="" />
           <div v-if="prod.Hourly_rate != 0" class="recomendation_price">от {{prod.Hourly_rate}} ₽ за час</div>
           <div v-if="prod.Daily_rate != 0" class="recomendation_price">от {{prod.Daily_rate}} ₽ за смену</div>
@@ -166,13 +177,14 @@ export default {
   data() {
     return {
       isInfoPopupView: false,
+      localIdProduct: null,
       isInfoPopupRatingView: false,
       map: null,
       coordinates: [],
       detail: {},
       currentPage: 1,
       favorite: [],
-      perPage: 4,
+      perPage: 5,
       displayedProducts: [],
       prods: [],
       adsFav: 0,
@@ -207,9 +219,9 @@ export default {
       this.displayedProducts.push(...this.prods.slice(start, end));
     },
     selectProduct(product) {
-      console.log("product.Id")
-      console.log(product.Id)
-      this.$emit("selectProduct", product.Id);
+      this.localIdProduct = product;
+      console.log("this.localIdProduct",this.localIdProduct);
+      this.printAds();
     },
     formatDate(unixTimestamp) {
       if (!unixTimestamp) return 'Дата неизвестна'; // Обработка некорректных данных
@@ -244,12 +256,12 @@ export default {
     },
 
     async createChat() {
-      console.log(`addFavorite ${this.idProduct}`);
+      console.log(`addFavorite ${this.localIdProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/sigChat",
+          "http://localhost:8080/sigChat",
           {
-            Ads_id: this.idProduct,
+            Ads_id: this.localIdProduct,
           },
           {
             headers: {
@@ -274,7 +286,7 @@ export default {
       console.log(`addFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/sigFavAds",
+          "http://localhost:8080/sigFavAds",
           {
             Ads_id: idProduct,
           },
@@ -300,7 +312,7 @@ export default {
       console.log(`removeFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/delFavAds",
+          "http://localhost:8080/delFavAds",
           {
             Ads_id: idProduct,
           },
@@ -324,7 +336,7 @@ export default {
     },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+        const response = await axios.get("http://localhost:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -380,7 +392,7 @@ export default {
     async loadProducts() {
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/sortProductListCategoriez",
+          "http://localhost:8080/sortProductListCategoriez",
           { Category: [this.detail.Category_id] },
           { headers: { "Content-Type": "application/json" } }
         );
@@ -401,52 +413,56 @@ export default {
         this.prods = []; // На случай ошибки оставляем массив пустым
       }
     },
+
+    async printAds() {
+      console.log("Detail this.localIdProduct")
+      console.log(this.localIdProduct)
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/printAds",
+          {
+            Ads_id: this.localIdProduct,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response)
+        if (response.data.status != "success") console.log(response);
+
+        this.detail = response.data.data;
+        this.detail.Avatar = this.detail.Avatar != 'File not found' ? `data:image/png;base64,${this.detail.Avatar}` : '../assets/user.png';
+        this.reviews = response.data.data.reviews;
+        
+        // Update images based on API response
+        console.log("this.images");
+        if (response.data.data.Imags.length > 0) {
+          this.images = response.data.data.Imags.map(img => img !=  "Error reading file" ? `data:image/png;base64,${img}` : require("@/assets/product2.png"));
+        } else {
+          this.images = [require("@/assets/product2.png")];
+          this.currentImage = require("@/assets/product2.png");
+        }
+        console.log(this.images);
+
+      } catch (error) {
+        console.error(
+          "Ошибка при загрузке продукта:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    }
   },
   async created() {
-    console.log("Detail this.idProduct")
-    console.log(this.idProduct)
-    try {
-      const response = await axios.post(
-        "http://185.112.83.36:8080/printAds",
-        {
-          Ads_id: this.idProduct,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response)
-      if (response.data.status != "success") console.log(response);
-
-      this.detail = response.data.data;
-      this.detail.Avatar = this.detail.Avatar != 'File not found' ? `data:image/png;base64,${this.detail.Avatar}` : '../assets/user.png';
-      this.reviews = response.data.data.reviews;
-      
-      // Update images based on API response
-      console.log("this.images");
-      console.log(this.images);
-      if (response.data.data.Imags.length > 0) {
-        this.images = response.data.data.Imags.map(img => `data:image/png;base64,${img}`);
-      } else {
-        this.images = [require("@/assets/product2.png")];
-      }
-      this.currentImage = this.images[0];
-
-    } catch (error) {
-      console.error(
-        "Ошибка при загрузке продукта:",
-        error.response ? error.response.data : error.message
-      );
-    }
-
+    this.localIdProduct = this.idProduct;
+    this.printAds();
 
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
+        "http://localhost:8080/groupReviewNewOnesFirst",
         {
-          ads_id: this.idProduct,
+          ads_id: this.localIdProduct,
         },
         {
           headers: {
@@ -466,7 +482,7 @@ export default {
 
 
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+      const response = await axios.get("http://localhost:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -518,15 +534,15 @@ export default {
   display: block;
   background-color: black;
   color: #f9cc33;
-  padding: 1.4vw 5vw;
+  padding: 0.6vw 2vw;
   cursor: pointer;
-  border-radius: 1vw;
-  font-size: var(--fs-20);
+  border-radius: 0.6vw;
+  font-size: var(--fs-14);
   align-content: center;
   align-items: center;
   align-self: center;
   margin: 0 auto;
-  margin-top: 4vw;
+  margin-top: 2vw;
 }
 
 .main {
@@ -541,17 +557,17 @@ export default {
 
 .recomendation_price {
   font-weight: bold;
-  font-size: var(--fs-20);
+  font-size: var(--fs-15);
 }
 
 .recomendation_desc {
-  font-size: var(--fs-20);
+  font-size: var(--fs-14);
 }
 
 .select-block {
-  height: 33.5vw;
-  width: 33.5vw;
-  margin-bottom: 1vw;
+  height: 20.5vw;
+  width: 20.5vw;
+  margin-bottom: 0.5vw;
 }
 
 .margin-top {
@@ -560,8 +576,8 @@ export default {
 }
 
 .otsivi {
-  height: 17vw;
-  margin-top: 3vw;
+  height: 10vw;
+  margin-top: 1vw;
   overflow: hidden;
 }
 
@@ -571,13 +587,13 @@ export default {
 
 .recomendation_list {
   display: grid;
-  grid-template-columns: 20vw 20vw 20vw 20vw;
-  grid-template-rows: 26vw;
+  grid-template-columns: 14vw 14vw 14vw 14vw 14vw;
+  grid-template-rows: 16vw;
   gap: 2vw;
 }
 
 .recomendation {
-  width: 20vw;
+  width: 14vw;
   margin-right: 2.5vw;
   cursor: pointer;
 }
@@ -603,11 +619,11 @@ export default {
 .owner {
   display: flex;
   justify-content: space-between;
-  margin-top: 4vw;
+  margin-top: 2vw;
 }
 
 .grafic {
-  font-size: var(--fs-20);
+  font-size: var(--fs-10);
   color: #929292;
   margin-top: 1vw;
   font-weight: 200;
@@ -624,8 +640,7 @@ export default {
 }
 
 .author_rating {
-  width: 20vw;
-  margin-top: 4vw;
+  width: 10vw;
 }
 
 yandex-map {
@@ -634,16 +649,16 @@ yandex-map {
   height: 500px;
 }
 .product_button_otsiz {
-  margin-top: 1vw;
+  margin-top: 0.6vw;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
   color: black;
   background-color: #d9d9d9;
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
   border: solid 0.2vw #d9d9d9;
-  border-radius: 1vw;
-  padding: 0.6vw 0;
+  border-radius: 0.4vw;
+  padding: 0.2vw 0;
 }
 
 .product_button_chat {
@@ -652,39 +667,46 @@ yandex-map {
   box-sizing: border-box;
   color: #000000;
   background-color: white;
-  border: solid 0.2vw #000000;
+  border: solid 0.1vw #000000;
   cursor: pointer;
-  border-radius: 1vw;
-  padding: 0.6vw 2.5vw;
+  border-radius: 0.4vw;
+  padding: 0.2vw 2.5vw;
+  font-size: var(--fs-14);
 }
 
 .product_button_date {
   text-align: center;
-  margin-top: 1vw;
+  margin-top: 0.5vw;
   box-sizing: border-box;
   color: #f9cc33;
   background-color: white;
   cursor: pointer;
-  border: solid 0.2vw #f9cc33;
-  border-radius: 1vw;
-  padding: 0.6vw 2.5vw;
+  border: solid 0.1vw #f9cc33;
+  border-radius: 0.4vw;
+  padding: 0.2vw 1.5vw;
+  font-size: var(--fs-14);
 }
 
 .flex-row {
   display: flex;
   align-items: center;
-  width: 30vw;
+  width: 20vw;
   justify-content: space-between;
 }
 
 .desc_star {
-  height: 2vw;
-  width: 2vw;
+  height: 1.6vw;
+  width: 1.6vw;
 }
 
 .product_status_g {
   color: #04c700;
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
+}
+
+.product_status_r {
+  color: #c70000;
+  font-size: var(--fs-10);
 }
 
 .block {
@@ -698,31 +720,35 @@ yandex-map {
 }
 
 h1 {
-  font-size: var(--fs-30);
+  font-size: var(--fs-20);
   padding: 0;
   padding-bottom: 0.5vw;
 }
 
 .desc_title {
   font-weight: bold;
-  font-size: var(--fs-25);
+  font-size: var(--fs-16);
   margin-top: 0.6vw;
 }
 
 li::before {
   content: "•";
-  font-size: var(--fs-20);
+  font-size: var(--fs-14);
   margin-inline-end: 1ch;
 }
 
 .desc_list {
-  font-size: var(--fs-20);
+  font-size: var(--fs-14);
   padding: 0;
   line-height: 3vw;
 }
 
+.desc_list li{
+  font-size: var(--fs-14);
+}
+
 .desc_text {
-  font-size: var(--fs-20);
+  font-size: var(--fs-14);
   line-height: 3vw;
 }
 
@@ -730,10 +756,11 @@ li::before {
   color: #d9d9d9;
   margin-bottom: 5vw;
   margin-top: 1vw;
+  font-size: var(--fs-10);
 }
 
 .swiper {
-  width: 35vw;
+  width: 20.5vw;
   margin: 0;
   padding: 0;
 }
@@ -742,12 +769,13 @@ li::before {
   display: block;
   margin: 0;
   padding: 0;
+  margin-right: 0.5vw;
 }
 
 .slider_img {
   display: block;
-  width: 10vw;
-  height: 6.5vw;
+  width: 7vw;
+  height: 4.5vw;
   border-radius: 1vw;
 }
 
@@ -763,7 +791,7 @@ li::before {
 }
 
 .product {
-  width: 35vw;
+  width: 20.5vw;
 }
 
 .rating_star {
@@ -789,35 +817,38 @@ li::before {
 }
 
 .author_name {
-  font-size: var(--fs-16);
+  font-size: var(--fs-10);
   align-self: center;
 }
 
 .author_img {
   border-radius: 50%;
-  width: 3vw;
-  height: 3vw;
+  width: 2vw;
+  height: 2vw;
 }
 
 .detailProduct {
   display: flex;
   justify-content: space-between;
+  margin: 0 auto;
   margin-top: 2vw;
+  width: 57vw;
 }
 
 .arrow_back {
   border-radius: 50%;
-  height: 2.5vw;
+  height: 1.5vw;
   padding: 0.5vw 0.4vw;
-  box-shadow: 0 0 1vw rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.25);
   margin-top: 2vw;
-  margin-right: 5vw;
+  margin-right: 2vw;
 }
 
 .min-size {
-  width: 20vw;
+  width: 14vw;
   color: #929292;
-  margin-top: 4vw;
-  font-size: var(--fs-20);
+  margin-top: 0.4vw;
+  font-size: var(--fs-14);
 }
+
 </style>

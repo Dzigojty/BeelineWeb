@@ -8,6 +8,7 @@
       <div class="padding">
         <div class="title">Чью сторону принимает медиатор?</div>
         <textarea
+          v-model="text"
           name="desc"
           id="desc"
           cols="53"
@@ -15,20 +16,20 @@
           minlength="200"
           placeholder="Напишите комментарий о своем решении"
         ></textarea>
-        <div class="grey-min-text">Не менее 200 символов</div>
+        <div :class="{grey_min_text: true, error: textError}">Не менее 200 символов</div>
         <div class="users">
           <div class="user">
             <div class="center-block">
               <img src="../../assets/user.png" alt="" />
             </div>
-            <div class="name">Алексей К.</div>
+            <div class="name" @click="mediatorFinishJobUser">Алексей К.</div>
           </div>
           <div class="up-line"></div>
           <div class="user">
             <div class="center-block">
               <img src="../../assets/user.png" alt="" />
             </div>
-            <div class="name">Валентин Ж.</div>
+            <div class="name" @click="mediatorFinishJobOwner">Валентин Ж.</div>
           </div>
         </div>
       </div>
@@ -41,11 +42,83 @@
 import { ref, computed } from "vue";
 
 export default {
+  props: {
+    selectedChat: Number,
+  },
   data() {
-    return {};
+    return {
+      text: '',
+      textError: false,
+    };
   },
   components: {},
   methods: {
+    validation(){
+      if (this.text.length > 200) {
+        this.textError = true;
+      } else {
+        this.textError = false;
+      }
+    },
+    async mediatorFinishJobUser() {
+      if(this.validation){
+        try {
+          const response = await axios.post("http://localhost:8080/mediatorFinishJobUser", {
+            Chat_id: this.selectedChat,
+            Amount: 0,
+            Comment: this.text,
+          }, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          });
+
+          // Проверим весь ответ от сервера
+          console.log("Ответ от сервера:", response);
+
+          // Проверяем структуру ответа
+          if (response.data && response.data.status === "success") {
+            alert("Спор закрыт.")
+          } else {
+            alert("Неверный формат ответа или нет данных.")
+            console.error("Неверный формат ответа или нет данных:", response.data);
+          }
+        } catch (error) {
+          console.error("Ошибка при запросе mediatorFinishJobUser:", error.message);
+        }
+      }
+    },
+
+    async mediatorFinishJobOwner() {
+      if(this.validation){
+        try {
+          const response = await axios.post("http://localhost:8080/mediatorFinishJobOwner", {
+            Chat_id: this.selectedChat,
+            Comment: this.text,
+          }, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          });
+
+          // Проверим весь ответ от сервера
+          console.log("Ответ от сервера:", response);
+
+          // Проверяем структуру ответа
+          if (response.data && response.data.status === "success") {
+            alert("Спор закрыт.")
+          } else {
+            alert("Неверный формат ответа или нет данных.")
+            console.error("Неверный формат ответа или нет данных:", response.data);
+          }
+        } catch (error) {
+          console.error("Ошибка при запросе mediatorFinishJobUser:", error.message);
+        }
+      }
+    },
+
     closeInfoPopup() {
       this.$emit("closePopup");
     },
@@ -125,7 +198,7 @@ export default {
   font-size: var(--fs-30);
 }
 
-.grey-min-text {
+.grey_min_text {
   font-size: var(--fs-15);
   color: #929292;
   margin-bottom: 1vw;
@@ -153,11 +226,13 @@ export default {
   align-items: center;
   border-radius: 1.5vw;
   background-color: white;
+  border: 0.1vw solid black;
+  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-moder-decision {
   position: fixed;
-  z-index: 10;
+  z-index: 11;
   display: flex;
   justify-content: center;
   align-content: center;

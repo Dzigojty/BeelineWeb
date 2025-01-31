@@ -162,7 +162,7 @@
 
 <script>
 import { Swiper, SwiperSlide } from "swiper/vue";
-import vPopupAddReview from "../popup/v-popup-add-review.vue";
+import vPopupAddReview from "./v-popup-add-review.vue";
 import "swiper/swiper-bundle.css";
 import axios from "axios";
 export default {
@@ -246,7 +246,7 @@ export default {
       console.log("groupReviewOldOnesFirst");
       try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/groupReviewOldOnesFirst",
+          "http://localhost:8080/groupReviewOldOnesFirst",
           {
             ads_id: this.idProduct,
           },
@@ -269,7 +269,7 @@ export default {
       console.log("groupReviewNewOnesFirst");
       try {
         const response = await axios.get(
-          "http://185.112.83.36:8080/groupReviewNewOnesFirst",
+          "http://localhost:8080/groupReviewNewOnesFirst",
           {
             headers: {
               "Content-Type": "application/json",
@@ -291,7 +291,7 @@ export default {
     console.log(this.idProduct)
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
+        "http://localhost:8080/groupReviewNewOnesFirst",
         {
           ads_id: this.idProduct,
         },
@@ -491,6 +491,8 @@ export default {
   align-items: center;
   border-radius: 1.5vw;
   background-color: white;
+  border: 0.1vw solid black;
+  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-fitback {

@@ -5,20 +5,30 @@
     </div>
     <div class="shop_filter_name">{{Surname_or_Ind_num}} {{Name}}</div>
     <div class="shop_filter_rating">
-      <div class="shop_filter_rating_name">5,0</div>
-      <div class="filter_rating">
-        <img src="../assets/star_yellow.png" alt="" />
-        <img src="../assets/star_yellow.png" alt="" />
-        <img src="../assets/star_yellow.png" alt="" />
-        <img src="../assets/star_yellow.png" alt="" />
-        <img src="../assets/star_grey.png" alt="" />
+      <div class="shop_filter_rating_name">{{ Rating }}</div>
+      <div v-for="n in 5" class="filter_rating">
+          <img
+            src="../assets/star_yellow.png"
+            alt="Звезда"
+            class="rating_midle"
+            v-if="n <= Rating"
+          />
+          <img
+            src="../assets/star_grey.png"
+            alt="Пустая звезда"
+            class="rating_midle"
+            v-else
+          />
       </div>
     </div>
-    <div class="block-num_prof">
+    <!-- <div class="block-num_prof">
       <samp>Номер профиля</samp>
       <samp>0000</samp>
+    </div> -->
+    <div class="shop_filter_button_price">
+      <span v-if="loading" style="font-size: var(--fs-10)">Загрузка...</span>
+      <span v-else>{{ wallet?.Total_balance }} ₽</span>
     </div>
-    <div class="shop_filter_button_price">100 000 ₽</div>
     <div class="shop_filter_button">Применить</div>
     <div class="line-grey2"></div>
     <a class="shop_filter_grey_title" @click="changeRoute('ads')"> Объявления </a>
@@ -34,14 +44,13 @@
 
 <script>
 import { ref, onMounted } from 'vue';
+import axios from "axios";
 
 export default {
   data(){
     return {
-      // Login: null,
-      // Name: null,
-      // Surname_or_Ind_num: null,
-      // Patronomic_or_Addres_name: null,
+      wallet: null,
+      loading: true, // Изначально включаем состояние загрузки
     }
   },
   setup() {
@@ -49,6 +58,7 @@ export default {
     let Name = ref('');
     let Surname_or_Ind_num = ref('');
     let Patronomic_or_Addres_name = ref('');
+    let Rating = ref('');
 
     // Загружаем данные из localStorage при монтировании компонента
     onMounted(() => {
@@ -56,12 +66,14 @@ export default {
       const storedName = localStorage.getItem('Name');
       const storedSurname_or_Ind_num = localStorage.getItem('Surname_or_Ind_num');
       const storedPatronomic_or_Addres_name = localStorage.getItem('Patronomic_or_Addres_name');
+      const storedRating = localStorage.getItem('Rating');
 
-      if (storedLogin && storedName && storedSurname_or_Ind_num && storedPatronomic_or_Addres_name) {
+      if (storedLogin && storedName && storedSurname_or_Ind_num && storedPatronomic_or_Addres_name && (storedRating > -1 && storedRating < 6)) {
         Login.value = storedLogin;
         Name.value = storedName;
         Surname_or_Ind_num.value = storedSurname_or_Ind_num;
         Patronomic_or_Addres_name.value = storedPatronomic_or_Addres_name;
+        Rating.value = storedRating;
       }
     });
 
@@ -69,10 +81,35 @@ export default {
       Login,
       Name,
       Surname_or_Ind_num,
-      Patronomic_or_Addres_name
+      Patronomic_or_Addres_name,
+      Rating
     };
   },
   methods: {
+    async walletList() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/walletList",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        console.log("walletList");
+        console.log(response);
+        if (response.data.data.status === "fatal") {
+          this.wallet = null;
+        } else {
+          this.wallet = response.data.data[0];
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке продуктов:", error);
+      } finally {
+        this.loading = false; // Снимаем состояние загрузки после запроса
+      }
+    },
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
@@ -81,19 +118,21 @@ export default {
       location.reload(true);
 
     },
-    created(){
-      this.Login = localStorage.getItem('Login');
-      this.Name = localStorage.getItem('Name');
-      this.Surname_or_Ind_num = localStorage.getItem('Surname_or_Ind_num');
-      this.Patronomic_or_Addres_name = localStorage.getItem('Patronomic_or_Addres_name');
-    }
+   
   },
+  created(){
+      this.walletList();
+    }
 }
 
   
 </script>
 
 <style scoped>
+.user-panel-right{
+  width: 12vw;
+}
+
 .route-view {
   text-decoration: none;
 }
@@ -424,16 +463,9 @@ a {
   width: 2.5vw;
 }
 
-.shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
-  font-weight: bold;
-  padding-top: 2vw;
-}
-
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -463,9 +495,9 @@ a {
 .title_user {
   border-radius: 50%;
   margin: 0 auto;
-  width: 12vw;
-  height: 11.5vw;
-  box-shadow: 0vw 0vw 1vw -0.2vw rgba(0, 0, 0, 0.348);
+  width: 7vw;
+  height: 7vw;
+  box-shadow: 0vw 0vw 1vw -0.6vw rgba(0, 0, 0, 0.348);
   border: 1vw white solid;
   box-sizing: border-box;
 }
@@ -489,8 +521,8 @@ a {
 }
 
 .shop_filter_rating_name {
-  font-size: var(--fs-25);
-  margin-right: 1vw;
+  font-size: var(--fs-10);
+  margin-right: 0.3vw;
 }
 
 .shop_filter_name {
@@ -515,28 +547,17 @@ a {
   padding-right: 1vw;
 }
 
-.shop_filter_button_price {
-  border: 1px #888888 solid;
-  background-color: #e8e8e8;
-  font-size: var(--fs-20);
-  border-radius: 0.8vw;
-  cursor: pointer;
-  text-align: center;
-  padding: 0.2vw 0;
-  margin: 1.2vw 2.5vw 0 2.5vw;
-}
-
 .line-grey2 {
   background-color: #d9d9d9;
   height: 0.2vw;
 }
 
 .shop_filter_grey_title {
-  display: block;
   color: #929292;
-  padding: 0.5vw 0;
-  font-size: var(--fs-25);
+  display: block;
   text-decoration: none;
+  padding: 0.5vw 0;
+  font-size: var(--fs-20);
 }
 
 .exit {
@@ -561,12 +582,12 @@ a {
 .shop_filter_button {
   border: 1px #585858 solid;
   background-color: #f9cc33;
-  font-size: var(--fs-16);
+  font-size: var(--fs-14);
   cursor: pointer;
-  border-radius: 0.8vw;
+  border-radius: 0.3vw;
   text-align: center;
-  padding: 0.5vw 0;
-  margin: 1vw 4.5vw 2vw 4.5vw;
+  padding: 0.2vw 0;
+  margin: 0.5vw 3vw 0.5vw 3vw;
 }
 
 .shop_filter_block {
@@ -649,19 +670,13 @@ a {
   align-content: center;
 }
 
-.filter_rating img {
-  width: 2.5vw;
-  height: 2.5vw;
-  margin-right: 0.2vw;
-}
-
 .route-view {
   text-decoration: none;
 }
 
 .shop_filter_rating {
   display: flex;
-  justify-content: start;
+  justify-content: center;
 }
 
 .app {
@@ -849,16 +864,9 @@ main {
   font-size: var(--fs-20);
 }
 
-.shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
-  font-weight: bold;
-  padding-top: 2vw;
-}
-
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -882,16 +890,6 @@ main {
   margin-right: 3vw;
 }
 
-.title_user {
-  border-radius: 50%;
-  margin: 0 auto;
-  width: 12vw;
-  height: 11.5vw;
-  box-shadow: 0vw 0vw 1vw -0.2vw rgba(0, 0, 0, 0.348);
-  border: 1vw white solid;
-  box-sizing: border-box;
-}
-
 .shop_filter_text {
   font-size: var(--fs-25);
   color: black;
@@ -911,14 +909,15 @@ main {
 }
 
 .shop_filter_rating_name {
-  font-size: var(--fs-25);
+  font-size: var(--fs-10);
   margin-right: 1vw;
+  margin-top: 0.1vw;
 }
 
 .shop_filter_name {
-  font-size: var(--fs-30);
+  font-size: var(--fs-16);
   font-weight: bold;
-  margin: 1.5vw 0;
+  margin: 0.2vw 0;
   align-content: flex-start;
 }
 
@@ -928,7 +927,7 @@ main {
 
 .block-num_prof {
   display: flex;
-  justify-content: start;
+  justify-content: center;
   margin-top: 2vw;
 }
 
@@ -939,25 +938,30 @@ main {
 .shop_filter_button_price {
   border: 1px #888888 solid;
   background-color: #e8e8e8;
-  font-size: var(--fs-20);
+  font-size: var(--fs-14);
   cursor: pointer;
-  border-radius: 0.8vw;
+  border-radius: 0.3vw;
   text-align: center;
-  padding: 0.2vw 0;
-  margin: 1.2vw 2.5vw 0 2.5vw;
+  padding: 0.1vw 0;
+  margin: 0.6vw auto;
+  width: 6vw;
+}
+
+.shop_filter_button_price span {
+  font-size: var(--fs-10);
 }
 
 .line-grey2 {
   background-color: #d9d9d9;
-  height: 0.2vw;
+  height: 0.1vw;
 }
 
 .shop_filter_grey_title {
   color: #929292;
   display: block;
   text-decoration: none;
-  padding: 0.5vw 0;
-  font-size: var(--fs-25);
+  padding: 0.2vw 0;
+  font-size: var(--fs-16);
 }
 
 .exit {
@@ -974,7 +978,7 @@ main {
   font-size: var(--fs-18);
 }
 
-.shop_filter_button {
+/* .shop_filter_button {
   border: 1px #585858 solid;
   background-color: #f9cc33;
   font-size: var(--fs-16);
@@ -983,7 +987,7 @@ main {
   text-align: center;
   padding: 0.5vw 0;
   margin: 1vw 4.5vw 2vw 4.5vw;
-}
+} */
 
 .shop_filter_block {
   display: flex;
@@ -1066,9 +1070,9 @@ main {
 }
 
 .filter_rating img {
-  width: 2.5vw;
-  height: 2.5vw;
-  margin-right: 0.8vw;
+  width: 1vw;
+  height: 1vw;
+  margin-right: 0.3vw;
 }
 
 .shop {

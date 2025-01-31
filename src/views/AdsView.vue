@@ -76,7 +76,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupAdsByRented", {
+      const response = await axios.get("http://localhost:8080/groupAdsByRented", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -86,13 +86,16 @@ export default {
       if (response.data.status == "success") {
         this.active = response.data.data;
       } else {
+        this.active = [];
       }
     } catch (error) {
       console.error("Ошибка при выводе :", error);
     }
 
+    this.array = this.active;
+
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupAdsByArchived", {
+      const response = await axios.get("http://localhost:8080/groupAdsByArchived", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,7 +105,7 @@ export default {
       if (response.data.status == "success") {
         this.noActive = response.data.data;
       } else {
-        alert("Error els status:fatal");
+        this.noActive = [];
       }
     } catch (error) {
       console.error("Ошибка при выводе els:", error);
@@ -163,7 +166,7 @@ main {
 
 .line-grey {
   background: #d9d9d9;
-  margin: 2vw 0;
+  margin: 0.8vw 0;
   height: 1px;
 }
 
@@ -223,10 +226,10 @@ main {
 }
 
 .product_img {
-  height: calc(0.869 * 18vw);
-  width: 18vw;
+  width: 13vw;
   border-radius: 10px;
   margin-right: 22px;
+  height: 12vw;
 }
 
 .product {
@@ -234,13 +237,13 @@ main {
 }
 
 .product_title_date {
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
   color: #929292;
   margin: 5px 0 5px 0;
 }
 
 .product_price {
-  font-size: var(--fs-25);
+  font-size: var(--fs-16);
   font-weight: bold;
   color: #1d1d1d;
   margin-bottom: 0.2vw;
@@ -266,12 +269,12 @@ main {
 
 .product_status_r {
   color: #c70000;
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
 }
 
 .product_status_g {
   color: #04c700;
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
 }
 
 .product_create_at {
@@ -283,9 +286,10 @@ main {
 .product_title {
   display: flex;
   justify-content: space-between;
-  color: #1D1D1D;
-  text-decoration: underline 2px #1D1D1D;
-  font-size: var(--fs-23);
+  color: #1d1d1d;
+  -webkit-text-decoration: underline 2px #1d1d1d;
+  text-decoration: underline 2px #1d1d1d;
+  font-size: var(--fs-16);
   margin-bottom: 0.5vw;
   font-weight: bold;
 }
@@ -306,7 +310,7 @@ main {
 .product_des {
   font-size: var(--fs-18);
   color: #929292;
-  margin-left: 5vw;
+  margin-left: 0vw;
 }
 
 .product_des_text {
@@ -328,21 +332,21 @@ main {
 }
 
 .shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-16);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .shop {
   display: flex;
   justify-content: center;
-  padding: 0 7vw;
+  margin: 0 auto;
 }
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -356,14 +360,16 @@ main {
 }
 
 .block_flex{
-    display: flex;
-    margin-bottom: 3vw;
+  display: flex;
+  margin-bottom: 1vw;
 }
 
 .grey_block{
+    cursor: pointer;
     color: rgba(20, 20, 20, 0.561);
     width: min-content;
-    margin-right: 3vw;
+    margin-right: 1vw;
+    font-size: var(--fs-10);
 }
 
 .title_user {

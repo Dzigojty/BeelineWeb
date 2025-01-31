@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="close_panel" @click="closeInfoPopup"></div>
+  <div class="close_panel" @click="closePopup"></div>
 </template>
 
 <script>
@@ -604,7 +604,9 @@ export default {
       // });
       this.$emit("changeRoute");
     },
-    closeInfoPopup() {
+    closePopup() {
+      console.log("closeInfoPopup");
+      console.error("closeInfoPopup");
       this.$emit("closePopup");
     },
     beforeEnter(el) {
@@ -630,10 +632,14 @@ export default {
 <style scoped>
 .element {
   position: relative;
-  padding: 0.3vw 0.5vw;
+  /* padding: 0.3vw 0.5vw; */
   margin-bottom: 1vw;
   display: flex;
   justify-content: space-between;
+}
+
+.element samp{
+  font-size: var(--fs-14);
 }
 
 .active {
@@ -646,13 +652,17 @@ export default {
 }
 
 .center {
-  width: 27vw;
-  padding: 2vw;
+  width: 24vw;
+  height: 26vh;
+  padding: 1vw;
+  overflow-y: scroll;
   align-self: center;
   justify-content: center;
   align-items: center;
-  border-radius: 1.5vw;
-  background-color: white;
+  border-radius: 0.3vw;
+  background-color: #fff;
+  border: .1vw solid #000;
+  box-shadow: 0 .6vw 12px #000;
 }
 
 .v-popup {
@@ -661,10 +671,8 @@ export default {
   display: flex;
   justify-content: center;
   align-content: center;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
+  top: 40%;
+  left: 40%;
   background-color: rgba(255, 255, 255, 0);
 }
 
@@ -675,6 +683,7 @@ export default {
   width: 100vw;
   height: 100vh;
   z-index: 1;
+  background-color: red;
 }
 
 /* Добавим стили для подкатегорий и анимации */

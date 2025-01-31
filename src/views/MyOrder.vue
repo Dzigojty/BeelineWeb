@@ -73,15 +73,18 @@ export default {
     };
   },
   async created() {
+    console.log("created MyOrder")
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupOrdersByRented", {
+      const response = await axios.get("http://localhost:8080/groupOrdersByRented", {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true
       });
+
       console.log(response);
       console.log(response.data.data);
+
       if (response.data.status === "success") {
         this.active = response.data.data;
       } else {
@@ -90,16 +93,21 @@ export default {
     } catch (error) {
       console.error("Ошибка при выводе favorites:", error);
     }
+    this.array = this.active;
 
     try {
-      const response = await axios.get("http://185.112.83.36:8080/groupOrdersByUnRented", {
+      const response = await axios.get("http://localhost:8080/groupOrdersByUnRented", {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true
       });
+      console.log("created MyOrder")
+
       console.log(response);
       console.log(response.data.data);
+      console.log("created MyOrder")
+
       if (response.data.status === "success") {
         this.noActive = response.data.data;
       } else {
@@ -109,7 +117,13 @@ export default {
       console.error("Ошибка при выводе favorites:", error);
     }
 
-    this.array = [...this.active, ...this.noActive]
+    if(this.active.length != 0 && this.noActive.length != 0){
+      this.array = [...this.active, ...this.noActive]
+    } else if(this.active.length != 0) {
+      this.array = this.active;
+    } else if(this.noActive.length != 0) {
+      this.array = this.noActive;
+    }
   },
   methods: {
     showModule(selM){
@@ -165,7 +179,7 @@ main {
 
 .line-grey {
   background: #d9d9d9;
-  margin: 2vw 0;
+  margin: 0.6vw 0;
   height: 1px;
 }
 
@@ -222,13 +236,6 @@ main {
   align-self: center;
   margin: 0 auto;
   margin-top: 10vw;
-}
-
-.product_img {
-  height: calc(0.869 * 18vw);
-  width: 18vw;
-  border-radius: 10px;
-  margin-right: 22px;
 }
 
 .product {
@@ -329,22 +336,16 @@ main {
   font-size: var(--fs-20);
 }
 
-.shop_title {
+/* .shop_title {
   font-size: var(--fs-48);
   margin-bottom: 2.5vw;
   font-weight: bold;
   padding-top: 2vw;
-}
-
-.shop {
-  display: flex;
-  justify-content: center;
-  padding: 0 7vw;
-}
+} */
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -359,16 +360,17 @@ main {
 
 .block_flex {
   display: flex;
-  margin-bottom: 3vw;
+  margin-bottom: 2vw;
 }
 
 .grey_block {
   color: #141414;
   background-color: #d9d9d9;
-  border-radius: 1vw;
+  border-radius: 0.6vw;
+  width: -moz-min-content;
   width: min-content;
   margin-right: 1vw;
-  padding: 0.3vw 1vw;
+  padding: 0.3vw 0.6vw;
 }
 
 .title_user {
@@ -592,7 +594,7 @@ main {
 
 .line-grey {
   background: #d9d9d9;
-  margin: 2vw 0;
+  margin: 1vw 0;
   height: 1px;
 }
 
@@ -652,10 +654,10 @@ main {
 }
 
 .product_img {
-  height: calc(0.869 * 18vw);
-  width: 18vw;
+  width: 13vw;
   border-radius: 10px;
   margin-right: 22px;
+  height: 12vw;
 }
 
 .product {
@@ -669,7 +671,7 @@ main {
 }
 
 .product_price {
-  font-size: var(--fs-25);
+  font-size: var(--fs-18);
   font-weight: bold;
   color: #1d1d1d;
   margin-bottom: 0.2vw;
@@ -695,12 +697,12 @@ main {
 
 .product_status_r {
   color: #c70000;
-  font-size: var(--fs-15);
+  font-size: var(--fs-14);
 }
 
 .product_status_g {
   color: #04c700;
-  font-size: var(--fs-15);
+  font-size: var(--fs-14);
 }
 
 .product_create_at {
@@ -735,7 +737,7 @@ main {
 .product_des {
   font-size: var(--fs-18);
   color: #929292;
-  margin-left: 5vw;
+  margin-left: 0vw;
 }
 
 .product_des_text {
@@ -747,31 +749,32 @@ main {
 
 .product_button {
   background-color: #f9cc33;
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
   color: #141414;
   cursor: pointer;
 }
 
 .product {
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
 }
 
 .shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-16);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .shop {
   display: flex;
   justify-content: center;
-  padding: 0 7vw;
+  width: 60vw;
+  margin: 0 auto;
 }
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -786,13 +789,17 @@ main {
 
 .block_flex {
   display: flex;
-  margin-bottom: 3vw;
+  margin-bottom: 1vw;
 }
 
 .grey_block {
-  color: rgba(20, 20, 20, 0.561);
   width: min-content;
-  margin-right: 3vw;
+  margin-right: 1.5vw;
+  border-radius: 0.3vw;
+  width: min-content;
+  margin-right: 0.5vw;
+  font-size: var(--fs-10);
+  padding: 0.3vw 0.3vw;
 }
 
 .title_user {

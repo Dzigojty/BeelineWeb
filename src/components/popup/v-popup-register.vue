@@ -137,6 +137,8 @@ input {
   align-items: center;
   border-radius: 1.5vw;
   background-color: white;
+  border: 0.1vw solid black;
+  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-auth {

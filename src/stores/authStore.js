@@ -1,7 +1,7 @@
 // // src/services/authService.js
 // import axios from 'axios';
 
-// const API_URL = 'http://185.112.83.36:8080';
+// const API_URL = 'http://localhost:8080';
 
 // export async function loginUser(login, password) {
 //     try {
@@ -22,7 +22,7 @@
 // }
 
 // export function initializeWebSocket(token, onMessageCallback) {
-//     const socketUrl = `ws://185.112.83.36:8080/handleWebSocket?token=${token}`;
+//     const socketUrl = `ws://localhost:8080/handleWebSocket?token=${token}`;
 //     const ws = new WebSocket(socketUrl);
 
 //     ws.onopen = () => {

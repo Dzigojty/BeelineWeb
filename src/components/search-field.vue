@@ -1,19 +1,17 @@
 <template>
-  <!-- <div class="search-field">
-    
-    
-  </div> -->
   <div class="search-field">
-    <input
+    <!-- <input
     class="header_panel_finder"
       type="text"
-      v-model="query"
-      @input="inputFinder"
-    />
+     
+    /> -->
+    <div class="input-fon">
+        <input  v-model="query" @input="inputFinder" class="input-poisk" type="text">
+        <button class="input-button" >Найти</button>
+    </div>
     <ul v-if="filteredItems.length">
       <li @click="selectProduct(item.Ads_id)" v-for="item in filteredItems" :key="item">{{ item.Title }}</li>
     </ul>
-    <div class="finder_button">Поиск</div>
   </div>
   <div v-if="filteredItems.length" class="close_panel" @click="closeInfoPopup()"></div>
 </template>
@@ -52,7 +50,7 @@ export default {
       } else {
         console.log(this.query);
         try {
-          const response = await axios.post('http://185.112.83.36:8080/searchForTech',
+          const response = await axios.post('http://localhost:8080/searchForTech',
           {
             "Title": this.query,
           }, 

@@ -7,9 +7,9 @@
       </div>
       <div class="padding">
         <div class="title">Изменить время аренды</div>
-        <div class="time-block" v-if="!edit">
-          <div class="end_date_time" @click="changeActive()">
-            <div class="date date-second-2">
+        <div class="time-block">
+          <div class="end_date_time">
+            <div class="date date-second-2" :class="{ time_select: isActiveDate }" @click="changeActiveDate()">
               {{
                 getDayOfWeek(
                   selectedDate.year,
@@ -19,14 +19,14 @@
               }}, {{ selectedDate.day }}
               {{ monthNames[selectedDate.month - 1] }}
             </div>
-            <div  class="time">
+            <div :class="{ time_select: isActiveTime }" @click="changeActiveTime()" class="time">
               {{ formatTime(selectedTime.hours) }} :
               {{ formatTime(selectedTime.minutes) }}
             </div>
           </div>
           <img class="arrow_right" src="../../assets/arrow_right.svg" alt="" />
-          <div class="end_date_time" @click="changeActive()">
-            <div class="date">
+          <div class="end_date_time">
+            <div :class="{ time_select: isActiveDate2 }" class="date" @click="changeActiveDate2()">
               {{
                 getDayOfWeek(
                   selectedDate.year,
@@ -36,13 +36,13 @@
               }}, {{ selectedDate.day }}
               {{ monthNames[selectedDate.month - 1] }}
             </div>
-            <div class="time">
+            <div :class="{ time_select: isActiveTime2 }"  @click="changeActiveTime2()" class="time">
               {{ formatTime(selectedTime.hours) }} :
               {{ formatTime(selectedTime.minutes) }}
             </div>
           </div>
         </div>
-        <div class="time-block-edit" v-if="edit">
+        <!-- <div class="time-block-edit" v-if="edit">
           <div class="block-flex">
           <div class="end_date_time" @click="changeActive()">
             <div class="date">
@@ -77,7 +77,7 @@
               {{ formatTime(selectedTime.minutes) }}
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="clock-container">
           <div class="grey-line line_margin"></div>
           <div class="sliders">
@@ -150,15 +150,16 @@
               </swiper>
             </div>
           </div>
+          <div class="grey-line line_margin2"></div>
         </div>
         </div>
         <div class="line-grey"></div>
         <div class="finaly_price-block">
           <samp class="finaly_text">Итоговая стоимость:</samp>
-          <samp class="price">50 202 ₽</samp>
-          <samp class="finaly_price">+ 500 ₽</samp>
+          <samp class="price">{{ total }} ₽</samp>
+          <samp class="finaly_price">+ {{ totalEdit }} ₽</samp>
         </div>
-        <div class="button-block" v-if="!edit">
+        <div class="button-block">
           <button class="yellow_button" @click="closeInfoPopup">
             Запросить
           </button>
@@ -172,33 +173,248 @@
       </div>
     </div>
     <div class="close_panel" @click="closeInfoPopup()"></div>
-  </div>
 </template>
 
 <script>
 import { ref, computed, watch } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
+import axios from "axios";
 
 export default {
   data() {
     return {
-        edit: false,
       startDate: this.startDate,
+      isActiveDate: true,
+      isActiveDate2: false,
+      isActiveTime: false,
+      isActiveTime2: false,
+      totalEdit: 0,
+      total: 0,
+      hourlyRate: 10000, // Стоимость за час
+      dailyRate: 0, // Стоимость за день
+      durationHours: 4, // Примерное количество часов (можно вычислять)
+      durationDays: 1, // Примерное количество дней (можно вычислять)
     };
   },
   components: {
     Swiper,
     SwiperSlide,
   },
-  methods: {
-    changeEdit(){
-        this.edit = !this.edit;
+  props: {
+    idProduct: {
+      type: Number,
+      required: true,
+    },
+  },
+  computed: {
+    durationDays() {
+      const startDate = new Date(
+        this.selectedDate.year,
+        this.selectedDate.month - 1, // Учитываем, что месяцы начинаются с 0
+        this.selectedDate.day
+      );
+
+      const endDate = new Date(
+        this.selectedDate2.year,
+        this.selectedDate2.month - 1,
+        this.selectedDate2.day
+      );
+      console.log("DATE duration")
+      console.log(startDate)
+      console.log(endDate)
+      // Вычисляем разницу в миллисекундах и переводим в дни
+      const differenceInMs = endDate - startDate;
+      const days = differenceInMs / (1000 * 60 * 60 * 24);
+
+      return Math.ceil(days); // Округляем вверх до ближайшего целого дня
     },
 
-    changeActive() {
-      this.isActive = !this.isActive;
-      console.log(this.isActive);
+    durationHours() {
+      const startDate = new Date(
+        0, // Год не важен, используем "нулевой" для расчётов
+        0, // Месяц
+        0, // День
+        this.selectedTime.hours,
+        this.selectedTime.minutes
+      );
+
+      const endDate = new Date(
+        0, // Год
+        0, // Месяц
+        0, // День
+        this.selectedTime2.hours,
+        this.selectedTime2.minutes
+      );
+
+      // Вычисляем разницу в миллисекундах и переводим в часы
+      const differenceInMs = endDate - startDate;
+
+      // Если разница отрицательная, добавляем 24 часа (для случаев, когда время конца раньше начала)
+      const hours = differenceInMs >= 0
+        ? differenceInMs / (1000 * 60 * 60)
+        : (differenceInMs + 24 * 60 * 60 * 1000) / (1000 * 60 * 60);
+      this.durationHours = Math.round(hours * 100) / 100;
+      return Math.round(hours * 100) / 100; // Округляем до 2-х знаков
+    },
+
+    totalCost() {
+      if (this.isActiveTime || this.isActiveTime2) {
+        // Рассчитать стоимость за часы
+        return this.hourlyRate * this.durationHours;
+      } else if (this.isActiveDate || this.isActiveDate2) {
+        // Рассчитать стоимость за дни
+        return this.dailyRate * this.durationDays;
+      }
+      return 0; // Если ничего не выбрано
+    },
+
+    async adTotal() {
+      try {
+        // Выполняем запрос
+        const response = await axios.post(
+          "http://localhost:8080/printAds",
+          {
+            Ads_id: 2
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // withCredentials: true,
+          }
+        );
+
+        console.log(response);
+
+        if (response.data.status === "fatal") {
+          console.error("Error openChat status:fatal");
+          return;
+        }
+
+        this.hourlyRate = response.Hourly_rate;
+
+      } catch (error) {
+        console.error("Ошибка при регистрации заказа:", error);
+      }
+    }
+  },
+
+  methods: {
+    async toOrder() {
+      // Преобразуем selectedDate и selectedDate2 в объекты Date
+      const startDate = new Date(
+          this.selectedDate.year,
+          this.selectedDate.month - 1, // Месяцы в Date начинаются с 0
+          this.selectedDate.day,
+          this.selectedTime.hours,
+          this.selectedTime.minutes
+        );
+
+        const endDate = new Date(
+          this.selectedDate2.year,
+          this.selectedDate2.month - 1,
+          this.selectedDate2.day,
+          this.selectedTime2.hours,
+          this.selectedTime2.minutes
+        );
+
+        // Генерируем Unix Timestamp
+        const startsAt = Math.floor(startDate.getTime() / 1000);
+        const endsAt = Math.floor(endDate.getTime() / 1000);
+
+        console.log(this.isActiveTime)
+        console.log(this.isActiveTime2)
+
+      if(this.isActiveTime || this.isActiveTime2){
+        try {
+          // Выполняем запрос
+          const response = await axios.post(
+            "http://localhost:8080/regOrderHourly",
+            {
+              Ads_id: this.idProduct,
+              Starts_at: startsAt,
+              Ends_at: endsAt,
+              PositionX: 1.1,
+              PositionY: 1.1,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+
+          console.log(response);
+
+          if (response.data.status === "fatal") {
+            alert("Error regOrderHourly status:fatal");
+          } else {
+            alert(response.data.message)
+          }
+        } catch (error) {
+          console.error("Ошибка при регистрации заказа:", error);
+        }
+      } else if(this.isActiveDate || this.isActiveDate2) {
+        try {
+          // Выполняем запрос
+          const response = await axios.post(
+            "http://localhost:8080/regOrderDaily",
+            {
+              Ads_id: this.idProduct,
+              Starts_at: startsAt,
+              Ends_at: endsAt,
+              PositionX: 1.1,
+              PositionY: 1.1,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+
+          console.log(response);
+
+          if (response.data.status === "fatal") {
+            alert("Error regOrderDaily status:fatal");
+          } else {
+            alert(response.data.message)
+          }
+        } catch (error) {
+          console.error("Ошибка при регистрации заказа:", error);
+        }
+      }
+      
+    },
+    changeActiveDate() {
+      this.isActiveDate = true;
+      this.isActiveDate2 = false;
+      this.isActiveTime = false;
+      this.isActiveTime2 = false;
+    },
+
+    changeActiveDate2() {
+      this.isActiveDate = false;
+      this.isActiveDate2 = true;
+      this.isActiveTime = false;
+      this.isActiveTime2 = false;
+    },
+
+    changeActiveTime() {
+      this.isActiveDate = false;
+      this.isActiveDate2 = false;
+      this.isActiveTime = true;
+      this.isActiveTime2 = false;
+    },
+
+    changeActiveTime2() {
+      this.isActiveDate = false;
+      this.isActiveDate2 = false;
+      this.isActiveTime = false;
+      this.isActiveTime2 = true;
     },
 
     closeInfoPopup() {
@@ -206,46 +422,63 @@ export default {
     },
   },
   setup() {
-    let isActive = ref(true);
+    let isActiveDate = ref(true);
+    let isActiveDate2 = ref(false);
+    let isActiveTime = ref(false);
+    let isActiveTime2 = ref(false);
 
     let todayDate = new Date();
-    //Конечная дата
+    // Добавляем три года
+    let futureDate = new Date(
+      todayDate.getFullYear() + 3, // Увеличиваем год на 3
+      todayDate.getMonth(),       // Сохраняем текущий месяц
+      todayDate.getDate(),        // Сохраняем текущий день
+      todayDate.getHours(),       // Сохраняем текущий час
+      todayDate.getMinutes(),     // Сохраняем текущую минуту
+      todayDate.getSeconds(),     // Сохраняем текущую секунду
+      todayDate.getMilliseconds() // Сохраняем текущие миллисекунды
+    );
+
+    // Конечная дата
     let endDate = ref({
       day: todayDate.getDate(),
-      month: todayDate.getMonth() + 1, // getMonth() returns month index starting from 0
+      month: todayDate.getMonth() + 1, // getMonth() возвращает индекс месяца с 0
       year: todayDate.getFullYear(),
       hours: todayDate.getHours(),
       minutes: todayDate.getMinutes(),
     });
-    //Стартовая дата
+
+    // Стартовая дата
     let startDate = ref({
       day: todayDate.getDate(),
-      month: todayDate.getMonth() + 1, // getMonth() returns month index starting from 0
+      month: todayDate.getMonth() + 1, // getMonth() возвращает индекс месяца с 0
       year: todayDate.getFullYear(),
       hours: todayDate.getHours(),
       minutes: todayDate.getMinutes(),
     });
+
     const selectedDate = ref({
       day: todayDate.getDate(),
-      month: todayDate.getMonth() + 1, // getMonth() returns month index starting from 0
+      month: todayDate.getMonth() + 1,
       year: todayDate.getFullYear(),
     });
+
+    const selectedDate2 = ref({
+      day: todayDate.getDate()+1,
+      month: todayDate.getMonth()+1,
+      year: todayDate.getFullYear(),
+    });
+
+    const activeDate = computed(() =>
+      isActiveDate.value ? selectedDate.value : selectedDate2.value
+    );
 
     const days = ref(Array.from({ length: 31 }, (_, i) => i + 1));
     const monthNames = [
-      "Январь",
-      "Февраль",
-      "Март",
-      "Апрель",
-      "Май",
-      "Июнь",
-      "Июль",
-      "Август",
-      "Сентябрь",
-      "Октябрь",
-      "Ноябрь",
-      "Декабрь",
+      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь",
     ];
+
     const dayOfWeekNames = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
     const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
     const years = ref(
@@ -257,14 +490,11 @@ export default {
     };
 
     const filteredDays = computed(() => {
-      const daysInMonth = getDaysInMonth(
-        selectedDate.value.year,
-        selectedDate.value.month
-      );
+      const daysInMonth = getDaysInMonth(selectedDate.value.year, selectedDate.value.month);
       return days.value.slice(0, daysInMonth);
     });
 
-    watch(selectedDate, (newDate, oldDate) => {
+    watch(selectedDate, (newDate) => {
       const daysInMonth = getDaysInMonth(newDate.year, newDate.month);
       if (newDate.day > daysInMonth) {
         selectedDate.value.day = daysInMonth;
@@ -279,15 +509,30 @@ export default {
     });
 
     const updateDay = (swiper) => {
-      selectedDate.value.day = filteredDays.value[swiper.realIndex];
+      if (isActiveDate.value) {
+        selectedDate.value.day = filteredDays.value[swiper.realIndex];
+      }
+      if (isActiveDate2.value) {
+        selectedDate2.value.day = filteredDays.value[swiper.realIndex];
+      }
     };
 
     const updateMonth = (swiper) => {
-      selectedDate.value.month = filteredMonths.value[swiper.realIndex];
+      if (isActiveDate.value) {
+        selectedDate.value.month = filteredMonths.value[swiper.realIndex];
+      }
+      if (isActiveDate2.value) {
+        selectedDate2.value.month = filteredMonths.value[swiper.realIndex];
+      }
     };
 
     const updateYear = (swiper) => {
-      selectedDate.value.year = years.value[swiper.realIndex];
+      if (isActiveDate.value) {
+        selectedDate.value.year = years.value[swiper.realIndex];
+      }
+      if (isActiveDate2.value) {
+        selectedDate2.value.year = years.value[swiper.realIndex];
+      }
     };
 
     const getDayOfWeek = (year, month, day) => {
@@ -300,25 +545,49 @@ export default {
       minutes: new Date().getMinutes(),
     });
 
+    const selectedTime2 = ref({
+      hours: new Date().getHours(),
+      minutes: new Date().getMinutes(),
+    });
+
+    const activeTime = computed(() =>
+      isActiveTime.value ? selectedTime.value : selectedTime2.value
+    );
+
     const hours = ref(Array.from({ length: 24 }, (_, i) => i));
     const minutes = ref(Array.from({ length: 60 }, (_, i) => i));
 
-    //Для добавления нуля перед цифрами
+    // Для добавления нуля перед цифрами
     const formatTime = (time) => {
       return time < 10 ? `0${time}` : `${time}`;
     };
 
     const updateHours = (swiper) => {
-      selectedTime.value.hours = hours.value[swiper.realIndex];
+      if (isActiveTime.value) {
+        selectedTime.value.hours = hours.value[swiper.realIndex];
+      }
+      if (isActiveTime2.value) {
+        selectedTime2.value.hours = hours.value[swiper.realIndex];
+      }
     };
 
     const updateMinutes = (swiper) => {
-      selectedTime.value.minutes = minutes.value[swiper.realIndex];
+      if (isActiveTime.value) {
+        selectedTime.value.minutes = minutes.value[swiper.realIndex];
+      }
+      if (isActiveTime2.value) {
+        selectedTime2.value.minutes = minutes.value[swiper.realIndex];
+      }
     };
 
     return {
-      isActive,
+      isActiveDate,
+      isActiveDate2,
+      isActiveTime,
+      isActiveTime2,
+      activeDate,
       selectedDate,
+      selectedDate2,
       days,
       monthNames,
       months,
@@ -326,6 +595,8 @@ export default {
       filteredDays,
       filteredMonths,
       selectedTime,
+      selectedTime2,
+      activeTime,
       startDate,
       endDate,
       hours,
@@ -342,6 +613,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .close_panel {
@@ -705,11 +977,13 @@ export default {
   align-items: center;
   border-radius: 1.5vw;
   background-color: white;
+  border: 0.1vw solid black;
+  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-change-deal {
   position: fixed;
-  z-index: 10;
+  z-index: 11;
   display: flex;
   justify-content: center;
   align-content: center;

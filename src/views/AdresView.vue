@@ -47,22 +47,30 @@ export default {
 .flex-block {
   display: flex;
   justify-content: space-between;
-  width: 40vw;
-  margin-top: 5vw;
+  width: 19vw;
+  margin-top: 1.2vw;
 }
 
 .grey-block {
   background-color: #f1f1f1;
   border: none;
-  border-radius: 1vw;
-  padding: 1vw;
+  border-radius: 0.6vw;
+  padding: 0.5vw;
   color: #141414;
-  font-size: var(--fs-25);
+  font-size: var(--fs-20);
+  width: 12vw;
   font-weight: 600;
+  height: 5.2vw;
+  padding-bottom: 0;
+  margin-right: 1vw;
+}
+
+.grey-block div{
+  font-size: var(--fs-14);
 }
 
 .grey-block img {
-  height: 3.2vw;
+  height: 1.5vw;
 }
 
 .route-view {
@@ -90,10 +98,11 @@ main {
 
 .yellow_button {
   background-color: #f9cc33;
-  padding: 0.8vw 3vw;
-  border-radius: 1.2vw;
+  padding: 0.2vw 2vw;
+  border-radius: 0.3vw;
   border: none;
   cursor: pointer;
+  font-size: var(--fs-10);
 }
 
 .swiper-el {
@@ -257,31 +266,31 @@ main {
 
 .product_button {
   background-color: #f9cc33;
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
   color: #141414;
   cursor: pointer;
 }
 
 .product {
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
 }
 
 .shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-16);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .shop {
   display: flex;
   justify-content: center;
-  padding: 0 7vw;
+  margin: 0 auto;
 }
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -296,13 +305,14 @@ main {
 
 .block_flex {
   display: flex;
-  margin-bottom: 3vw;
+  margin-bottom: 1vw;
 }
 
 .grey_block {
   color: #141414;
   width: 34vw;
   word-wrap: break-word;
+  font-size: var(--fs-14);
 }
 
 .title_user {

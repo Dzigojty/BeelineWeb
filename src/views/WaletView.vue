@@ -5,7 +5,13 @@
     <div class="walent">
       <div class="shop_title">Кошелёк</div>
       <div class="h2">Общий счет</div>
-      <div class="price">0 ₽</div>
+      
+      <!-- Анимация загрузки или данные -->
+      <div class="price">
+        <span v-if="loading">Загрузка...</span>
+        <span v-else>{{ wallet?.Total_balance }} ₽</span>
+      </div>
+
       <div class="grey-panel">Пополнение кошелька</div>
       <div class="grey-panel_price">1 500 ₽</div>
       <div class="h3">Выберите способ пополнения</div>
@@ -22,14 +28,24 @@
         <img src="../assets/plus.png" alt="" />
         <span>Добавить реквизиты</span>
       </div>
-      <Router-link @click="changeRoute('waletHistory')" to="/walentHistory" class="history_link">
+      <router-link
+        @click="changeRoute('waletHistory')"
+        to="/walentHistory"
+        class="history_link"
+      >
         История кошелька
-      </Router-link>
+      </router-link>
     </div>
 
     <div class="walent">
       <div class="h2 mtmax">Замороженные средства</div>
-      <div class="price">5 000 ₽</div>
+      
+      <!-- Анимация загрузки или данные -->
+      <div class="price">
+        <span v-if="loading">Загрузка...</span>
+        <span v-else>{{ wallet?.Frozen_funds }} ₽</span>
+      </div>
+
       <div class="green-block">
         <div class="column">
           <div class="name">Ближайшая оплата</div>
@@ -45,21 +61,57 @@
           <div class="name">5 000 ₽</div>
         </div>
       </div>
-      <Router-link @click="changeRoute('waletHistory')" to="/walentHistory" class="history_link">
+      <router-link
+        @click="changeRoute('waletHistory')"
+        to="/walentHistory"
+        class="history_link"
+      >
         Смотреть историю
-      </Router-link>
+      </router-link>
     </div>
   </div>
 </template>
 
+
 <script>
 import UserPanelRight from "../components/user-panel-right.vue";
+import axios from "axios";
 
 export default {
   components: {
     UserPanelRight,
   },
+  data() {
+    return {
+      wallet: null,
+      loading: true, // Изначально включаем состояние загрузки
+    };
+  },
   methods: {
+    async walletList() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/walletList",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        console.log("walletList");
+        console.log(response);
+        if (response.data.data.status === "fatal") {
+          this.wallet = null;
+        } else {
+          this.wallet = response.data.data[0];
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке продуктов:", error);
+      } finally {
+        this.loading = false; // Снимаем состояние загрузки после запроса
+      }
+    },
     changeRoute(newRoute) {
       this.$emit("changeRoute", newRoute);
     },
@@ -67,8 +119,11 @@ export default {
       this.$emit("exitUser");
     },
   },
-  setup() {},
+  async created() {
+    this.walletList();
+  },
 };
+
 </script>
 
 <style scoped>
@@ -145,8 +200,8 @@ main {
 
 .name {
   color: #141414;
-  font-size: var(--fs-20);
-  margin-bottom: 0.3vw;
+  font-size: var(--fs-14);
+  margin-bottom: 0.1vw;
 }
 
 .margin_t {
@@ -155,34 +210,41 @@ main {
 }
 
 .h2 {
-  font-size: var(--fs-30);
+  font-size: var(--fs-16);
 }
 
 .grey-panel_price {
   background-color: #f1f1f1;
-  width: 17vw;
+  width: 17.4vw;
   text-align: start;
-  padding: 0.8vw;
-  padding-left: 1.2vw;
+  padding: 0.4vw 0;
+  padding-left: 1vw;
   padding-right: 0.6vw;
   color: #979797;
-  border-radius: 0.6vw;
+  border-radius: 0.3vw;
   margin-bottom: 1vw;
-  font-size: var(--fs-15);
+  font-size: var(--fs-14);
   margin-bottom: 2vw;
 }
 
 .bank-block {
-  margin-top: 2vw;
+  margin-top: 1vw;
+  align-items: center;
+  align-content: center;
+  display: flex;
 }
 
 .bank-block img {
-  width: 3vw;
-  margin-right: 1vw;
+  width: 1.7vw;
+  margin-right: 0.6vw;
+}
+
+.bank-block span {
+  font-size: var(--fs-10)
 }
 
 .h3 {
-  font-size: var(--fs-20);
+  font-size: var(--fs-14);
   color: black;
 }
 
@@ -197,32 +259,37 @@ main {
   background-color: #f1f1f1;
   width: 17vw;
   text-align: center;
-  padding: 1vw;
+  padding: 0.3vw;
   font-size: var(--fs-15);
-  border-radius: 0.6vw;
-  margin-bottom: 1vw;
+  border-radius: 0.3vw;
+  margin-bottom: 0.5vw;
 }
 
 .grey-panel_img img {
-  width: 1.3vw;
+  width: 1vw;
   text-align: center;
   margin-right: 1vw;
 }
 
+.grey-panel_img span {
+  font-size: var(--fs-10);
+}
+
 .grey-panel {
   background-color: #f1f1f1;
-  width: 17vw;
+  width: 19vw;
   text-align: center;
-  padding: 1vw;
-  font-size: var(--fs-15);
-  border-radius: 0.6vw;
-  margin-bottom: 1vw;
+  padding: 0.4vw 0;
+  font-size: var(--fs-14);
+  border-radius: 0.3vw;
+  margin-bottom: 0.5vw;
 }
 
 .price {
   color: #141414;
-  font-size: var(--fs-40);
+  font-size: var(--fs-16);
   font-weight: bold;
+  margin: 0.5vw 0vw;
 }
 
 .col1 {
@@ -373,11 +440,11 @@ main {
 }
 
 .mtmax {
-  margin-top: 9vw;
+  margin-top: 8vw;
 }
 
 .name2 {
-  font-size: var(--fs-15);
+  font-size: var(--fs-14);
   color: #141414;
   font-weight: lighter;
 }
@@ -385,9 +452,9 @@ main {
 .green-block {
   background-color: #03c7004c;
   display: flex;
-  padding: 1vw;
-  border-radius: 1vw;
-  margin-top: 2vw;
+  padding: 0.3vw;
+  border-radius: 0.3vw;
+  margin-top: 0.5vw;
 }
 
 .green-block .arrow {
@@ -397,16 +464,9 @@ main {
   width: 2.5vw;
 }
 
-.shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
-  font-weight: bold;
-  padding-top: 2vw;
-}
-
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -707,7 +767,7 @@ main {
   padding: 1.4vw 5vw;
   cursor: pointer;
   border-radius: 2vw;
-  font-size: var(--fs-20);
+  font-size: var(--fs-15);
   align-content: center;
   align-items: center;
   align-self: center;
@@ -727,7 +787,7 @@ main {
 }
 
 .product_title_date {
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
   color: #929292;
   margin: 5px 0 5px 0;
 }
@@ -757,20 +817,10 @@ main {
   padding: 0.6vw 2.5vw;
 }
 
-.product_status_r {
-  color: #c70000;
-  font-size: var(--fs-15);
-}
-
-.product_status_g {
-  color: #04c700;
-  font-size: var(--fs-15);
-}
-
 .product_create_at {
   color: #d9d9d9;
   margin-top: 15px;
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
 }
 
 .product_title {
@@ -778,7 +828,7 @@ main {
   justify-content: space-between;
   color: #1d1d1d;
   text-decoration: underline 2px #1d1d1d;
-  font-size: var(--fs-23);
+  font-size: var(--fs-16);
   margin-bottom: 0.5vw;
   font-weight: bold;
 }
@@ -797,7 +847,7 @@ main {
 }
 
 .product_des {
-  font-size: var(--fs-18);
+  font-size: var(--fs-14);
   color: #929292;
   margin-left: 5vw;
 }
@@ -811,25 +861,25 @@ main {
 
 .product_button {
   background-color: #f9cc33;
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
   cursor: pointer;
   color: #141414;
 }
 
 .product {
-  font-size: var(--fs-20);
+  font-size: var(--fs-16);
 }
 
 .shop_title {
-  font-size: var(--fs-48);
-  margin-bottom: 2.5vw;
+  font-size: var(--fs-16);
+  margin-bottom: 0.5vw;
   font-weight: bold;
-  padding-top: 2vw;
+  padding-top: 1vw;
 }
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -1044,6 +1094,27 @@ main {
 .shop {
   display: flex;
   justify-content: space-evenly;
-  padding: 0 7vw;
+  margin: 0 auto;
+  width: 60vw;
 }
+
+.price span {
+  font-size: 0.9rem;
+  margin: 0.3vw 0;
+  color: #aaa;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
 </style>

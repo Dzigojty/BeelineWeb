@@ -1,6 +1,9 @@
 <template>
-  <img src="../assets/baner_img.png" alt="" class="baner" />
-  <div class="line"></div>
+  <!-- Картинка шапки и линия -->
+  <div class="fon-header">
+        <img class="line-header" src="../assets/lineSMT.jpg" alt="">
+        <img class="fon-header-img" src="../assets/fonSMT.jpg" alt="">
+    </div>
   <swiper-container class="swiper" slides-per-view="4">
     <swiper-slide :key="slide.name" v-for="(slide, index) in sldiers"
       :class="['swiper-el', { active: selectedIndex === index }]" @click="CategoriaSliderClick(index)">
@@ -10,7 +13,6 @@
       </div>
     </swiper-slide>
   </swiper-container>
-
   <swiper-container id="min-swiper" :style="{ height: selectedIndex === null ? '0' : '15vw' }" slides-per-view="4"
     v-if="selectedIndex !== null">
     <swiper-slide :key="subSlide.name" v-for="subSlide in sldiers[selectedIndex].subcategories"
@@ -21,127 +23,210 @@
       </div>
     </swiper-slide>
   </swiper-container>
-  <div class="shop">
-    <div class="shop_filter">
-      <div class="shop_filter_name">Фильтры</div>
-      <form v-on:submit.prevent="formSumitted">
-        <!-- Категории техники -->
-        <!-- <div class="shop_filter_categors">
-        <div
-          class="shop_filter_categor"
-          v-for="category in categories"
-          :key="category"
-          :class="{ selected: selectedCategory === category }"
-          @click="selectCategory(category)"
-        >
-          {{ category }}
-          </div>
-        </div> -->
+  <div class="flex-filter-and-content">
+        <!-- Фильтр -->
+        <div class="filter" v-on:submit.prevent="formSumitted">
 
-        <!-- Фильтр по цене -->
-        <div class="shop_filter_price">
-          <div class="shop_filter_name">Стоимость, ₽</div>
-          <div class="shop_filter_block">
-            <input class="filter_block" type="number" placeholder="От" v-model="priceFrom" />
-            <input class="filter_block" type="number" placeholder="до" v-model="priceTo" />
-          </div>
-        </div>
+            <p class="title-filter">Фильтры</p>
 
-        <!-- Фильтр по типу -->
-        <div class="shop_filter_price">
-          <div class="shop_filter_name">Тип аренды</div>
-          <div class="shop_filter_block">
-            <p><input v-on:click="sortSelectedRadio(true)" name="dzen" type="radio" value="day"> Дни </p>
-            <p><input v-on:click="sortSelectedRadio(false)" name="dzen" type="radio" value="hour" checked> Часы</p>
-          </div>
-        </div>
+            <!-- <div class="checkbox-text">
+                <input class="checkbox-text-input" type="checkbox" id="option1">
+                <label for="option1" class="text-option">Подъемная техника</label>
+            
+                <input class="checkbox-text-input" type="checkbox" id="option2">
+                <label for="option2" class="text-option">Землеройная техника</label>
+            
+                <input class="checkbox-text-input" type="checkbox" id="option3">
+                <label for="option3" class="text-option">Дорожно-строительная техника</label>
 
-        <!-- Фильтр по сроку аренды -->
-        <div class="shop_filter_datatime">
-          <div class="shop_filter_name">Срок аренды</div>
-          <div class="shop_filter_block">
-            <input class="filter_block" type="text" placeholder="дд.мм.гггг" v-model="rentalFrom"
-              v-mask="'##.##.####'" />
-            <input class="filter_block" type="text" placeholder="дд.мм.гггг" v-model="rentalTo" v-mask="'##.##.####'" />
-          </div>
-        </div>
+                <input class="checkbox-text-input" type="checkbox" id="option4">
+                <label for="option4" class="text-option">Грузовой транспорт</label>
 
-        <!-- Фильтр по региону -->
-        <div class="shop_filter_adres">
-          <div class="shop_filter_name">Где искать</div>
-          <input class="shop_filter_text" type="text" placeholder="Все регионы, радиус" v-model="region" />
-        </div>
+                <input class="checkbox-text-input" type="checkbox" id="option5">
+                <label for="option5" class="text-option">Погрузочная техника</label>
 
-        <!-- Фильтр по рейтингу -->
-        <div class="shop_filter_rating">
-          <div class="shop_filter_name">Рейтинг</div>
-          <div class="filter_rating">
-            <img v-for="star in 5" :key="star" :src="star <= rating ? starYellow : starGrey" @click="setRating(star)"
-              alt="star" />
-          </div>
-        </div>
+                <input class="checkbox-text-input" type="checkbox" id="option6">
+                <label for="option6" class="text-option">Прицепы</label>
 
-        <!-- Кнопка Применить -->
-        <div class="shop_filter_button" @click="applyFilters">Применить</div>
-      </form>
+                <input class="checkbox-text-input" type="checkbox" id="option7">
+                <label for="option7" class="text-option">Сельхозтехника</label>
 
-      <div class="shop_filter_ads"></div>
-    </div>
+                <input class="checkbox-text-input" type="checkbox" id="option8">
+                <label for="option8" class="text-option">Строительная техника</label>
 
-    <!-- Список продуктов -->
-    <div class="shop_product">
-      <div class="shop_title">Сортировка</div>
-      <div v-if="loading" class="loader">Loading...</div>
-      <div v-else>
-        <div class="shop_list">
-          <div :key="prod.id" v-for="prod in displayedProducts" @click="selectProduct(prod)" class="route-view">
-            <div class="product">
-              <img class="product_img" :src="prod.Ads_photo != 'Error reading file' ? `data:image/png;base64,${prod.Ads_photo}` : require('@/assets/product2.png')" alt="" />
-              <div class="product_des">
-                <div class="product_title">
-                  <div>{{ prod.Title }}</div>
-                  <img v-if="favorite.find((prodFav) => prodFav.Ads_id == prod.Id) != undefined"
-                    @click="clickFavorite(prod)" src="../assets/star_yellow.png" alt="" />
-                  <img v-else @click="clickFavorite(prod)" src="../assets/star_grey.png" alt="" />
+                <label class="text-option">Другое</label>
+            </div> -->
+
+            <p class="title-filter">Стоимость, ₽</p>
+
+            <div class="flex-filter-input">
+                <div>
+                    <input type="number" v-model="priceFrom">
+                    <label>От</label>
                 </div>
-                <div v-if="prod.Hourly_rate != undefined" class="product_price">от {{ prod.Hourly_rate }} ₽ за час</div>
-                <div v-if="prod.Daily_rate != undefined" class="product_price">от {{ prod.Daily_rate }} ₽ за смену</div>
-                <button class="product_button_date">Выбрать дату</button>
-                <div class="product_des_text">
-                  Автокран Ивановец - это марка автокранов, производимых заводом “ИМЗ
-                  АВТОКРАН” в Иваново. Эти автокраны отличаются высокой надежностью,
-                  производительностью и долговечностью. Они широко используются в
-                  различных отраслях промышленности и строительства.
+                <div>
+                    <input type="number" v-model="priceTo">
+                    <label>до</label>
                 </div>
-                <div class="product_title_date">График работ: с 9:00 до 20:00</div>
-                <div class="product_status_r"></div>
-                <div class="product_status_g">Свободен</div>
-                <!-- <div class="product_create_at">{{ formatCreationTime(prod.created_at) }}</div> -->
-              </div>
-              <section class="author_rating">
-                <img class="author_img" :src="prod.Avatar_photo != null ? `data:image/png;base64,${prod.Avatar_photo}` : require('@/assets/user.png')" alt="" />
-                <div class="author_name">{{ prod.Name }}</div>
-                <div class="rating_user">
-                  <samp>5,0</samp>
-                  <div class="rating_star">
-                    <img src="../assets/star_yellow.png" alt="" /><img src="../assets/star_yellow.png" alt="" /><img
-                      src="../assets/star_yellow.png" alt="" /><img src="../assets/star_yellow.png" alt="" /><img
-                      src="../assets/star_yellow.png" alt="" />
-                  </div>
-                  <samp>3 отзыва</samp>
-                </div>
-              </section>
             </div>
-            <div class="line-grey"></div>
-          </div>
-          <button @click="loadMore" v-if="canLoadMore" class="button_show_more">
-            Показать еще
-          </button>
+
+            <!-- Фильтр по типу -->
+            <div class="shop_filter_price">
+              <div class="title-filter">Тип аренды</div>
+              <div class="shop_filter_block">
+                <p><input v-on:click="sortSelectedRadio(true)" name="dzen" type="radio" value="day"> Дни </p>
+                <p><input v-on:click="sortSelectedRadio(false)" name="dzen" type="radio" value="hour" checked> Часы</p>
+              </div>
+            </div>
+
+            <p class="title-filter">Срок аренды</p>
+
+            <div class="flex-filter-input">
+                <div>
+                    <input v-model="rentalFrom" v-mask="'##.##.####'">
+                    <label>От</label>
+                </div>
+                <div>
+                    <input v-model="rentalTo" v-mask="'##.##.####'">
+                    <label>до</label>
+                </div>
+            </div>
+
+            <p class="title-filter">Где искать</p>
+
+            <p class="filter-region">Все регионы, <a class="region">радиус</a> </p>
+
+            <p class="title-filter">Рейтинг</p>
+
+            <div class="star-rating">
+              <div class="filter_rating">
+                <img v-for="star in 5" :key="star" :src="star <= rating ? starYellow : starGrey" @click="setRating(star)"
+                  alt="star" />
+              </div>
+            </div>
+
+            <button class="button-filter" @click="applyFilters">Применить</button>
         </div>
-      </div>
+        <!-- Контент -->
+        <div class="content">
+
+            <p class="title-content">Сортировка</p>
+
+            <div class="content-block" >
+                <div class="content-card" :key="prod.id" v-for="prod in displayedProducts" @click="selectProduct(prod)">
+                    <div>
+                        <img class="card-image" :src="prod.Ads_photo != 'Error reading file' && prod.Ads_photo != 'File not found' ? `data:image/png;base64,${prod.Ads_photo}` : require('@/assets/product2.png')" alt="">
+                    </div>
+
+                    <div style="width: 18vw;">
+                        <p class="title-content-card">{{ prod.Title }}</p>
+                        <p v-if="prod.Hourly_rate != undefined" class="cost-content-card">от {{ prod.Hourly_rate }} ₽ за час</p>
+                        <p v-if="prod.Daily_rate != undefined" class="cost-content-card">от {{ prod.Daily_rate }} ₽ за час</p>
+                        <button class="button-content-card">Выбрать дату</button>
+                        <p class="info-content-card">
+                          {{prod.Description}}
+                        </p>
+                        <p class="work-schedule">График работ: с 9:00 до 20:00</p>
+                        <p class="busy" :class="{ product_status_r: prod.Duration.includes('Занят'), product_status_g: !prod.Duration.includes('Занят') }">{{ prod.Duration }}</p>
+                        <p class="lately">2 часа назад</p>
+                    </div>
+
+                    <div>
+                        <img class="card-profile-photo" :src="prod.Avatar_photo != null ? `data:image/png;base64,${prod.Avatar_photo}` : require('@/assets/user.png')" alt="" >
+                        <p class="card-profile-name">{{ prod.Name }} {{ prod.Surname_or_ind_num }}</p>
+                        <div class="row-reviews">
+                            <p class="grade">5,0</p>
+                            <div class="star-rating-card">
+                                <input type="radio" id="star5" name="rating" value="5" />
+                                <label for="star5" title="5 stars">★</label>
+                        
+                                <input type="radio" id="star4" name="rating" value="4" />
+                                <label for="star4" title="4 stars">★</label>
+                        
+                                <input type="radio" id="star3" name="rating" value="3" />
+                                <label for="star3" title="3 stars">★</label>
+                        
+                                <input type="radio" id="star2" name="rating" value="2" />
+                                <label for="star2" title="2 stars">★</label>
+                        
+                                <input type="radio" id="star1" name="rating" value="1" />
+                                <label for="star1" title="1 star">★</label>
+                            </div>
+                            <div class="number-of-reviews-flex">
+                                <p class="number-of-reviews">3</p>
+                                <p class="number-of-reviews">отзыва</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- <div class="content-card">
+
+                    <div>
+                        <img class="card-image" src="../assets/cardImage1.jpg" alt="">
+                    </div>
+
+                    <div>
+                        <p class="title-content-card">Аренда и услуги автокрана</p>
+                        <p class="cost-content-card">от 2 500 ₽ за час</p>
+                        <button class="button-content-card">Выбрать дату</button>
+                        <p class="info-content-card">
+                            Автокран Ивановец - это марка автокранов, производимых заводом “ИМЗ АВТОКРАН” в Иваново. Эти автокраны отличаются высокой надежностью, производительностью и долговечностью. Они широко используются в различных отраслях промышленности и строительства.
+                        </p>
+                        <p class="work-schedule">График работ: с 9:00 до 20:00</p>
+                        <p class="busy">Занят: 10.05 - 15.05</p>
+                        <p class="lately">2 часа назад</p>
+                    </div>
+
+                    <div>
+                        <img class="card-profile-photo" src="../assets/cardProfileFhoto.png" alt="">
+                        <p class="card-profile-name">Cерега</p>
+                        <div class="row-reviews">
+                            <p class="grade">5,0</p>
+                            <div class="star-rating-card">
+                                <input type="radio" id="star5" name="rating" value="5" />
+                                <label for="star5" title="5 stars">★</label>
+                        
+                                <input type="radio" id="star4" name="rating" value="4" />
+                                <label for="star4" title="4 stars">★</label>
+                        
+                                <input type="radio" id="star3" name="rating" value="3" />
+                                <label for="star3" title="3 stars">★</label>
+                        
+                                <input type="radio" id="star2" name="rating" value="2" />
+                                <label for="star2" title="2 stars">★</label>
+                        
+                                <input type="radio" id="star1" name="rating" value="1" />
+                                <label for="star1" title="1 star">★</label>
+                            </div>
+                            <div class="number-of-reviews-flex">
+                                <p class="number-of-reviews">3</p>
+                                <p class="number-of-reviews">отзыва</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> -->
+                
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="button-cards-div">
+        <button @click="showMore" v-if="canLoadMore"  class="button-all-cards">Показать еще</button>
+    </div>
+
+
+    <div class="banner">
+        <div class="icon-stors">
+            <a href="#"><img src="../assets/googleplay.png" alt=""></a>
+            <a href="#"><img src="../assets/appstore.png" alt=""></a>
+        </div>
+        <img class="banner-img" src="../assets/bannerFooter.jpg" alt="">
+    </div>
 </template>
+
 
 <script>
 // // @ is an alias to /src
@@ -149,14 +234,14 @@ import HelloWorld from "@/components/HelloWorld.vue";
 import axios from "axios";
 import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns";
 import { ru } from "date-fns/locale";
-import { ref, onMounted } from "vue";
-import Cookies from "js-cookie";
-
-let minSlider = true;
+import { ref } from "vue";
 
 export default {
   data() {
     return {
+      LengthAds: 0,
+      showMoreData: null,
+      nowPage: 1,
       sortRadio: false,
       user_id: 29,
       selectedIndex: null, // Индекс выбранного слайда
@@ -171,13 +256,16 @@ export default {
       priceTo: 99999,
       rentalFrom: '21.06.1970',
       rentalTo: '21.06.2026',
-      region: [1, 2],
+      region: [
+        1,
+        2
+      ],
       rating: 0,
       currentPage: 1,
       prods: [
       ],
       loading: true,
-      perPage: 4,
+      perPage: 2,
       displayedProducts: [],
       selectedIndex: null, // Индекс выбранного слайда
       selectedPodcategory: null, // Выбранная подкатегория
@@ -826,9 +914,7 @@ export default {
   },
   computed: {
     canLoadMore() {
-      console.log(this.prods);
-
-      return this.displayedProducts.length < this.prods.length;
+      return this.displayedProducts.length < this.LengthAds;
     },
   },
   async created() {
@@ -836,14 +922,17 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://185.112.83.36:8080/sortProductListHourlyRate",
+        "http://localhost:8080/sortProductListHourlyRate",
         {
+          List: 1,
+          Size: 2,
           Category: [],
           LowNum: 1,
           HigNum: 9999999,
           LowDate: 1452585372,
           HigDate: 1489308972,
           Position: [1, 2],
+          Location: "",
           Distance: 999999,
           Rating: 0,
         },
@@ -853,15 +942,33 @@ export default {
           },
         }
       );
-      console.log(response);
-      if (response.data.data.status == "fatal") {
-        this.prods = [];
+      // console.log("ShowMoreData", this.sortRadio)
+
+      console.log("sort = ",response);
+      console.log("response.data.status = ",response.data.status);
+      console.log("response.data.Lenght = ",response.data.Lenght);
+      if (response.data.status == "fatal" || response.data.Lenght == 0) {
         this.displayedProducts = [];
+        this.LengthAds = 0;
       } else {
-        this.prods = response.data.data;
-        this.displayedProducts = this.prods.slice(0, this.perPage);
         console.log("displayedProducts")
-        console.log(this.displayedProducts)
+        this.displayedProducts = response.data.data;
+        this.LengthAds = response.data.Lenght;
+        this.showMoreData = {
+          nowPage: 1,
+          category_id: [],
+          priceFrom: 1,
+          priceTo: 9999999,
+          partsDateFrom: 1452585372,
+          partsDateTo: 1489308972,
+          region: [1, 2],
+          Distance: 999999,
+          rating: 0,
+          sortRadio: this.sortRadio
+        };
+
+        console.log("1ShowMoreData = ", this.showMoreData)
+
       }
     } catch (error) {
       console.error("Ошибка при загрузке продуктов:", error);
@@ -869,10 +976,13 @@ export default {
       this.loading = false;
     }
 
+    console.log("2ShowMoreData = ", this.showMoreData)
+
+
     try {
       console.log("groupFavByRecent");
 
-      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+      const response = await axios.get("http://localhost:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -889,6 +999,43 @@ export default {
     }
   },
   methods: {
+    async getCityData(cityName) {
+    const username = "your_geonames_username"; // Замените на ваш GeoNames username
+    const apiUrl = `http://api.geonames.org/searchJSON?formatted=true&q=${cityName}&maxRows=1&username=${username}`;
+    
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`Ошибка: ${response.status}`);
+      }
+      const data = await response.json();
+      if (data.geonames && data.geonames.length > 0) {
+        const city = data.geonames[0];
+        return {
+          city: cityName,
+          coordinate: [parseFloat(city.lat), parseFloat(city.lng)],
+        };
+      } else {
+        console.error("Город не найден:", cityName);
+        return null;
+      }
+    } catch (error) {
+      console.error("Ошибка при запросе данных:", error);
+      return null;
+    }
+  },
+
+  getPosition(){
+    // Пример использования
+    getCityData("Москва").then((cityData) => {
+      if (cityData) {
+        console.log("Данные города:", cityData);
+      } else {
+        console.log("Данные не найдены");
+      }
+    })
+  },
+
     sortSelectedRadio(radio){
       this.sortRadio = radio;
       console.log(this.sortRadio);
@@ -909,7 +1056,7 @@ export default {
     //   console.log(`addFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://185.112.83.36:8080/sigFavAds",
+    //       "http://localhost:8080/sigFavAds",
     //       {
     //         Ads_id: idProduct
     //       },
@@ -935,7 +1082,7 @@ export default {
     //   console.log(`removeFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://185.112.83.36:8080/delFavAds",
+    //       "http://localhost:8080/delFavAds",
     //       {
     //         Ads_id: idProduct,
     //       },
@@ -959,7 +1106,7 @@ export default {
     // },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
+        const response = await axios.get("http://localhost:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -1020,6 +1167,204 @@ export default {
       if(star == this.rating) this.rating = 0;
       else this.rating = star;
     },
+
+    async showMore() {
+      this.showMoreData.nowPage++;
+      console.log("this.showMoreData = ", this.showMoreData);
+      if(this.showMoreData.sortRadio) {
+        try {
+          const response = await axios.post(
+            "http://localhost:8080/sortProductListDailyRate",
+            {
+              List: this.showMoreData.nowPage,
+              Size: 2,
+              Category: this.showMoreData.category_id,
+              LowNum: this.showMoreData.priceFrom,
+              HigNum: this.showMoreData.priceTo,
+              LowDate: this.showMoreData.partsDateFrom,
+              HigDate: this.showMoreData.partsDateTo,
+              Position: this.showMoreData.region,
+              Location: "",
+              Distance: 999999,
+              Rating: this.rating,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          console.log("response  = ",response);
+          if (response.data.status == "fatal" || response.data.Lenght == 0) {
+            this.displayedProducts = [];
+            this.LengthAds = 0;
+          } else {
+            this.LengthAds = response.data.Lenght;
+            this.displayedProducts.push(...response.data.data);
+          }
+        } catch (error) {
+          console.error("Ошибка при загрузке продуктов:", error);
+        } finally {
+          this.loading = false;
+        }
+      } else {
+        try{
+          const response = await axios.post(
+            "http://localhost:8080/sortProductListHourlyRate",
+            {
+              List: this.showMoreData.nowPage,
+              Size: 2,
+              Category: this.showMoreData.category_id,
+              LowNum: this.showMoreData.priceFrom,
+              HigNum: this.showMoreData.priceTo,
+              LowDate: this.showMoreData.partsDateFrom,
+              HigDate: this.showMoreData.partsDateTo,
+              Position: this.showMoreData.region,
+              Location: "",
+              Distance: 999999,
+              Rating: this.rating,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          console.log("response = ",response);
+          if (response.data.status == "fatal" || response.data.Lenght == 0) {
+            this.displayedProducts = [];
+            this.LengthAds = 0;
+          } else {
+            this.LengthAds = response.data.Lenght;
+            this.displayedProducts.push(...response.data.data);
+          }
+        } catch (error) {
+          console.error("Ошибка при загрузке продуктов:", error);
+        } finally {
+          this.loading = false;
+        }
+      }
+    },
+
+    // async applyFilters() {
+    //   let partsDateFrom = this.rentalFrom.split(".");
+    //   let partsDateTo = this.rentalTo.split(".");
+    //   if (partsDateFrom.length === 3) {
+    //     const formattedDate = `${partsDateFrom[2]}-${partsDateFrom[1]}-${partsDateFrom[0]}`;
+    //     partsDateFrom = Date.parse(formattedDate) / 1000;
+    //   } else {
+    //     partsDateFrom = 1452585372;
+    //   }
+
+    //   if (partsDateTo.length === 3) {
+    //     const formattedDate = `${partsDateTo[2]}-${partsDateTo[1]}-${partsDateTo[0]}`;
+    //     partsDateTo = Date.parse(formattedDate) / 1000;
+    //   } else {
+    //     partsDateTo = 1489308972;
+    //   }
+    //   console.log("this.sortRadio");
+    //   console.log(this.sortRadio);
+
+    //   if(this.sortRadio) {
+    //     try {
+    //     const response = await axios.post(
+    //       "http://localhost:8080/sortProductListDailyRate",
+    //       {
+    //         List: 1,
+    //         Size: 2,
+    //         Category: this.category_id,
+    //         LowNum: this.priceFrom,
+    //         HigNum: this.priceTo,
+    //         LowDate: partsDateFrom,
+    //         HigDate: partsDateTo,
+    //         Position: this.region,
+    //         Distance: 999999,
+    //         Rating: this.rating,
+    //       },
+    //       {
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //       }
+    //     );
+    //     console.log(response);
+    //     if (response.data.status === "fatal") {
+    //       this.displayedProducts = [];
+    //     } else {
+    //       this.showMoreData = {
+    //         category_id: this.category_id,
+    //         priceFrom: this.priceFrom,
+    //         priceTo: this.priceTo,
+    //         partsDateFrom: partsDateFrom,
+    //         partsDateTo: partsDateTo,
+    //         region: this.region,
+    //         Distance: 999999,
+    //         rating: this.rating,
+    //       };
+    //       this.displayedProducts = response.data.data;
+    //     }
+    //   } catch (error) {
+    //     console.error("Ошибка при загрузке продуктов:", error);
+    //   } finally {
+    //     this.loading = false;
+    //   }
+
+    //   } else {
+    //     try {
+    //       const response = await axios.post(
+    //         "http://localhost:8080/sortProductListHourlyRate",
+    //         {
+    //           List: 1,
+    //           Size: 2,
+    //           Category: this.category_id,
+    //           LowNum: Number(this.priceFrom),
+    //           HigNum: Number(this.priceTo),
+    //           LowDate: Number(partsDateFrom),
+    //           HigDate: Number(partsDateTo),
+    //           Position: [1, 2],
+    //           Distance: 999999,
+    //           Rating: Number(this.rating),
+    //         },
+    //         {
+    //           headers: {
+    //             "Content-Type": "application/json",
+    //           },
+    //         }
+    //       );
+    //       console.log(response);
+    //       if (response.data.status == "fatal") {
+    //         this.prods = [];
+    //         this.displayedProducts = [];
+    //       } else {
+    //         this.showMoreData = {
+    //           category_id: this.category_id,
+    //           priceFrom: this.priceFrom,
+    //           priceTo: this.priceTo,
+    //           partsDateFrom: partsDateFrom,
+    //           partsDateTo: partsDateTo,
+    //           region: this.region,
+    //           Distance: 999999,
+    //           rating: this.rating,
+    //         };
+    //         // this.prods = response.data.data;
+    //         this.displayedProducts = this.prods.slice(0, this.perPage);
+    //       }
+    //     } catch (error) {
+    //       console.error("Ошибка при загрузке продуктов:", error);
+    //     } finally {
+    //       this.loading = false;
+    //     }
+    //   }
+      
+
+      /*try {
+        const response = await axios.post("http://localhost:8080", filters);
+        console.log("Filters applied:", response.data);
+      } catch (error) {
+        console.error("Error applying filters:", error);
+      }*/
+    // },
+
     async applyFilters() {
       let partsDateFrom = this.rentalFrom.split(".");
       let partsDateTo = this.rentalTo.split(".");
@@ -1049,16 +1394,19 @@ export default {
         console.log(this.rating)
         try {
         const response = await axios.post(
-          "http://185.112.83.36:8080/sortProductListDailyRate",
+          "http://localhost:8080/sortProductListDailyRate",
           {
-              Category: this.category_id,
-              LowNum: this.priceFrom,
-              HigNum: this.priceTo,
-              LowDate: partsDateFrom,
-              HigDate: partsDateTo,
-              Position: this.region,
-              Distance: 999999,
-              Rating: this.rating,
+            List: 1,
+            Size: 2,
+            Category: this.category_id,
+            LowNum: this.priceFrom,
+            HigNum: this.priceTo,
+            LowDate: partsDateFrom,
+            HigDate: partsDateTo,
+            Position: this.region,
+            Location: "",
+            Distance: 999999,
+            Rating: this.rating,
           },
           {
             headers: {
@@ -1066,12 +1414,28 @@ export default {
             },
           }
         );
-        console.log(response);
-        if (response.data.status === "fatal") {
+        console.log("sortProductListDailyRate = ",response);
+        console.log("response.data.status = ",response.data.status);
+        console.log("response.data.Lenght = ",response.data.Lenght);
+        if (response.data.status == "fatal" || response.data.Lenght == 0) {
           this.displayedProducts = [];
+          this.LengthAds = 0;
         } else {
-          this.prods = response.data.data;
-          this.displayedProducts = this.prods.slice(0, this.perPage);
+          this.LengthAds = response.data.Lenght;
+          this.showMoreData = {
+            nowPage: 1,
+            category_id: this.category_id,
+            priceFrom: this.priceFrom,
+            priceTo: this.priceTo,
+            partsDateFrom: partsDateFrom,
+            partsDateTo: partsDateTo,
+            region: this.region,
+            Distance: 999999,
+            rating: this.rating,
+            sortRadio: this.sortRadio
+          };
+          // this.prods = response.data.data;
+          this.displayedProducts = response.data.data;
         }
       } catch (error) {
         console.error("Ошибка при загрузке продуктов:", error);
@@ -1089,14 +1453,17 @@ export default {
         console.log(this.rating)
         try {
           const response = await axios.post(
-            "http://185.112.83.36:8080/sortProductListHourlyRate",
+            "http://localhost:8080/sortProductListHourlyRate",
             {
+              List: 1,
+              Size: 2,
               Category: this.category_id,
               LowNum: Number(this.priceFrom),
               HigNum: Number(this.priceTo),
               LowDate: Number(partsDateFrom),
               HigDate: Number(partsDateTo),
               Position: [1, 2],
+              Location: "",
               Distance: 999999,
               Rating: Number(this.rating),
             },
@@ -1116,13 +1483,29 @@ export default {
               },
             }
           );
-          console.log(response);
-          if (response.data.status == "fatal") {
-            this.prods = [];
+          console.log("sortProductListHourlyRate = ",response);
+          console.log("response.data.status = ",response.data.status);
+          console.log("response.data.Lenght = ",response.data.Lenght);
+          console.log("response.data.status == fatal && response.data.Lenght == 0 =", response.data.status == "fatal" && response.data.Lenght == 0);
+          if (response.data.status == "fatal" || response.data.Lenght == 0) {
             this.displayedProducts = [];
+            this.LengthAds = 0;
           } else {
-            this.prods = response.data.data;
-            this.displayedProducts = this.prods.slice(0, this.perPage);
+            this.LengthAds = response.data.Lenght;
+            this.showMoreData = {
+              nowPage: 1,
+              category_id: this.category_id,
+              priceFrom: this.priceFrom,
+              priceTo: this.priceTo,
+              partsDateFrom: partsDateFrom,
+              partsDateTo: partsDateTo,
+              region: this.region,
+              Distance: 999999,
+              rating: this.rating,
+              sortRadio: this.sortRadio
+            };
+            // this.prods = response.data.data;
+            this.displayedProducts = response.data.data;
           }
         } catch (error) {
           console.error("Ошибка при загрузке продуктов:", error);
@@ -1133,7 +1516,7 @@ export default {
       
 
       /*try {
-        const response = await axios.post("http://185.112.83.36:8080", filters);
+        const response = await axios.post("http://localhost:8080", filters);
         console.log("Filters applied:", response.data);
       } catch (error) {
         console.error("Error applying filters:", error);
@@ -1217,7 +1600,7 @@ background: #f9cc33;
 }
 
 #min-swiper {
-  height: 0;
+  height: 9vw !important;
 }
 
 main {
@@ -1227,10 +1610,14 @@ main {
 
 .swiper {
   padding: 1vw 0;
+  height: 9vw;
+  margin-top: -2vw;
+  width: 100%;
 }
 
 .swiper-el {
-  padding: 2vw 0;
+  width: 15vw !important;
+  padding-left: 1.5vw;
 }
 
 .line-grey {
@@ -1338,12 +1725,12 @@ main {
 
 .product_status_r {
   color: #c70000;
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
 }
 
 .product_status_g {
   color: #04c700;
-  font-size: var(--fs-15);
+  font-size: var(--fs-10);
 }
 
 .product_create_at {
@@ -1387,6 +1774,7 @@ main {
   margin-top: 10px;
   overflow: hidden;
   height: 12vw;
+  width: 36vw;
 }
 
 .product_button {
@@ -1413,8 +1801,8 @@ main {
 }
 
 .shop_product {
-  margin-left: 6vw;
-  width: 70vw;
+  margin-left: 4vw;
+  width: 36vw;
 }
 
 .shop_filter {
@@ -1464,6 +1852,11 @@ input.shop_filter_text {
   display: flex;
   margin: 1vw 4vw 1vw 0;
   justify-content: space-between;
+  width: 9vw;
+}
+
+.shop_filter_block p {
+  font-size: var(--fs-14);
 }
 
 .filter_block {
@@ -1497,10 +1890,14 @@ input.shop_filter_text {
   width: 100vw;
 }
 
+/* h3 {
+  margin: 0.2vw 0;
+} */
+
 .slider_con_el h3 {
   display: flex;
   justify-content: end;
-  font-size: var(--fs-25);
+  font-size: var(--fs-14);
   margin: 0;
   text-align: end;
   padding: 0;
@@ -1510,19 +1907,19 @@ input.shop_filter_text {
 .slider_con_el img {
   position: absolute;
   left: -2vw;
-  height: 10vw;
+  height: 6vw;
   bottom: -1.2vw;
 }
 
 .slider_con_el {
   position: relative;
-  background: #dedede;
-  border-radius: 2vw;
-  box-shadow: 1vw 1vw 14px rgba(0, 0, 0, 0.348);
-  margin: 0 2vw;
+  background: #f9f9e2;
+  border-radius: 0.5vw;
+  box-shadow: 0.2vw 0.3vw 5px rgba(0, 0, 0, 0.4);
+  margin: 0 1vw;
   padding-right: 0.6vw;
-  height: 11vw;
-  width: 21vw;
+  height: 7vw;
+  width: 13vw;
 }
 
 .shop_filter_ads {
@@ -1541,6 +1938,6 @@ input.shop_filter_text {
 }
 
 .filter_rating img {
-  width: 2.8vw;
+  width: 1.2vw;
 }
 </style>

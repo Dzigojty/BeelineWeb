@@ -118,7 +118,7 @@ export default {
       console.log(this.comment)
       console.log(this.selectedStatus)
       try {
-        const response = await axios.post("http://185.112.83.36:8080/sigReview", {
+        const response = await axios.post("http://localhost:8080/sigReview", {
           Ads_id: this.idProduct,
           Rating: this.rating,
           Comment: this.comment,
@@ -427,6 +427,8 @@ form div button {
   align-items: center;
   border-radius: 1.5vw;
   background-color: white;
+  border: 0.1vw solid black;
+  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-add-review {

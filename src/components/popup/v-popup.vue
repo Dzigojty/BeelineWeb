@@ -119,11 +119,11 @@
         <div class="container_summa">
           <div v-if="isActiveTime || isActiveTime2">По часовая оплата</div>
           <div v-if="isActiveTime || isActiveTime2">
-  <p>Количество часов: {{ durationHours }}</p>
-</div>
-<div  v-if="isActiveDate || isActiveDate2 ">
-  <p>Количество дней: {{ durationDays }}</p>
-</div>
+            <p>Количество часов: {{ durationHours }}</p>
+          </div>
+          <div  v-if="isActiveDate || isActiveDate2 ">
+            <p>Количество дней: {{ durationDays }}</p>
+          </div>
           <div v-if="isActiveDate || isActiveDate2">Дневная оплата</div>
           <div class="summa_text">Сумма к оплате:</div>
           <div class="summa">{{ totalCost }} ₽</div>
@@ -177,52 +177,54 @@ export default {
   },
   computed: {
     durationDays() {
-    const startDate = new Date(
-      this.selectedDate.year,
-      this.selectedDate.month - 1, // Учитываем, что месяцы начинаются с 0
-      this.selectedDate.day
-    );
+      const startDate = new Date(
+        this.selectedDate.year,
+        this.selectedDate.month - 1, // Учитываем, что месяцы начинаются с 0
+        this.selectedDate.day
+      );
 
-    const endDate = new Date(
-      this.selectedDate2.year,
-      this.selectedDate2.month - 1,
-      this.selectedDate2.day
-    );
+      const endDate = new Date(
+        this.selectedDate2.year,
+        this.selectedDate2.month - 1,
+        this.selectedDate2.day
+      );
+      console.log("DATE duration")
+      console.log(startDate)
+      console.log(endDate)
+      // Вычисляем разницу в миллисекундах и переводим в дни
+      const differenceInMs = endDate - startDate;
+      const days = differenceInMs / (1000 * 60 * 60 * 24);
 
-    // Вычисляем разницу в миллисекундах и переводим в дни
-    const differenceInMs = endDate - startDate;
-    const days = differenceInMs / (1000 * 60 * 60 * 24);
-
-    return Math.ceil(days); // Округляем вверх до ближайшего целого дня
-  },
+      return Math.ceil(days); // Округляем вверх до ближайшего целого дня
+    },
 
     durationHours() {
-    const startDate = new Date(
-      0, // Год не важен, используем "нулевой" для расчётов
-      0, // Месяц
-      0, // День
-      this.selectedTime.hours,
-      this.selectedTime.minutes
-    );
+      const startDate = new Date(
+        0, // Год не важен, используем "нулевой" для расчётов
+        0, // Месяц
+        0, // День
+        this.selectedTime.hours,
+        this.selectedTime.minutes
+      );
 
-    const endDate = new Date(
-      0, // Год
-      0, // Месяц
-      0, // День
-      this.selectedTime2.hours,
-      this.selectedTime2.minutes
-    );
+      const endDate = new Date(
+        0, // Год
+        0, // Месяц
+        0, // День
+        this.selectedTime2.hours,
+        this.selectedTime2.minutes
+      );
 
-    // Вычисляем разницу в миллисекундах и переводим в часы
-    const differenceInMs = endDate - startDate;
+      // Вычисляем разницу в миллисекундах и переводим в часы
+      const differenceInMs = endDate - startDate;
 
-    // Если разница отрицательная, добавляем 24 часа (для случаев, когда время конца раньше начала)
-    const hours = differenceInMs >= 0
-      ? differenceInMs / (1000 * 60 * 60)
-      : (differenceInMs + 24 * 60 * 60 * 1000) / (1000 * 60 * 60);
-    this.durationHours = Math.round(hours * 100) / 100;
-    return Math.round(hours * 100) / 100; // Округляем до 2-х знаков
-  },
+      // Если разница отрицательная, добавляем 24 часа (для случаев, когда время конца раньше начала)
+      const hours = differenceInMs >= 0
+        ? differenceInMs / (1000 * 60 * 60)
+        : (differenceInMs + 24 * 60 * 60 * 1000) / (1000 * 60 * 60);
+      this.durationHours = Math.round(hours * 100) / 100;
+      return Math.round(hours * 100) / 100; // Округляем до 2-х знаков
+    },
 
     totalCost() {
       if (this.isActiveTime || this.isActiveTime2) {
@@ -266,7 +268,7 @@ export default {
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://185.112.83.36:8080/regOrderHourly",
+            "http://localhost:8080/regOrderHourly",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,
@@ -296,7 +298,7 @@ export default {
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://185.112.83.36:8080/regOrderDaily",
+            "http://localhost:8080/regOrderDaily",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,
@@ -400,9 +402,9 @@ export default {
     });
 
     const selectedDate2 = ref({
-      day: futureDate.getDate(),
-      month: futureDate.getMonth() + 12,
-      year: futureDate.getFullYear() + 2,
+      day: todayDate.getDate()+1,
+      month: todayDate.getMonth()+1,
+      year: todayDate.getFullYear(),
     });
 
     const activeDate = computed(() =>
@@ -551,199 +553,238 @@ export default {
 </script>
 
 <style scoped>
-.close_panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
+.title{
+    font-size: var(--fs-20);
+    text-align: center;
+    padding-bottom: 2vw;
 }
 
-.button_yellow_border {
-  border: 1px #f8cb32 solid;
-  color: #f8cb32;
-  cursor: pointer;
-  align-content: center;
-  border-radius: 1vw;
-  padding: 0.6vw 3vw;
-  margin: 4vw 0;
+
+.price_line{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8vw 0vw 0vw 0vw;
 }
 
-.arrow_right{
-  width: 2vw;
+.price_line span {
+  font-size: var(--fs-14)
 }
 
-.container_center {
-  display: flex;
-  justify-content: center;
+#local {
+  width: 12vw;
+  height: 1.2vw;
+  font-size: var(--fs-14);
 }
 
-.summa_text {
-  margin-right: 1vw;
+#cost{
+    width: 7vw;
+    height: 1.2vw;
+    font-size: var(--fs-14);
 }
 
-.container_summa {
-  font-size: var(--fs-20);
-}
+  .close_panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+  }
+  
+  .button_yellow_border {
+    border: 1px #FFC500 solid;
+    color: black;
+    cursor: pointer;
+    align-content: center;
+    border-radius: 0.3vw;
+    padding: 0.2vw 1vw;
+    margin: 2vw 0;
+    text-decoration: underline;
+    background-color: #FFDF71;
+    font-size: var(--fs-15);
+  }
+  
+  .arrow_right{
+    width: 1.5vw;
+  }
+  
+  .container_center {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .summa_text {
+    margin-right: 1vw;
+  }
+  
+  .container_summa {
+    font-size: var(--fs-20);
+  }
+  
+  .container_place {
+    display: flex;
+    height: 2vw;
+    align-items: center;
+  }
+  
+  .place_img {
+    width: 1vw;
+  }
+  
+  .place_text {
+    margin: 1vw;
+    font-size: var(--fs-15);
+    color: #d9d9d9;
+  }
+  
+  .clock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2vw;
+  }
+  
+  .time-display {
+    font-size: 2em;
+    margin-bottom: 2vw;
+  }
+  
+  .time,
+  .date {
+    font-size: var(--fs-15);
+    text-align: center;
+  }
+  
+  .time {
+    width: 8vw;
+    margin: 0 auto;
+  }
+  
+  .start_date_time img{
+    width: 25vw;
+  }
+  
+  .end_date_time {
+    width: 9vw;
+  }
+  
+  .time_select {
+    background-color: #d9d9d9;
+    border-radius: 1.5vw;
+  }
 
-.container_place {
-  display: flex;
-  height: 2vw;
-  align-items: center;
-}
-
-.place_img {
-  width: 1vw;
-}
-
-.place_text {
-  margin: 1vw;
-  font-size: var(--fs-15);
-  color: #d9d9d9;
-}
-
-.clock-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 2vw;
-}
-
-.time-display {
-  font-size: 2em;
-  margin-bottom: 2vw;
-}
-
-.time,
-.date {
-  font-size: var(--fs-25);
-  text-align: center;
-}
-
-.time {
-  width: 8vw;
-  margin: 0 auto;
-}
-
-.start_date_time img{
-  width: 25vw;
-}
-
-.end_date_time {
-  width: 15vw;
-}
-
-.time_select {
-  background-color: #d9d9d9;
-  border-radius: 1.5vw;
-}
-
-.block-flex {
-  display: flex;
-  justify-content: space-around;
-}
-
-.swiper-container {
-  height: 17vw;
-  width: 9vw;
-}
-
-.line_margin3 {
-  margin: 0.5vw 0 1vw 0;
-}
-
-.line_margin2 {
-  margin: 1.2vw 0 0.5vw 0;
-}
-
-.line_margin {
-  margin: 0.5vw 0;
-}
-
-.grey-line {
-  height: 1px;
-  width: 100%;
-  background-color: #d9d9d9;
-}
-
-.clock-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 1vw;
-}
-
-.date-display {
-  font-size: 2em;
-  margin-bottom: 2vw;
-}
-
-.sliders {
-  display: flex;
-  justify-content: space-around;
-  width: 35vw;
-}
-
-.swiper-container {
-  height: 7vw;
-  width: max-content;
-}
-
-.swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: var(--fs-20);
-  cursor: pointer;
-  color: #d9d9d9;
-  font-weight: 500;
-}
-
-.swiper-slide-active {
-  font-size: var(--fs-20);
-  font-weight: 500;
-  color: black;
-}
-
-.digitalCalendar {
-  display: flex;
-  padding: 1vw 2vw;
-}
-
-.swiper-el {
-  width: 10vw;
-  height: 100%;
-  background-color: yellow;
-}
-
-.v-popup {
-  position: fixed;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  background-color: rgba(255, 255, 255, 0);
-}
-
-.razm {
-  align-content: center;
-  margin: 0 0.6vw;
-  font-size: var(--fs-30);
-}
-
-.center {
-  width: 43vw;
-  padding-top: 2vw;
-  align-self: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 1.5vw;
-  background-color: white;
-}
+  .container {
+    width: 25vw;
+  }
+  
+  .block-flex {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .swiper-container {
+    height: 17vw;
+    width: 9vw;
+  }
+  
+  .line_margin3 {
+    margin: 0.5vw 0 1vw 0;
+  }
+  
+  .line_margin2 {
+    margin: 1.2vw 0 0.5vw 0;
+  }
+  
+  .line_margin {
+    margin: 0vw 0;
+  }
+  
+  .grey-line {
+    height: 1px;
+    width: 100%;
+    background-color: #d9d9d9;
+  }
+  
+  .clock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1vw;
+  }
+  
+  .date-display {
+    font-size: 2em;
+    margin-bottom: 2vw;
+  }
+  
+  .sliders {
+    display: flex;
+    justify-content: space-around;
+    width: 20vw;
+  }
+  
+  .swiper-container {
+    height: 7vw;
+    width: max-content;
+  }
+  
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--fs-10);
+    cursor: pointer;
+    color: #d9d9d9;
+    font-weight: 500;
+  }
+  
+  .swiper-slide-active {
+    font-size: var(--fs-10);
+    font-weight: 500;
+    color: black;
+  }
+  
+  .digitalCalendar {
+    display: flex;
+    padding: 1vw 2vw;
+  }
+  
+  .swiper-el {
+    width: 10vw;
+    height: 100%;
+    background-color: yellow;
+  }
+  
+  .v-popup {
+    position: fixed;
+    z-index: 12;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 100vw;
+    height: 50vw;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0);
+  }
+  
+  .razm {
+    align-content: center;
+    margin: 0 0.6vw;
+    font-size: var(--fs-15);
+  }
+  
+  .center {
+    width: 30vw;
+    padding-top: 1vw;
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5vw;
+    background-color: white;
+    border: 0.1vw solid black;
+    box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
+  }
 </style>

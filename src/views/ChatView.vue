@@ -1,13 +1,15 @@
 <template>
   <div class="chat">
-    <v-popup-moder-decision v-if="isInfoPopupModerDecision" @closePopup="closePopup" />
-    <!-- <v-popup-change-deal
+    <v-popup-moder-decision v-if="isInfoPopupModerDecision" :selectedChat="selectedChat" @closePopup="closePopup" />
+    <v-popup-change-deal
       v-if="isInfoPopupChangeDeal"
       @closePopup="closePopup"
-    /> -->
-    <v-popup-change-deal-request-edit v-if="isInfoPopupChangeDeal" @closePopup="closePopup" />
+    />
+    <!-- <v-popup-text-user v-if="isInfoTextUser" @closePopup="closePopup"/> -->
+    <v-popup-change-deal-request-edit v-if="isInfoPopupChangeDealRequestEdit" @closePopup="closePopup" />
+    <v-popup-torgi v-if="isInfoPopupTorgi" :idAds="idAds" @closePopup="closePopup" />
     <div class="container-chat">
-      <swiper-container class="swiper contacts" slides-per-view="5" :direction="'vertical'">
+      <swiper-container class="swiper contacts" slides-per-view="8" :direction="'vertical'">
         <swiper-slide
           v-for="(chat, index) in chats"
           :key="index"
@@ -28,6 +30,27 @@
             </div>
           </div>
         </swiper-slide>
+        <swiper-slide
+          v-for="(disput, index) in disputs"
+          :key="index"
+          :class="['swiper-el', { active: selectDisput == disput }]"
+          @click="selectDisputM(disput)"
+        >
+          <div :class="[{ backgroud_contact: true, backgroud_contact_select: chatSelected === disput.Chat_id }]">
+            <div class="contact">
+              <!-- <img v-if="chat.avatar" :src="chat.avatar" alt="Avatar" class="contact_img" /> -->
+              <img src="../assets/user.png" class="contact_img" />
+              <div class="column_data">
+                <div class="contact_name">{{ disput.Name1 }}, {{ disput.Name2 }}</div>
+                
+                <div class="button_status_request_desput">
+                  Запрос
+                </div>
+                <!-- <div v-else class="button_new_message">Новое сообщение!</div> -->
+              </div>
+            </div>
+          </div>
+        </swiper-slide>
 
       </swiper-container>
       <div class="dialog">
@@ -35,10 +58,74 @@
           <samp>Заказчик предложил изменить сроки аренды!</samp>
           <button @click="showPopupPopupChangeDeal">Открыть</button>
         </div> -->
-        <!-- <div @v-if="message.uid === uid" class="notification_mediator">
-        <samp>Приняли решение?</samp>
-        <button @click="showPopupModerDecision">Завершить спор</button>
-        </div> -->
+        <div v-if="selectedChatProp?.owner_id == user_id && !disputState" class="notification">
+          <samp>Заказчик предложил изменить сроки аренды!</samp>
+          <div class="flex-block-center">
+            <button @click="showPopupPopupChangeDeal">Открыть</button>
+            <div @click="createDispute" class="button_status_request_spor">
+              <img src="../assets/spor.svg" class="time_img"  alt="" />
+            </div>
+          </div>
+        </div>
+        <div v-if="selectedChatProp?.moderator_id == user_id && selectedChatProp?.moderator_id != 0" class="notification_mediator">
+          <samp>Приняли решение?</samp>
+          <button @click="showPopupModerDecision">Завершить спор</button>
+        </div>
+
+        <div v-if="disputState" class="mediator_header_request ">
+          <div class="panel_mediator_req">
+            <div style="margin-right: 1vw;" class="flex-block">
+              <img src="../assets/user.png" class="contact_img" />
+              <div class="contact_name">Исполнитель,  </div>
+            </div>
+            <div style="width: 9vw;" class="flex-block">
+              <img styl src="../assets/mediator.png" class="contact_img" />
+              <div class="contact_name">Медиатор</div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="selectedChatProp?.user_id == user_id && !disputState" class="mediator_header_request ">
+          <div class="panel_p">
+            <div class="flex-block">
+              <img src="../assets/user.png" class="contact_img" />
+                <div class="contact_name">Исполнитель</div>
+              </div>
+            <div class="flex-block-big">
+              <!-- <div class="button_status_request_desput" @click="createDispute">
+                Спор
+              </div> -->
+              <div @click="createDispute" class="button_status_request_spor">
+                <img src="../assets/spor.svg" class="time_img"  alt="" />
+              </div>
+              <div @click="showPopupTorgi" class="button_status_request_torgi">
+                <img src="../assets/torgi.svg" class="time_img"  alt="" />
+              </div>
+              <!-- <div @click="showPopupChangeDealRequestEdit" class="button_status_request_desput_time">
+                <span>Изменить срок аренды</span>
+                <img src="../assets/time.png" class="time_img"  alt="" />
+              </div> -->
+              <img src="../assets/info.png" class="info_img" @click="showInfoTextUser"  alt="" />
+            </div>
+          </div>
+        </div>
+
+        <div v-if="selectDisput != null" class="mediator_header_request ">
+          <div class="panel_p">
+            <img src="../assets/user.png" class="contact_img" />
+            <div class="contact_name">{{ selectDisput.Name1 }}, {{ selectDisput.Name2 }}</div>
+            <div class="button_status_request_desput">
+              Запрос
+            </div>
+          </div>
+        </div>
+        <div v-if="selectDisput != null" class="mediator_ask_panel">
+          <div class="ask">Запрос на решение спора</div>
+          <div class="request">
+            <button @click="reqestYes()" class="green">Принять</button>
+            <button @click="reqestNo()" class="grey">Отклонить</button>
+          </div>
+        </div>
         <div class="panel">
           <div class="messages" id="messages" ref="messagesRef">
             <div class="inner">
@@ -52,17 +139,34 @@
                   <div class="datetime_message margin-right_message">{{ message.date }}</div>
                   <div class="message_you">
                     {{ message.text }}
+                    <!-- <div v-if="message.media && message.media.length > 0">
+                      <video
+                        v-for="(video, idx) in message.media"
+                        :key="idx"
+                        :src="video"
+                        controls
+                        class="chat-video"
+                      ></video>
+                    </div> -->
                     <img class="message_you_end" src="../assets/message_end.png" />
                   </div>
                 </div>
                 <div v-else class="aligment_noyou">
                   <img class="message_user" src="../assets/user.png" alt="" />
                   <div :class="{ message_noyou: message.role == 1 , message_mediator: message.role == 2}">
-                    <!-- <div class="message_noyou"> -->
-                      {{ message.text }}
-                      <img v-if="message.role == 1" class="message_noyou_end" src="../assets/message_end_noyou.png" />
-                      <img v-if="message.role == 2" class="message_noyou_end" src="../assets/message_end_mediator.png" />
-                    </div>
+                    {{ message.text }}
+                    <!-- <div v-if="message.media && message.media.length > 0">
+                      <video
+                        v-for="(video, idx) in message.media"
+                        :key="idx"
+                        :src="video"
+                        controls
+                        class="chat-video"
+                      ></video>
+                    </div> -->
+                    <img v-if="message.role == 1" class="message_noyou_end" src="../assets/message_end_noyou.png" />
+                    <img v-if="message.role == 2" class="message_noyou_end" src="../assets/message_end_mediator.png" />
+                  </div>
                   <div class="datetime_message margin-left_message">{{ message.date }}</div>
                 </div>
               </div>
@@ -71,8 +175,9 @@
 
           <form class="form" @submit.prevent="sendMessage">
             <div class="buttons">
+              <!-- <input type="file" accept="video/*" multiple @change="handleVideoUpload" /> -->
               <button>
-                <img src="../assets/button_chat_action.png" alt="" />
+                <img src="../assets/button_chat_action.png" alt="Отправить видео" />
               </button>
               <button>
                 <img src="../assets/button_chat_action1.png" alt="" />
@@ -91,14 +196,19 @@
 import VPopupModerDecision from "../components/popup/v-popup-moder-decision.vue";
 import VPopupChangeDeal from "../components/popup/v-popup-change-deal.vue";
 import VPopupChangeDealRequestEdit from "../components/popup/v-popup-change-deal-request-edit.vue";
+import VPopupTorgi from "../components/popup/v-pop-torgi.vue";
+import VPopupTextUser from "../components/popup/v-popup-text-user.vue"
 import axios from 'axios';
 import Cookies from "js-cookie";
+import { storeToRefs } from 'pinia';
 
 export default {
   components: {
     VPopupModerDecision,
     VPopupChangeDeal,
     VPopupChangeDealRequestEdit,
+    VPopupTorgi,
+    VPopupTextUser,
   },
   mounted() {
     // Прокрутить к началу при загрузке чата
@@ -118,16 +228,174 @@ export default {
     },
   },
   methods: {
-    // scrollToBottom() {
-    //   console.log('scrollToBottom')
-    //   console.log(this.$refs.messagesRef)
-    //   const messagesContainer = this.$refs.messagesRef;
-    //   if (messagesContainer) {
-    //     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    //   }
-    //   var block = document.getElementById("messages");
-    //   block.scrollTop = block.scrollHeight;
-    // },
+    handleVideoUpload(event) {
+      this.videoFiles = Array.from(event.target.files);
+      console.log("Загруженные видео:", this.videoFiles);
+    },
+    async sendVideo() {
+      if (!this.chatSelected) {
+        alert("Пожалуйста, выберите чат перед отправкой видео.");
+        return;
+      }
+
+      if (this.videoFiles.length === 0) {
+        alert("Пожалуйста, добавьте видео перед отправкой.");
+        return;
+      }
+
+      try {
+        const videoBase64 = await Promise.all(
+          this.videoFiles.map((file) => this.convertToBase64(file))
+        );
+
+        const response = await axios.post(
+          "http://localhost:8080/sendVideo",
+          {
+            Id_chat: this.chatSelected,
+            Videos: videoBase64, // Отправляем видео в Base64 формате
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        if (response.data.status === "success") {
+          alert("Видео успешно отправлено!");
+        } else {
+          alert(`Ошибка: ${response.data.message}`);
+        }
+      } catch (error) {
+        console.error("Ошибка при отправке видео:", error);
+        alert("Произошла ошибка при отправке видео.");
+      }
+    },
+    convertToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    },
+
+
+    async createDispute() {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/sigDisputInChat",
+          {
+            // Ваши данные для POST-запроса
+            chatId: this.selectedChat, // Пример идентификатора чата
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // Для отправки куки
+          }
+        );
+        
+        alert(response.data.message)
+
+        if (response.data.status === "success") {
+          // this.successMessage = response.data.message; // "Спор добавлен"
+          // this.errorMessage = null; // Сбрасываем сообщение об ошибке
+        } else {
+          // this.successMessage = null; // Сбрасываем сообщение об успехе
+          // this.errorMessage = response.data.message; // Выводим сообщение об ошибке
+        }
+      } catch (error) {
+        console.error("Ошибка при создании спора:", error);
+        this.errorMessage = "Произошла ошибка при выполнении запроса.";
+        this.successMessage = null; // Сбрасываем сообщение об успехе
+      }
+    },
+
+    async newDisput() {
+      try {
+        const response = await axios.post("http://localhost:8080/sigDisputInChat", {
+          Id_chat: this.selectedChat,
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+
+        // Проверим весь ответ от сервера
+        console.log("Ответ от сервера:", response);
+
+        // Проверяем структуру ответа
+        if (response.data && response.data.status === "success") {
+          alert("Спор открыт. Медиатор присоединиться к вашей беседе в ближайшее время.")
+        } else {
+          console.error("Неверный формат ответа или нет данных:", response.data);
+          this.messages = []; // Очистка сообщений в случае ошибки
+        }
+      } catch (error) {
+        console.error("Ошибка при запросе сообщений чата:", error.message);
+      }
+    },
+
+    selectDisputM(disput) {
+      if (this.selectDisput == null) {
+        this.selectDisput = disput;
+        console.log(this.selectDisput);
+      } else {
+        this.selectDisput = null;
+      }
+    },
+
+    reqestNo() {
+      this.selectDisput = null;
+    },
+
+    async reqestYes() {
+      try {
+        const response = await axios.post("http://localhost:8080/mediatorEnterInChat", {
+          Id_chat: 36,
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+
+        // Проверим весь ответ от сервера
+        console.log("Ответ от сервера:", response);
+
+         // Проверяем структуру ответа
+         if (response.data && response.data.status === "success" && Array.isArray(response.data.data)) {
+          this.selectDisput = null;
+          this.messages = response.data.data
+            .map(message => ({
+              uid: message.User_id,
+              name: message.Name,
+              role: message.User_role,
+              text: message.Text,
+              media: message.Media,
+              date: new Date(message.Date), // Оставляем объект Date для сортировки
+              media_pwd: message.Media_pwd,
+            }))
+            .sort((a, b) => a.date - b.date); // Сортируем по дате, самые новые в конце
+
+          // Если нужно форматировать дату для отображения:
+          this.messages = this.messages.map(message => ({
+            ...message,
+            date: message.date.toLocaleString(), // Преобразуем дату в строку
+          }));
+        } else {
+          console.error("Неверный формат ответа или нет данных:", response.data);
+          this.messages = []; // Очистка сообщений в случае ошибки
+        }
+      } catch (error) {
+        console.error("Ошибка при запросе сообщений чата:", error.message);
+      }
+    },
+
     scrollToTop() {
       const messagesContainer = this.$refs.messagesRef;
       if (messagesContainer) {
@@ -138,7 +406,7 @@ export default {
     initChats(){
       //connect to Sockets Bay
       const token = Cookies.get('token');
-      var sockets_bay_url = `ws://185.112.83.36:8080/handleWebSocket?token=${token}`;
+      var sockets_bay_url = `ws://localhost:8080/handleWebSocket?token=${token}`;
       this.websocket      = new WebSocket(sockets_bay_url);
       
       this.websocket.onopen    = this.onSocketOpen;
@@ -151,20 +419,25 @@ export default {
       this.connection_ready = true;
     },
     onSocketMessage(evt){
-      // alert(`Получено сообщение: ${evt.data}`); // Выводим полученные данные
-      // console.log("onSocketMessage");
-      try {
-        var received = JSON.parse(evt.data); // Разбираем JSON
-        this.messages.push({
-            avatar: received.Avatar,
-            uid: received.User_id,
-            name: received.Name,
-            text: received.Text,
-            date: new Date(received.Sent_at).toLocaleTimeString(),
-          });
-      } catch (error) {
-        console.error("Ошибка при разборе сообщения:", error);
-      }
+        try {
+          var received = JSON.parse(evt.data); // Разбираем JSON
+        if(this.chatSelected == received.Chat_id) {
+          console.log('Получено сообщение: ', received); // Выводим полученные данные
+          console.log("onSocketMessage");
+          console.log("chatSelect = ", this.chatSelected)
+          console.log("Chat_id = ", received.Chat_id)
+          this.messages.push({
+              avatar: received.Avatar,
+              uid: received.User_id,
+              name: received.Name,
+              text: received.Text,
+              date: new Date(received.Sent_at).toLocaleTimeString(),
+              role: received.User_role
+            });
+        }
+        } catch (error) {
+          console.error("Ошибка при разборе сообщения:", error);
+        }
     },
 
 
@@ -196,8 +469,13 @@ export default {
         return;
       }
 
+      if (!this.text.trim()){
+        console.error("Пустая строка!")
+        return;
+      }
+
       try {
-        const response = await axios.post("http://185.112.83.36:8080/sendMessage", {
+        const response = await axios.post("http://localhost:8080/sendMessage", {
           Id_chat: this.chatSelected,
           Text: this.text,
         }, {
@@ -229,6 +507,12 @@ export default {
     closePopup() {
       this.isInfoPopupModerDecision = false;
       this.isInfoPopupChangeDeal = false;
+      this.isInfoPopupChangeDealRequestEdit = false;
+      this.isInfoPopupTorgi = false;
+      this.isInfoTextUser = false;
+    },
+    showInfoTextUser(){
+      this.isInfoTextUser = true;
     },
     showPopupModerDecision() {
       this.isInfoPopupModerDecision = true;
@@ -236,107 +520,247 @@ export default {
     showPopupPopupChangeDeal() {
       this.isInfoPopupChangeDeal = true;
     },
+    showPopupChangeDealRequestEdit() {
+      this.isInfoPopupChangeDealRequestEdit = true;
+    },
+    showPopupTorgi() {
+      this.isInfoPopupTorgi = true;
+    },
     async ChatSelect(chatId) {
-    this.chatSelected = chatId;
-    console.log(this.chatSelected)
+      this.chatSelected = chatId;
 
-    try {
-      // Отправляем запрос на сервер
-      const response = await axios.post(
-        "http://185.112.83.36:8080/openChat",
-        { Id_chat: chatId },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true, // Для отправки cookies
+      try {
+        // Отправляем запрос на сервер
+        const response = await axios.post(
+          "http://localhost:8080/openChat",
+          { Id_chat: chatId },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true, // Для отправки cookies
+          }
+        );
+
+        console.log(response)
+
+        // Проверяем структуру ответа
+        if (response.data && response.data.status === "success" && Array.isArray(response.data.data)) {
+          this.idAds = response.data.ads_id;
+          this.selectedChatProp = {user_id: response.data.slave_id, owner_id: response.data.owner_id, moderator_id: response.data.moderator_id};
+          this.disputState = response.data.disput_state;
+          // this.moderator_id = response.data.moderator_id;
+          this.messages = response.data.data
+            .map(message => ({
+              uid: message.User_id,
+              name: message.Name,
+              role: message.User_role,
+              text: message.Text,
+              media: message.Media,
+              date: new Date(message.Date), // Оставляем объект Date для сортировки
+              media_pwd: message.Media_pwd,
+            }))
+            .sort((a, b) => a.date - b.date); // Сортируем по дате, самые новые в конце
+
+          // Если нужно форматировать дату для отображения:
+          this.messages = this.messages.map(message => ({
+            ...message,
+            date: message.date.toLocaleString(), // Преобразуем дату в строку
+          }));
+        } else {
+          console.error("Неверный формат ответа или нет данных:", response.data);
+          this.messages = []; // Очистка сообщений в случае ошибки
         }
-      );
-
-      console.log(response)
-
-      // Проверяем структуру ответа
-      if (response.data && response.data.status === "success" && Array.isArray(response.data.data)) {
-        this.messages = response.data.data
-          .map(message => ({
-            uid: message.User_id,
-            name: message.Name,
-            role: message.User_role,
-            text: message.Text,
-            media: message.Media,
-            date: new Date(message.Date), // Оставляем объект Date для сортировки
-            media_pwd: message.Media_pwd,
-          }))
-          .sort((a, b) => a.date - b.date); // Сортируем по дате, самые новые в конце
-
-        // Если нужно форматировать дату для отображения:
-        this.messages = this.messages.map(message => ({
-          ...message,
-          date: message.date.toLocaleString(), // Преобразуем дату в строку
-        }));
-      } else {
-        console.error("Неверный формат ответа или нет данных:", response.data);
-        this.messages = []; // Очистка сообщений в случае ошибки
+      } catch (error) {
+        console.error("Ошибка при запросе сообщений чата:", error.message);
       }
-    } catch (error) {
-      console.error("Ошибка при запросе сообщений чата:", error.message);
-    }
-  },
+    },
+    async CreateChats(){
+      try {
+        const response = await axios.get("http://localhost:8080/printChat", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // для отправки куки
+        });
+        console.log(response);
+        if (response.data.status != "success") {
+          this.chats = [];
+          return false;
+        } else if (response.data.message != "Чатов не найденно, либо они не созданны") {
+          this.chats = response.data.data;
+          for (let index = 0; index < this.chats.length; index++) {
+            this.chats[index].avatar = this.chats[index].avatar != '' ? `data:image/png;base64,${this.chats[index].avatar}` : '';
+          }
+      // this.scrollToBottom();
 
+          return true;
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке чатов:", error);
+        return false;
+      }
+    },
+
+    async CreateDisputs(){
+      try {
+        const response = await axios.get("http://localhost:8080/disputeChatPanel", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // для отправки куки
+        });
+        if (response.data.status != "success") {
+          this.disputs = [];
+          console.log(response.data.message);
+          return false;
+        } else {
+          this.disputs = response.data.data;
+          // for (let index = 0; index < this.disputs.length; index++) {
+            // this.disputs[index].avatar = this.disputs[index].avatar != '' ? `data:image/png;base64,${this.disputs[index].avatar}` : '';
+          // }
+          return true;
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке disputs:", error);
+        return false;
+      }
+    },
+    async sendBiddingRequest() {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/bidding",
+          {
+            Chat_id: this.selectedChat,
+            Global_rate: this.globalRate,
+            Start_at: this.startAt,
+            End_at: this.endAt,
+            PositionX: this.positionX,
+            PositionY: this.positionY,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true, // Для отправки куки
+          }
+        );
+
+        // Обработка успешного ответа
+        if (response.data.status === "success") {
+          console.log("Успех:", response.data.message);
+          alert("Транзакция прошла успешно");
+          return response.data;
+        } else {
+          console.error("Ошибка:", response.data.message);
+          alert(response.data.message || "Ошибка при выполнении запроса.");
+          return null;
+        }
+      } catch (error) {
+        console.error("Ошибка при выполнении запроса:", error);
+        alert("Произошла ошибка при выполнении запроса.");
+        return null;
+      }
+    },
   },
   async created() {
     this.user_id = localStorage.getItem('Id')
-    try {
-      const response = await axios.get("http://185.112.83.36:8080/printChat", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true, // для отправки куки
-      });
-      if (response.data.status != "success") {
-        this.chats = [];
-        return false;
-      } else if (response.data.message != "Чатов не найденно, либо они не созданны") {
-        this.chats = response.data.data;
-        for (let index = 0; index < this.chats.length; index++) {
-          this.chats[index].avatar = this.chats[index].avatar != '' ? `data:image/png;base64,${this.chats[index].avatar}` : '';
-        }
-        consoel.log(this.chats)
-    // this.scrollToBottom();
-
-        return true;
-      }
-    } catch (error) {
-      console.error("Ошибка при загрузке чатов:", error);
-      return false;
-    }
+      console.log()
+    this.CreateChats();
+    this.CreateDisputs();
   },
   data() {
     return {
+      disputState: false,
+      idAds: 0,
+      selectedChatProp: null,
+      disputs: [],
       avatar: '',
       connection_error : false , 
       connection_ready : false , 
       text: '',
       base64Image: null,
       user_id: null,
+      selectDisput: null,
       chatSelected: null,
+      isInfoPopupTorgi: false,
       isInfoPopupModerDecision: false,
       isInfoPopupChangeDeal: false,
+      isInfoPopupChangeDealRequestEdit: false,
       messages: [],
-      chats: [
-        {
-          id: 30,
-          message_id: 0,
-          path_to_file: "",
-          sender_id: 27,
-          sent_at: "2024-10-29T15:33:20.057Z",
-          text: null,
-        }
-      ],
+      chats: [],
     };
   },
 };
 </script>
 
 <style scoped>
+
+.swiper-el{
+  height: 4.5vw !important;
+}
+
+.button_status_request_spor{
+  border: 0.1vw solid #E27622;
+  border-radius: 0.6vw;
+  width: 4vw;
+  height: 2.2vw;
+  align-items: end;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0.5vw;
+  background-color: #F98A33;
+}
+
+.button_status_request_torgi{
+  border: 0.1vw solid #C2C2C2;
+  border-radius: 0.6vw;
+  width: 4vw;
+  height: 2.2vw;
+  align-items: end;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0.5vw;
+  background-color: #DEDDDB;
+}
+
+.button_status_request_torgi *{
+  width: 1.6vw !important;
+}
+
+.button_status_request_spor *{
+  width: 2vw;
+}
+
+.time_img{
+  width: 1.3vw;
+}
+
+.info_img{
+  width: 2vw;
+}
+
+.flex-block-big{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 13vw;
+}
+
+.flex-block-center{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 22vw;
+  margin: 0 auto;
+  margin-top: 0.5vw;
+}
+
+.flex-block{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 11vw;
+}
+
 #min-swiper {
   height: 0;
 }
@@ -347,6 +771,7 @@ export default {
 
 .contact_name {
   margin-bottom: 0.5vw;
+  font-size: var(--fs-14);
 }
 
 .contact {
@@ -356,37 +781,71 @@ export default {
 .column_data {
   margin-left: 1vw;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .contact_img {
   border-radius: 50%;
-  width: 5vw;
-  height: 5vw;
+  width: 3vw;
+  height: 3vw;
 }
 
 .button_status_message {
   border-radius: 4vw;
   cursor: pointer;
   background-color: #b5b1ac;
-  padding: 0.5vw 1vw;
+  padding: 0.2vw 0.5vw;
+  font-size: var(--fs-10);
+  width: 4vw;
 }
 
 .button_new_message {
-  border-radius: 4vw;
   background-color: #f9cc33;
-  padding: 0.5vw 1vw;
+  border-radius: 4vw;
+  cursor: pointer;
+  padding: 0.2vw 0.5vw;
+  font-size: var(--fs-10);
+  width: 7vw;
+}
+
+.button_status_request_desput_time{
+  background-color: #FFDC67;
+  padding: 0.7vw;
+  align-items: center;
+  align-content: center;
+  align-self: center;
+  border: 0.1vw solid #A96807;
+  border-radius: 1vw;
+  display: flex;
+  width: 20vw;
+  justify-content: space-between
+}
+
+.button_status_request_desput {
+  border-radius: 4vw;
+  background-color: #F98A33;
+  padding: 0.3vw 0.8vw;
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
+  font-size: var(--fs-10);
+  width: min-content;
 }
 
 .container-chat {
   display: flex;
-  width: 100vw;
+  height: 40vw;
+  width: 100%;
 }
 
 .notification_mediator {
-  padding: 2.2vw 0;
+  position: absolute;
+  z-index: 9;
+  width: 68.8vw;
+  background-color: white;
+  padding: 1.2vw 0;
   border-bottom: 1px black solid;
   text-align: center;
 }
@@ -404,10 +863,82 @@ export default {
   text-align: center;
 }
 
-.notification {
-  padding: 2.5vw 0;
+.mediator_header_request{
   border-bottom: 1px black solid;
   text-align: center;
+  position: absolute;
+  z-index: 10;
+  width: 75.5vw;
+  background-color: white;
+  margin-top: -0.1vw;
+}
+
+.panel_mediator_req {
+  padding: 5px 10px 5px 8px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.panel_p{
+  padding: 5px 10px 5px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mediator_ask_panel{
+  position: absolute;
+  top: 25vw;
+  width: 26vw;
+  height: 5vw;
+  left: 40vw;
+  background-color: white;
+  font-size: var(--fs-14);
+  text-align: center;
+  z-index: 10;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.3vw 2vw 1vw 2vw;
+}
+
+.ask{
+  font-size: var(--fs-18);
+  text-align: center;
+}
+
+.request {
+  display: flex;
+  justify-content: space-between;
+}
+
+button.green {
+  background-color: #00dd317d;
+  border: 1px solid #135F00;
+  border-radius: 1vw;
+  width: 10vw;
+  font-size: var(--fs-14);
+}
+
+button.grey {
+  background-color: #CCCCCC;
+  border-radius: 1vw;
+  border: none;
+  width: 10vw;
+  font-size: var(--fs-14);
+}
+
+.notification {
+  position: absolute;
+  z-index: 9;
+  background-color: white;
+  width: 76.5%;
+  padding: 0.5vw 0;
+  border-bottom: 1px black solid;
+  text-align: center;
+  margin-top: -0.1vw;
 }
 
 .notification button {
@@ -424,21 +955,23 @@ export default {
 .contact {
   display: flex;
   border: 1px #a96807 solid;
-  padding: 1vw 1vw;
+  padding: 0.4vw 0.4vw;
   box-shadow: -0.1vw 0.3vw 0.5vw -0.2vw rgba(0, 0, 0, 0.348);
-  border-radius: 0.8vw;
+  border-radius: 0.4vw;
+  align-items: center;
 }
 
 .contacts {
   background-color: #ffefb9;
-  width: 30vw;
+  width: 24vw;
   height: 100%;
   overflow: auto;
 }
 
 .backgroud_contact_select {
   background-color: white;
-  padding: 0.5vw 0.5vw;
+  padding: 0.3vw 0.3vw !important;
+  margin: 0.2vw 0 0 0;
 }
 
 .backgroud_contact {
@@ -484,9 +1017,8 @@ body {
 .panel {
   display: flex;
   flex-direction: column;
-  width: 73vw;
-  /* height: 38.5vw; */
-  height: 46vw;
+  width: 76vw;
+  height: 40vw;
 }
 
 .messages {
@@ -512,10 +1044,13 @@ form {
   background-color: #ffefb9;
   padding-bottom: 0.4vw;
   padding-top: 0.6vw;
+  justify-content: center;
 }
 
 .buttons {
   display: flex;
+  justify-content: center;
+  padding-top: 0.7vw;
 }
 
 .buttons button {
@@ -525,7 +1060,7 @@ form {
 }
 
 .buttons button img {
-  width: 4vw;
+  width: 2vw;
 }
 
 .form {
@@ -535,11 +1070,11 @@ form {
 input {
   width: 100%;
   border: none;
-  padding: 0.5vw;
+  padding: 0;
   box-shadow: -0.1vw 0.3vw 0.6vw rgba(0, 0, 0, 0.348);
   border-radius: 0.5vw 0 0 0.5vw;
   margin: 0.5vw 1.5vw 0 0;
-  padding-left: 2vw;
+  padding-left: 1vw;
   background-color: white;
   outline: none;
 }
@@ -554,11 +1089,11 @@ input {
   background-color: #f9cc33;
   padding: 0;
   padding-right: 0.5vw;
-  width: 4.5vw;
-  height: 66%;
+  width: 3vw;
+  height: 55%;
   background-image: url("../assets/submit_chat.png");
   background-repeat: no-repeat;
-  background-size: 3.8vw;
+  background-size: 2.5vw;
 }
 
 .aligment_noyou {
