@@ -4,16 +4,21 @@
         <img class="line-header" src="../assets/lineSMT.jpg" alt="">
         <img class="fon-header-img" src="../assets/fonSMT.jpg" alt="">
     </div>
-  <swiper-container class="swiper" slides-per-view="4">
-    <swiper-slide :key="slide.name" v-for="(slide, index) in sldiers"
+  <swiper-container :breakpoints="{
+      1024: { slidesPerView: 4 },
+      768: { slidesPerView: 2 },
+      425: { slidesPerView: 2 }}" class="swiper">
+    <swiper-slide :key="slide.name"  v-for="(slide, index) in sldiers"
       :class="['swiper-el', { active: selectedIndex === index }]" @click="CategoriaSliderClick(index)">
       <div :class="['slider_con_el', { active: selectedIndex === index }]">
         <img :class="[slide.path.split('/').pop().split('.')[0].replace(/ /g, '_')]" :src="slide.path" alt="" />
         <h3>{{ slide.name }}</h3>
       </div>
     </swiper-slide>
+    <swiper-slide>
+    </swiper-slide>
   </swiper-container>
-  <swiper-container id="min-swiper" :style="{ height: selectedIndex === null ? '0' : '15vw' }" slides-per-view="4"
+  <swiper-container id="min-swiper" :style="{ height: selectedIndex === null ? '0' : '15vw' }" slides-per-view="2"
     v-if="selectedIndex !== null">
     <swiper-slide :key="subSlide.name" v-for="subSlide in sldiers[selectedIndex].subcategories"
       :class="['swiper-el', { active: subSlide.active }]" @click="selectSubcategory(subSlide)">
@@ -21,6 +26,8 @@
         <img :src="subSlide.path" alt="" />
         <h3>{{ subSlide.name }}</h3>
       </div>
+    </swiper-slide>
+    <swiper-slide>
     </swiper-slide>
   </swiper-container>
   <div class="flex-filter-and-content">
@@ -114,11 +121,11 @@
 
             <div class="content-block" >
                 <div class="content-card" :key="prod.id" v-for="prod in displayedProducts" @click="selectProduct(prod)">
-                    <div>
+                    <div style="width: 50%; margin: 0 auto;">
                         <img class="card-image" :src="prod.Ads_photo != 'Error reading file' && prod.Ads_photo != 'File not found' ? `data:image/png;base64,${prod.Ads_photo}` : require('@/assets/product2.png')" alt="">
                     </div>
 
-                    <div style="width: 18vw;">
+                    <div class="block-desc">
                         <p class="title-content-card">{{ prod.Title }}</p>
                         <p v-if="prod.Hourly_rate != undefined" class="cost-content-card">от {{ prod.Hourly_rate }} ₽ за час</p>
                         <p v-if="prod.Daily_rate != undefined" class="cost-content-card">от {{ prod.Daily_rate }} ₽ за час</p>
@@ -131,7 +138,7 @@
                         <p class="lately">2 часа назад</p>
                     </div>
 
-                    <div>
+                    <div style="display: flex; justify-content: space-around; align-items: start;margin-top: 15px;">
                         <img class="card-profile-photo" :src="prod.Avatar_photo != null ? `data:image/png;base64,${prod.Avatar_photo}` : require('@/assets/user.png')" alt="" >
                         <p class="card-profile-name">{{ prod.Name }} {{ prod.Surname_or_ind_num }}</p>
                         <div class="row-reviews">
@@ -158,57 +165,7 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
-                <!-- <div class="content-card">
-
-                    <div>
-                        <img class="card-image" src="../assets/cardImage1.jpg" alt="">
-                    </div>
-
-                    <div>
-                        <p class="title-content-card">Аренда и услуги автокрана</p>
-                        <p class="cost-content-card">от 2 500 ₽ за час</p>
-                        <button class="button-content-card">Выбрать дату</button>
-                        <p class="info-content-card">
-                            Автокран Ивановец - это марка автокранов, производимых заводом “ИМЗ АВТОКРАН” в Иваново. Эти автокраны отличаются высокой надежностью, производительностью и долговечностью. Они широко используются в различных отраслях промышленности и строительства.
-                        </p>
-                        <p class="work-schedule">График работ: с 9:00 до 20:00</p>
-                        <p class="busy">Занят: 10.05 - 15.05</p>
-                        <p class="lately">2 часа назад</p>
-                    </div>
-
-                    <div>
-                        <img class="card-profile-photo" src="../assets/cardProfileFhoto.png" alt="">
-                        <p class="card-profile-name">Cерега</p>
-                        <div class="row-reviews">
-                            <p class="grade">5,0</p>
-                            <div class="star-rating-card">
-                                <input type="radio" id="star5" name="rating" value="5" />
-                                <label for="star5" title="5 stars">★</label>
-                        
-                                <input type="radio" id="star4" name="rating" value="4" />
-                                <label for="star4" title="4 stars">★</label>
-                        
-                                <input type="radio" id="star3" name="rating" value="3" />
-                                <label for="star3" title="3 stars">★</label>
-                        
-                                <input type="radio" id="star2" name="rating" value="2" />
-                                <label for="star2" title="2 stars">★</label>
-                        
-                                <input type="radio" id="star1" name="rating" value="1" />
-                                <label for="star1" title="1 star">★</label>
-                            </div>
-                            <div class="number-of-reviews-flex">
-                                <p class="number-of-reviews">3</p>
-                                <p class="number-of-reviews">отзыва</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> -->
-                
             </div>
         </div>
     </div>
@@ -1124,6 +1081,8 @@ export default {
       }
     },
     CategoriaSliderClick(index) {
+      console.log("subcategories", sldiers[index].subcategories);
+      // if(sldiers[index].subcategories)
       // Переключаем отображение подкатегорий
       if (this.selectedIndex === index) {
         this.selectedIndex = null; // Скрыть подкатегории
@@ -1529,12 +1488,30 @@ export default {
       this.$emit("selectProduct", product.Id);
     },
     CategoriaSliderClick(index) {
-      // Переключаем отображение подкатегорий
-      if (this.selectedIndex === index) {
-        this.selectedIndex = null; // Скрыть подкатегории
+      console.log("subcategories index", index);
+      if(this.sldiers[index].subcategories.length > 0) {
+        // Переключаем отображение подкатегорий
+        if (this.selectedIndex === index) {
+          this.selectedIndex = null; // Скрыть подкатегории
+        } else {
+          this.selectedIndex = index; // Показать подкатегории для выбранного слайда
+          this.selectedPodcategory = null; // Сбросить выбранную подкатегорию при выборе нового слайда
+        }
       } else {
-        this.selectedIndex = index; // Показать подкатегории для выбранного слайда
-        this.selectedPodcategory = null; // Сбросить выбранную подкатегорию при выборе нового слайда
+        if(this.category_id.indexOf(index) == -1){
+          console.log('push')
+          this.category_id.push(index)
+          this.selectedIndex = null;
+          // this.selectedIndex = index;
+        }
+        else{
+          console.log('remove');
+          this.category_id = this.category_id.filter(item => item != index);
+          this.selectedIndex = null;
+        } 
+
+        console.log("Category ID:", this.category_id);
+        this.category_id.forEach(e=>(console.log(e)))
       }
     },
     selectSubcategory(subSlide) {
@@ -1546,7 +1523,7 @@ export default {
 
 
        // Переключаем активный статус подкатегории и устанавливаем category_id
-       subSlide.active = !subSlide.active;
+      subSlide.active = !subSlide.active;
       console.log(subSlide.active);
       if(subSlide.active){
         console.log('push')
@@ -1582,10 +1559,6 @@ export default {
   /* Цвет активного слайда */
 }
 
-.filter_rating img {
-  cursor: pointer;
-}
-
 .route-view {
   text-decoration: none;
 }
@@ -1616,7 +1589,7 @@ main {
 }
 
 .swiper-el {
-  width: 15vw !important;
+  width: 15% !important;
   padding-left: 1.5vw;
 }
 
@@ -1725,12 +1698,12 @@ main {
 
 .product_status_r {
   color: #c70000;
-  font-size: var(--fs-10);
+  font-size: 11px;
 }
 
 .product_status_g {
   color: #04c700;
-  font-size: var(--fs-10);
+  font-size: 11px;
 }
 
 .product_create_at {
@@ -1850,13 +1823,13 @@ input.shop_filter_text {
 
 .shop_filter_block {
   display: flex;
-  margin: 1vw 4vw 1vw 0;
+  margin: 3% 0 4.5% 0;
   justify-content: space-between;
-  width: 9vw;
+  width: 35%;
 }
 
 .shop_filter_block p {
-  font-size: var(--fs-14);
+  font-size: 12px;
 }
 
 .filter_block {
@@ -1937,7 +1910,173 @@ input.shop_filter_text {
   display: flex;
 }
 
-.filter_rating img {
-  width: 1.2vw;
+.filter_rating img { 
+  cursor: pointer;
+  width: 8%;
+  margin-right: 2%;
 }
+
+.block-desc{
+  width: 50%;
+  height: 235px;
+  margin-left: 2%;
+}
+
+@media (max-width: 768px)  {
+  .card-profile-photo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .slider_con_el {
+    height: 75px;
+    width: 95%;
+  }
+
+  .slider_con_el img {
+    position: absolute;
+    left: -2vw;
+    height: 78%;
+    bottom: -1.2vw;
+  }
+
+  #min-swiper {
+    height: 78px !important;
+  }
+
+  .slider_con_el h3 {
+    font-size: 15px;
+  }
+
+  .swiper-el {
+    width: 50% !important;
+    padding-left: 1.5vw;
+    height: 85px;
+  }
+
+  .swiper {
+    padding: 1vw 0;
+    height: 80px;
+    margin-top: -2vw;
+    width: 100%;
+  }
+
+  .flex-filter-input input {
+    font-size: 11px;
+    padding: 0 3% 0 23%;
+  }
+
+  .cost-content-card {
+    font-size: 12px;
+    margin: 1% 0 2% 0;
+  }
+
+  .flex-filter-and-content {
+    width: 760px;
+  }
+
+  .flex-filter-input input {
+    box-sizing: border-box;
+    margin: 2% 0;
+    padding: 0 3% 0 23%;
+    height: 63%;
+    width: 100%;
+    border: none;
+    border-radius: 3%;
+    background-color: rgba(240, 240, 240, 1);
+    font-family: "NotoSans";
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  .info-content-card {
+    height: 120px;
+    width: 100%;
+  }
+
+  /* .shop_filter_block{
+    display: flex;
+    margin: 3% 0 4.5% 0;
+    justify-content: space-between;
+    width: 50%;
+  } */
+
+  .block-desc {
+    height: 239px;
+    margin-left: 2%;
+  }
+
+  .card-profile-phot{
+    width: 30px;
+    height: 30px;
+  }
+
+  .flex-filter-input label {
+    position: absolute;
+    left: 4%;
+    top: 17%;
+    font-family: "NotoSans";
+    font-weight: 400;
+    color: rgba(146, 146, 146, 1);
+    font-size: 12px;
+  }
+
+  .flex-filter-input div {
+    width: 100%;
+    height: 60%;
+  }
+
+  .flex-filter-input {
+    height: 15%;
+    margin-bottom: 3%;
+    width: 100%;
+    display: block;
+  }
+
+  .flex-filter-input {
+    height: 15%;
+    margin-bottom: 3%;
+    width: 100%;
+    display: block;
+  }
+
+  .flex-filter-and-content {
+    width: 400px;
+  }
+
+  .title-filter {
+    font-size: 12px;
+  }
+
+  .flex-filter-input input {
+    font-size: 11px;
+  }
+
+  .shop_filter_block p{
+    font-size: 11px;
+  }
+
+  .shop_filter_block {
+    display: flex;
+    margin: 3% 0 7.5% 0;
+    justify-content: space-between;
+    width: 80%;
+  }
+
+  .filter-region {
+    font-family: "NotoSans";
+    font-weight: 400;
+    font-size: 11px;
+    margin: 3% 0;
+  }
+
+  .filter_rating img {
+    width: 17%;
+  }
+
+  .button-filter {
+    margin-top: 10px;
+  }
+} 
+
 </style>

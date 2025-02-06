@@ -333,7 +333,7 @@ export default {
 }
 
 .title {
-  font-size: var(--fs-25);
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -345,40 +345,41 @@ export default {
 
 .rating_title {
   display: flex;
+  width: 20%;
   align-items: center;
 }
 
 .rating_title samp {
-  font-size: var(--fs-18);
+  font-size: 14px;
   font-weight: 500;
-  margin-right: 1vw;
+  margin-right: 7px;
 }
 
 .rating_big {
-  width: 2vw;
+  width: 106%;
 }
 
 .container_comments {
   overflow-y: scroll;
-  height: 20vw;
+  height: 150px;
   overflow-x: auto;
 }
 
 .text_desc {
   font-weight: 200;
-  font-size: var(--fs-15);
+  font-size: 12px;
   color: #141414;
 }
 
 .comment_title {
-  font-size: var(--fs-15);
+  font-size: 14px;
   color: #1d1d1d;
   font-weight: bold;
   margin-top: 0.4vw;
 }
 
 .comment_text {
-  font-size: var(--fs-14);
+  font-size: 12px;
   font-weight: 300;
   margin-top: 0.25vw;
 }
@@ -397,34 +398,32 @@ export default {
 }
 
 .rating_midle {
-  width: 1.2vw;
-  margin-right: 0.25vw;
+  width: 60%;
 }
 
 .rating_line {
   display: flex;
   justify-content: space-between;
-  width: 41vw;
+  width: 75%;
   align-items: center;
-  margin-right: 3vw;
 }
 
 .rating_line samp {
-  font-size: var(--fs-15);
+  font-size: 14px;
 }
 
 .grey_button {
   background-color: #f1f1f1;
-  padding: 0.3vw 1.5vw;
+  padding: 0.3% 3%;
   cursor: pointer;
-  font-size: var(--fs-15);
+  font-size: 14px;
   border: none;
-  border-radius: 0.5vw;
+  border-radius: 5px;
 }
 
 .container_selected {
-  margin-top: 1vw;
-  margin-bottom: 2vw;
+  margin-top: 1%;
+  margin-bottom: 2%;
 }
 
 .comment_img {
@@ -434,12 +433,12 @@ export default {
 }
 
 .comment_desc .name {
-  font-size: var(--fs-14);
+  font-size: 12px;
   font-weight: 600;
 }
 
 .state {
-  font-size: var(--fs-14);
+  font-size: 12px;
   margin-left: 0.4vw;
 }
 
@@ -454,14 +453,14 @@ export default {
 }
 
 .selecte_fileter {
-  background: #f1f1f1 url("../../assets/selected_arrow.svg") no-repeat right 1.2vw center;
-  background-size: 0.8vw;
+  background: #f1f1f1 url(http://localhost:3000/img/selected_arrow.105101f5.svg) no-repeat right 13% center;
+  background-size: 10%;
   border: none;
-  font-size: var(--fs-14);
-  padding: 0.6vw 3vw 0.6vw 1vw; /* Резервируем место под стрелку */
-  border-radius: 1vw;
-  -webkit-appearance: none; /* Стиль для Safari */
-  -moz-appearance: none; /* Стиль для Firefox */
+  font-size: 12px;
+  padding: 0.6% 5% 0.6% 3%;
+  border-radius: 5px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -473,7 +472,7 @@ export default {
 }
 
 .selecte_fileter option {
-  font-size: calc(var(--fs-15));
+  font-size: calc(14px);
 }
 
 .rat_line {
@@ -483,16 +482,25 @@ export default {
   margin: 0 1vw 0 0.5vw;
 }
 
+.matrix_rating{
+  width: 73%;
+}
+
+.rating_container {
+  width: 10%;
+}
+
 .center {
-  width: 60vw;
-  padding: 2vw;
+  width: 50%;
+  padding: 1%;
+  height: 70%;
   align-self: center;
   justify-content: center;
   align-items: center;
-  border-radius: 1.5vw;
+  border-radius: 5px;
   background-color: white;
   border: 0.1vw solid black;
-  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
+  box-shadow: 0 5px 9px rgba(0, 0, 0, 1);
 }
 
 .v-popup-fitback {
@@ -501,8 +509,8 @@ export default {
   display: flex;
   justify-content: center;
   align-content: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   background-color: rgba(255, 255, 255, 0);

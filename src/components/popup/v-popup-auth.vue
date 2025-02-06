@@ -1095,7 +1095,7 @@ li::marker {
 }
 
 .small-text-black-c-b {
-  font-size: var(--fs-15);
+  font-size: 12px;
   font-weight: 300;
   margin-top: 0.6vw;
   margin-bottom: 1.6vw;
@@ -1117,12 +1117,12 @@ li::marker {
 }
 
 .submit {
-    padding: 0.2vw 3vw;
-    background-color: #f9cc33;
-    border: none;
-    border-radius: 0.4vw;
-    margin: 0.5vw 0;
-    font-size: var(--fs-14);
+  padding: 2px 40px;
+  background-color: #f9cc33;
+  border: none;
+  border-radius: 5px;
+  margin: 8px 0;
+  font-size: 12px;
 }
 
 .small-text-black {
@@ -1131,7 +1131,7 @@ li::marker {
 }
 
 .small-text {
-  font-size: var(--fs-10);
+  font-size: 12px;
   color: #3333337a;
 }
 
@@ -1144,7 +1144,7 @@ li::marker {
 }
 
 .small-text samp {
-  font-size: var(--fs-10);
+  font-size: 12px;
   color: #3333337a;
   text-align: center;
 }
@@ -1164,7 +1164,7 @@ li::marker {
 }
 
 .other-auth-img {
-  margin-left: 1vw;
+  margin-left: 20px;
 }
 
 .center-block-width {
@@ -1197,7 +1197,7 @@ li::marker {
 
 .other-auth-img {
   border-radius: 50%;
-  width: 1.5vw;
+  width: 20px;
 }
 
 input::placeholder {
@@ -1207,16 +1207,16 @@ input::placeholder {
 input {
   display: block;
   border: 1px solid #f9cc33;
-  padding-top: .2vw;
-  padding-bottom: .2vw;
-  padding-right: 1vw;
-  padding-left: 1vw;
-  border-radius: 0.4vw;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 5px;
   width: 86%;
   margin-bottom: 1vw;
-  font-size: var(--fs-14);
+  font-size: 12px;
   margin: 0 auto;
-  margin-bottom: 0.6vw;
+  margin-bottom: 10px;
 }
 
 button {
@@ -1230,21 +1230,22 @@ button {
 .title {
   font-weight: bold;
   text-align: center;
-  font-size: var(--fs-16);
-  margin-bottom: 1vw;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .center {
-  max-width: 300px;
-  padding: 1vw;
-  min-width: 150px;
+  /* max-width: 300px; */
+  /* min-width: 150px; */
+  padding: 10px;
   align-self: center;
   justify-content: center;
   align-items: center;
-  border-radius: 1vw;
+  border-radius: 5px;
   background-color: #FFFFFF;
-  border: 0.3vw solid black;
-  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
+  border: 1px solid black;
+  box-shadow: 0vw 5px 12px rgba(0, 0, 0, 1);
+  width: 300px;
 }
 
 .v-popup-auth {

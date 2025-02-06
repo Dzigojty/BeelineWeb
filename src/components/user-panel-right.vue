@@ -33,10 +33,7 @@
     <div class="line-grey2"></div>
     <a class="shop_filter_grey_title" @click="changeRoute('ads')"> Объявления </a>
     <a @click="changeRoute('myOrder')" class="shop_filter_grey_title"> Заказы </a>
-    <!-- <div class="shop_filter_grey_title">Объявления</div> -->
-    <!-- <div class="shop_filter_grey_title">Заказы</div> -->
     <a @click="changeRoute('adres')" class="shop_filter_grey_title"> Адреса </a>
-    <!-- <div class="shop_filter_grey_title">Адреса</div> -->
     <a @click="changeRoute('setting')" class="shop_filter_grey_title"> Настройки </a>
     <div class="shop_filter_grey_title exit" @click="exitUser">Выйти</div>
   </div>

@@ -23,7 +23,7 @@
           </div>
 
           <div class="rating">
-            <div class="title" style="margin: 0 0 1vw 0">Оцените пользователя</div>
+            <div class="title" style="margin: 0 0 1% 0">Оцените пользователя</div>
             <div class="rating_title">
               <div v-for="n in 5" :key="n" class="rating_container" @click="setRating(n)">
                 <img
@@ -43,8 +43,8 @@
           </div>
         </div>
 
-        <div style="margin-bottom: 4vw">
-          <div class="title" style="margin: 2vw 0 1.5vw 0">Напишите отзыв</div>
+        <div style="margin-bottom: 3%">
+          <div class="title" style="margin: 1% 0px 1.5%">Напишите отзыв</div>
           <textarea
             placeholder="Введите ваш отзыв..."
             v-model="comment"
@@ -159,19 +159,20 @@ export default {
 
 form div button {
   background-color: #f9cc33;
-  border-radius: 1vw;
-  padding: 1vw 6vw;
+  border-radius: 5px;
+  padding: 0.3% 7%;
   border: none;
   align-content: center;
 }
 
 .rating_big {
-  width: 2vw;
+  width: 75%;
 }
 
 .rating_title {
   display: flex;
   align-items: center;
+  width: 75%;
 }
 
 .rating_title samp {
@@ -182,38 +183,42 @@ form div button {
 
 .textarea {
   height: 5vw;
-  font-size: var(--fs-15);
-  width: 41vw !important;
+  font-size: 14px;
+  width: 95% !important;
 }
 
 .textarea::placeholder {
-  font-size: var(--fs-15);
+  font-size: 14px;
   color: #929292;
 }
 
 .flex-block {
   display: flex;
   justify-content: space-between;
-  padding-right: 5vw;
+  padding-right: 4%;
+}
+
+.filter_block::placeholder {
+  font-size: 15px;
 }
 
 .filter_block {
   background-color: #f1f1f1;
-  border-radius: 1vw;
+  border-radius: 5px;
   padding-top: 0.8vw;
   padding-bottom: 0.8vw;
   padding-left: 1.5vw;
   padding-right: 3vw;
   border: none;
   width: 15vw;
-  font-size: var(--fs-20);
-  padding: 2vw;
+  font-size: 15px;
+  padding: 1%;
 }
 
 .status-options {
   display: flex;
   flex-direction: column;
-  gap: 1.5vw;
+  gap: 5px;
 }
 
 .status-option {
@@ -227,11 +232,11 @@ form div button {
 }
 
 .status-dot {
-  width: 1.1vw;
-  height: 1.1vw;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background-color: lightgray;
-  margin-right: 1.1vw;
+  margin-right: 4%;
 }
 
 .status-dot.selected {
@@ -244,13 +249,13 @@ form div button {
 }
 
 .status-title {
-  font-size: var(--fs-14);
+  font-size: 12px;
   font-weight: bold;
   margin: 0;
 }
 
 .status-description {
-  font-size: var(--fs-10);
+  font-size: 10px;
   color: gray;
   margin: 0;
 }
@@ -265,9 +270,9 @@ form div button {
 }
 
 .title {
-  font-size: var(--fs-20);
+  font-size: 15px;
   font-weight: 600;
-  margin-bottom: 2vw;
+  margin-bottom: 2%;
 }
 
 .container_comment {
@@ -288,7 +293,7 @@ form div button {
 }
 
 .rating_big {
-  width: 2vw;
+  width: 70%;
 }
 
 .container_comments {
@@ -299,19 +304,19 @@ form div button {
 
 .text_desc {
   font-weight: 200;
-  font-size: var(--fs-15);
+  font-size: 14px;
   color: #141414;
 }
 
 .comment_title {
-  font-size: var(--fs-15);
+  font-size: 14px;
   color: #1d1d1d;
   font-weight: bold;
   margin-top: 0.4vw;
 }
 
 .comment_text {
-  font-size: var(--fs-14);
+  font-size: 12px;
   font-weight: 300;
   margin-top: 0.25vw;
 }
@@ -330,7 +335,7 @@ form div button {
 }
 
 .rating_midle {
-  width: 1.2vw;
+  width: 60%;
   margin-right: 0.25vw;
 }
 
@@ -343,14 +348,14 @@ form div button {
 }
 
 .rating_line samp {
-  font-size: var(--fs-15);
+  font-size: 14px;
 }
 
 .grey_button {
   background-color: #f1f1f1;
   padding: 0.3vw 1.5vw;
   cursor: pointer;
-  font-size: var(--fs-15);
+  font-size: 14px;
   border: none;
   border-radius: 0.5vw;
 }
@@ -367,12 +372,12 @@ form div button {
 }
 
 .comment_desc .name {
-  font-size: var(--fs-14);
+  font-size: 12px;
   font-weight: 600;
 }
 
 .state {
-  font-size: var(--fs-14);
+  font-size: 12px;
   margin-left: 0.4vw;
 }
 
@@ -382,7 +387,7 @@ form div button {
 }
 
 .comment_desc .date {
-  font-size: var(--fs-10);
+  font-size: 10px;
   font-weight: 200;
 }
 
@@ -390,7 +395,7 @@ form div button {
   background: #f1f1f1 url("../../assets/selected_arrow.svg") no-repeat right 1.2vw center;
   background-size: 0.8vw;
   border: none;
-  font-size: var(--fs-14);
+  font-size: 12px;
   padding: 0.6vw 3vw 0.6vw 1vw;
   /* Резервируем место под стрелку */
   border-radius: 1vw;
@@ -409,26 +414,27 @@ form div button {
 }
 
 .selecte_fileter option {
-  font-size: calc(var(--fs-15));
+  font-size: calc(14px);
 }
 
 .rat_line {
   height: 1px;
-  width: 30vw;
+  width: 88%;
   background-color: #d9d9d9;
-  margin: 0 1vw 0 0.5vw;
+  margin: 0;
 }
 
 .center {
-  width: 60vw;
-  padding: 2vw;
+  width: 45%;
+  padding: 1%;
+  height: min-content;
   align-self: center;
   justify-content: center;
   align-items: center;
-  border-radius: 1.5vw;
+  border-radius: 5px;
   background-color: white;
-  border: 0.1vw solid black;
-  box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
+  border: 1px solid black;
+  box-shadow: 0vw 0.6px 12px rgba(0, 0, 0, 1);
 }
 
 .v-popup-add-review {

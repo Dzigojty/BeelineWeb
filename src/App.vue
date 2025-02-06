@@ -99,6 +99,12 @@
     @exitUser="exitUser"
   />
   <ChatView v-if="route == 'chat'" />
+  <OtherUsers
+    v-if="route == 'OtherUsers'"
+    @changeRoute="changeRoute"
+    @selectProduct="selectProduct"
+    @exitUser="exitUser"
+  />
   <AdsView
     v-if="route == 'ads'"
     @changeRoute="changeRoute"
@@ -147,6 +153,7 @@ import vPopupAddNumber from "./components/popup/v-popup-add-number.vue";
 import vPopupFitback from "./components/popup/v-popup-fitback.vue";
 import AdresView from "./views/AdresView.vue";
 import AdsView from "./views/AdsView.vue";
+import OtherUsers from "./views/OtherUsers.vue";
 import ChatView from "./views/ChatView.vue";
 import CreateAds1 from "./views/CreateAds1.vue";
 import CreateAds2 from "./views/CreateAds2.vue";
@@ -165,6 +172,7 @@ import { useWebSocketStore } from '@/stores/webSocketStore.js';
 
 export default {
   components: {
+    OtherUsers,
     SearchField,
     vPopupAuth,
     vPopupAddNumber,
@@ -191,7 +199,7 @@ export default {
       auth: false,
       isCategories: false,
       selectedFile: '',
-      route: "home",
+      route: "OtherUsers",
       popup: "popup-auth",
       showPopupInfoAuth: false,
       selectedProduct: null, // Здесь будет храниться выбранный продукт
@@ -308,7 +316,7 @@ export default {
   --fs-10: calc(100vw / 144);
   --fs-23: calc(100vw / (1440 / 23));
   --fs-18: calc(100vw / 80);
-  font-size: var(--fs-18);
+  font-size: 14px;
 }
 /* 0,0555556
 1,38889
@@ -578,7 +586,7 @@ div.header_panel_finder {
   justify-content: end;
 }
 
-@media (min-width: 1548px) {
+@media (min-width: 1548px){
   .line {
     height: 0.5vw;
     background-color: #f8cb32;
@@ -877,23 +885,25 @@ div.header_panel_finder {
 
 /* Блок фильтров */
 .flex-filter-and-content {
-    margin-top: 2vw;
-    position: relative;
-    z-index: 3;
-    padding: 0 15vw;
-    display: flex;
-    gap: 3vw;
+  margin: 0 auto;
+  margin-top: 2%;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  gap: 4%;
+  width: 1024px;
 }
+
 .filter {
-    /* overflow: scroll; */
-    width: 20vw;
+  width: 31%;
+  height: 380px;
 }
 
 .title-filter {
-    font-family: "NotoSans";
-    font-weight: 700;
-    font-size: clamp(11px, 0.9vw, 45px);
-    margin-bottom: 0.1vw;
+  font-family: "NotoSans";
+  font-weight: 700;
+  margin-bottom: 0.8%;
+  font-size: 14px;
 }
 
 .checkbox-text {
@@ -923,45 +933,49 @@ div.header_panel_finder {
 }
 
 .flex-filter-input{
-    display: flex;
-    gap: 0.5vw;
+  display: flex;
+  gap: 2%;
+  height: 15%;
+  margin-bottom: 3%;
+  width: 100%;
 }
 .flex-filter-input div{
-    position: relative;
+  position: relative;
+  width: 50%;
+  height: 100%;
 }
 .flex-filter-input label{
   position: absolute;
-  left: 0.5vw;
-  top: 1.1vw;
+  left: 4%;
+  top: 38%;
   font-family: "NotoSans";
   font-weight: 400;
-  font-size: clamp(7px, 0.9vw, 40px);
   color: rgba(146, 146, 146, 1);
+  font-size: 12px;
 }
 .flex-filter-input input {
   box-sizing: border-box;
-  margin: 1vw 0;
-  padding: 0vw 0.1vw 0vw 2vw;
-  height: 1.5vw;
-  width: 8.5vw;
+  margin: 10% 0;
+  padding: 0 3% 0 17%;
+  height: 55%;
+  width: 100%;
   border: none;
-  border-radius: 5px;
+  border-radius: 3%;
   background-color: rgba(240, 240, 240, 1);
   font-family: "NotoSans";
   font-weight: 400;
-  /* font-size: clamp(9px, 1.1vw, 40px); */
-  font-size: var(--fs-10);
+  font-size: 12px;
 }
 
 .filter-region {
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 0.75vw, 40px);
-    margin: 1vw 0;
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 13px;
+  margin: 3% 0;
 }
 .filter-region a {
-    color: rgb(124, 124, 124);
-    font-size: clamp(9px, 0.75vw, 40px);
+  color: rgb(124, 124, 124);
+  font-size: 13px;
 }
 .filter-region a:hover {
     color: rgb(124, 124, 124);
@@ -972,8 +986,8 @@ div.header_panel_finder {
     display: flex;
     flex-direction: row-reverse;
     justify-content: left;
-    gap: 0.6vw;
-    margin: 0vw 0 1.5vw 0vw;
+    /* gap: 0.6vw; */
+    margin: 0 0 5.5% 0;
 }
 .star-rating input[type="radio"] {
     display: none; /* Скрываем радиокнопки */
@@ -998,17 +1012,18 @@ div.header_panel_finder {
   background-color: rgba(249, 204, 51, 1);
   color: #000000;
   border: none;
-  width: 17.5vw;
-  height: 1.6vw;
-  border-radius: 10px;
+  width: 100%;
+  height: 7%;
+  border-radius: 3%;
   font-family: "NotoSans";
   font-weight: 400;
   font-size: clamp(11px, 0.8vw, 45px);
   transition: all 500ms;
+  font-size: 13px;
 }
 .button-filter:hover {
-    cursor: pointer;
-    opacity: 0.7;
+  cursor: pointer;
+  opacity: 0.7;
 }
 
 
@@ -1016,66 +1031,69 @@ div.header_panel_finder {
 
 /* Контент */
 .content {
-    width: 40vw;
+    width: 69%;
 }
 .title-content {
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 0.9vw, 40px);
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 14px;
 }
 .content-block {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5vw;
-    margin: 1vw 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7vw;
+  margin: 3% 0;
 }
 .content-card {
-    display: flex;
-    gap: 1vw;
-    padding-bottom: 1vw;
-    border-bottom: 1px solid #a3a3a3;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1.5%;
+  border-bottom: 1px solid #a3a3a3;
 }
 .card-image {
-    width: 12vw;
+    width: 100%;
 }
 .title-content-card {
-    font-family: "NotoSans";
-    font-weight: 500;
-    font-size: clamp(9px, 0.9vw, 40px);
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-family: "NotoSans";
+  font-weight: 500;
+  font-size: clamp(9px, 0.9vw, 40px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
 }
 .cost-content-card {
-    font-family: "NotoSans";
-    font-weight: 700;
-    font-size: clamp(9px, 0.8vw, 40px);
-    margin: 0.2vw 0;
+  font-family: "NotoSans";
+  font-weight: 700;
+  margin: 0.8% 0;
+  font-size: 13px;
 }
 .button-content-card {
   background-color: rgba(249, 204, 51, 1);
   border: none;
-  padding: 0.2vw 1vw;
-  border-radius: 5px;
+  padding: 0.5% 6%;
+  border-radius: .3vw;
   transition: all 500ms;
   font-family: "NotoSans";
   font-weight: 400;
-  font-size: clamp(9px, 0.7vw, 40px);
+  font-size: 9px;
 }
 .info-content-card {
   font-family: "NotoSans";
   font-weight: 400;
   font-size: clamp(9px, 0.8vw, 40px);
   color: rgba(146, 146, 146, 1);
-  line-height: 2vw;
+  line-height: 140%;
   margin: 0.2vw 0;
-  height: 10vw;
+  height: 125px;
   overflow-y: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
 }
 .work-schedule {
   font-family: "NotoSans";
   font-weight: 400;
-  font-size: clamp(9px, 0.7vw, 40px);
-  margin: 0.1vw 0;
+  font-size: 11px;
+  margin: 0.5% 0;
 }
 .busy {
   font-family: "NotoSans";
@@ -1084,10 +1102,10 @@ div.header_panel_finder {
   color: red;
 }
 .lately {
-  margin: 0.2vw 0px 0vw 0;
+  margin: 0.6% 0px 0vw 0;
   font-family: "NotoSans";
   font-weight: 400;
-  font-size: clamp(9px, 0.7vw, 40px);
+  font-size: 11px;
   color: rgba(217, 217, 217, 1);
 }
 .button-content-card:hover {
@@ -1095,40 +1113,40 @@ div.header_panel_finder {
     cursor: pointer;
 }
 .card-profile-photo {
-    width: 2vw;
-    height: 2vw;
-    border-radius: 50%;
-    
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;  
 }
 .card-profile-name {
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 0.7vw, 40px);
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 10px;
 }
 .row-reviews {
-    display: flex;
-    align-items: center;
-    gap: 0.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 105px;
 }
 .grade {
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(8px, 0.6vw, 40px);
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 8px;
 }
 .star-rating-card {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: left;
-    gap: 0.1vw;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: left;
+  gap: 2%;
 }
 .star-rating-card input[type="radio"] {
     display: none; /* Скрываем радиокнопки */
 }
 .star-rating-card label {
-    font-size: 0.8vw;
-    color: gray;
-    cursor: pointer;
-    transition: color 0.3s ease;
+  font-size: 11px;
+  color: gray;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 /* Если радиокнопка активна, подсветить текущую звезду и все предыдущие */
 .star-rating-card input[type="radio"]:checked ~ label {
@@ -1140,13 +1158,14 @@ div.header_panel_finder {
     color: gold;
 }
 .number-of-reviews-flex {
-    display: flex;
-    gap: 0.2vw;
+  display: flex;
+  gap: 8%;
+  margin-left: 5px;
 }
 .number-of-reviews {
     font-family: "NotoSans";
     font-weight: 400;
-    font-size: clamp(8px, 0.6vw, 40px);
+    font-size: 8px;
 }
 
 
@@ -1155,21 +1174,224 @@ div.header_panel_finder {
     justify-content: center;
 }
 .button-all-cards {
-    background-color: rgba(0, 0, 0, 1);
-    color: #ffff;
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 1.1vw, 40px);
-    padding: 0.8vw 3.5vw;
-    border: none;
-    border-radius: 10px;
-    transition: all 500ms;
+  background-color: rgba(0, 0, 0, 1);
+  color: #ffff;
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 16px;
+  padding: 0.2% 3%;
+  border: none;
+  border-radius: 10px;
+  transition: all 500ms;
 }
 .button-all-cards:hover {
     opacity: 0.7;
     cursor: pointer;
 }
 
+@media (max-width: 1024px) and (min-width: 768px){
+  .flex-filter-and-content {
+    width: 760px;
+  }
+
+  .flex-filter-input input {
+    box-sizing: border-box;
+    margin: 2% 0;
+    padding: 0 3% 0 14%;
+    height: 63%;
+    width: 100%;
+    border: none;
+    border-radius: 3%;
+    background-color: rgba(240, 240, 240, 1);
+    font-family: "NotoSans";
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  .shop_filter_block{
+    display: flex;
+    margin: 3% 0 4.5% 0;
+    justify-content: space-between;
+    width: 50%;
+  }
+
+  .block-desc {
+    height: 230px;
+    margin-left: 2%;
+  }
+
+  .card-profile-phot{
+    width: 30px;
+    height: 30px;
+  }
+
+  .flex-filter-input label {
+    position: absolute;
+    left: 4%;
+    top: 17%;
+    font-family: "NotoSans";
+    font-weight: 400;
+    color: rgba(146, 146, 146, 1);
+    font-size: 12px;
+  }
+
+  .flex-filter-input div {
+    width: 100%;
+    height: 60%;
+  }
+
+  .flex-filter-input {
+    height: 15%;
+    margin-bottom: 3%;
+    width: 100%;
+    display: block;
+  }
+}
+
+@media (max-width: 768px)  {
+  .flex-filter-input input {
+    font-size: 11px;
+    padding: 0 3% 0 23%;
+  }
+
+  .button-all-cards {
+    background-color: rgba(0, 0, 0, 1);
+    color: #ffff;
+    font-family: "NotoSans";
+    font-weight: 400;
+    font-size: 12px;
+    padding: 1.2% 5%;
+    border: none;
+    border-radius: 5px;
+    transition: all 500ms;
+  }
+
+  .content-card {
+    display: block;
+    padding-bottom: 3.5%;
+  }
+
+  .flex-filter-and-content {
+    width: 760px;
+  }
+
+  .flex-filter-input input {
+    box-sizing: border-box;
+    margin: 2% 0;
+    padding: 0 3% 0 23%;
+    height: 63%;
+    width: 100%;
+    border: none;
+    border-radius: 3%;
+    background-color: rgba(240, 240, 240, 1);
+    font-family: "NotoSans";
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  .info-content-card {
+    height: 120px;
+    width: 100%;
+  }
+
+  /* .shop_filter_block{
+    display: flex;
+    margin: 3% 0 4.5% 0;
+    justify-content: space-between;
+    width: 50%;
+  } */
+
+  .block-desc {
+    height: 230px;
+    margin-left: 2%;
+  }
+
+  .card-profile-phot{
+    width: 30px;
+    height: 30px;
+  }
+
+  .flex-filter-input label {
+    position: absolute;
+    left: 4%;
+    top: 17%;
+    font-family: "NotoSans";
+    font-weight: 400;
+    color: rgba(146, 146, 146, 1);
+    font-size: 12px;
+  }
+
+  .title-content-card {
+    font-size: 11px;
+  }
+
+  .title-content {
+    font-size: 12px;
+  }
+
+  .filter-region a {
+    color: rgb(124, 124, 124);
+    font-size: 11px;
+  }
+
+  .flex-filter-input div {
+    width: 100%;
+    height: 60%;
+  }
+
+  .flex-filter-input {
+    height: 15%;
+    margin-bottom: 3%;
+    width: 100%;
+    display: block;
+  }
+
+  .flex-filter-input {
+    height: 15%;
+    margin-bottom: 3%;
+    width: 100%;
+    display: block;
+  }
+
+  .flex-filter-and-content {
+    width: 400px;
+  }
+
+  .title-filter {
+    font-size: 12px;
+  }
+
+  .flex-filter-input input {
+    font-size: 11px;
+    padding: 0 3% 0 23%;
+  }
+
+  .shop_filter_block p{
+    font-size: 11px;
+  }
+
+  .shop_filter_block {
+    display: flex;
+    margin: 3% 0 7.5% 0;
+    justify-content: space-between;
+    width: 80%;
+  }
+
+  .filter-region {
+    font-family: "NotoSans";
+    font-weight: 400;
+    font-size: 11px;
+    margin: 3% 0;
+  }
+
+  .filter_rating img {
+    width: 17%;
+  }
+
+  .button-filter {
+    margin-top: 10px;
+  }
+} 
 
 
 /* Banner предположительно */
