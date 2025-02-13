@@ -425,6 +425,7 @@ footer div {
 header {
   margin: 0;
   padding: 0;
+  margin-bottom: 10px;
 }
 
 body {
