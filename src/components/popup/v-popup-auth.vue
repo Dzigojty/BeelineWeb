@@ -1035,7 +1035,7 @@ export default {
 <style scoped>
 .error {
   color: red;
-  font-size: var(--fs-15);
+  font-size: 13px;
   margin-top: -10px;
   margin-bottom: 10px;
   display: block;
@@ -1052,7 +1052,7 @@ li::marker {
 }
 
 .list li {
-  padding: 0.5vw 0;
+  padding: 5px 0;
 }
 
 .pad {
@@ -1062,12 +1062,12 @@ li::marker {
 .title-check-block {
   font-weight: 700;
   text-align: center;
-  font-size: var(--fs-20);
+  font-size: 15px;
   margin-bottom: 1vw;
 }
 
 .text-check-block {
-  font-size: var(--fs-15);
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -1084,14 +1084,14 @@ li::marker {
 .check-block {
   cursor: pointer;
   background-color: #f1f1f1;
-  width: 13vw;
-  height: 8vw;
+  width: 40%;
+  height: 175px;
   align-self: center;
   text-align: center;
-  font-size: var(--fs-18);
+  font-size: 14px;
   align-items: center;
   align-content: center;
-  border-radius: 1vw;
+  border-radius: 5px;
 }
 
 .small-text-black-c-b {
@@ -1110,7 +1110,7 @@ li::marker {
 }
 
 .link {
-  font-size: var(--fs-15);
+  font-size: 13px;
   color: black;
   text-decoration: underline;
   cursor: pointer;
@@ -1126,7 +1126,7 @@ li::marker {
 }
 
 .small-text-black {
-  font-size: var(--fs-15);
+  font-size: 15px;
   color: black;
 }
 
@@ -1171,7 +1171,7 @@ li::marker {
   align-content: center;
   align-items: center;
   align-self: center;
-  width: 23vw;
+  width: 93%;
   margin: 0 auto;
 }
 
