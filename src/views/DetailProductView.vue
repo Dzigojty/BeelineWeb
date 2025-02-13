@@ -924,6 +924,10 @@ li::before {
 
 
 @media (max-width: 768px) {
+  .product {
+    width: 87%;
+  }
+
   .select-block {
     height: 24%;
     width: 100%;

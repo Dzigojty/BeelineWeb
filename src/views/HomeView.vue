@@ -42,7 +42,6 @@
         </div>
       </swiper-slide>
     </swiper-container>
-
   <div class="flex-filter-and-content">
         <!-- Фильтр -->
         <div class="filter" v-on:submit.prevent="formSumitted">

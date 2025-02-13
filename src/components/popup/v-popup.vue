@@ -583,208 +583,208 @@ export default {
     font-size: var(--fs-14);
 }
 
-  .close_panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-  }
-  
-  .button_yellow_border {
-    border: 1px #FFC500 solid;
-    color: black;
-    cursor: pointer;
-    align-content: center;
-    border-radius: 0.3vw;
-    padding: 0.2vw 1vw;
-    margin: 2vw 0;
-    text-decoration: underline;
-    background-color: #FFDF71;
-    font-size: var(--fs-15);
-  }
-  
-  .arrow_right{
-    width: 1.5vw;
-  }
-  
-  .container_center {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .summa_text {
-    margin-right: 1vw;
-  }
-  
-  .container_summa {
-    font-size: var(--fs-20);
-  }
-  
-  .container_place {
-    display: flex;
-    height: 2vw;
-    align-items: center;
-  }
-  
-  .place_img {
-    width: 1vw;
-  }
-  
-  .place_text {
-    margin: 1vw;
-    font-size: var(--fs-15);
-    color: #d9d9d9;
-  }
-  
-  .clock-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2vw;
-  }
-  
-  .time-display {
-    font-size: 2em;
-    margin-bottom: 2vw;
-  }
-  
-  .time,
-  .date {
-    font-size: var(--fs-15);
-    text-align: center;
-  }
-  
-  .time {
-    width: 8vw;
-    margin: 0 auto;
-  }
-  
-  .start_date_time img{
-    width: 25vw;
-  }
-  
-  .end_date_time {
-    width: 9vw;
-  }
-  
-  .time_select {
-    background-color: #d9d9d9;
-    border-radius: 1.5vw;
-  }
+.close_panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
 
-  .container {
-    width: 25vw;
-  }
-  
-  .block-flex {
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .swiper-container {
-    height: 17vw;
-    width: 9vw;
-  }
-  
-  .line_margin3 {
-    margin: 0.5vw 0 1vw 0;
-  }
-  
-  .line_margin2 {
-    margin: 1.2vw 0 0.5vw 0;
-  }
-  
-  .line_margin {
-    margin: 0vw 0;
-  }
-  
-  .grey-line {
-    height: 1px;
-    width: 100%;
-    background-color: #d9d9d9;
-  }
-  
-  .clock-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 1vw;
-  }
-  
-  .date-display {
-    font-size: 2em;
-    margin-bottom: 2vw;
-  }
-  
-  .sliders {
-    display: flex;
-    justify-content: space-around;
-    width: 20vw;
-  }
-  
-  .swiper-container {
-    height: 7vw;
-    width: max-content;
-  }
-  
-  .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: var(--fs-10);
-    cursor: pointer;
-    color: #d9d9d9;
-    font-weight: 500;
-  }
-  
-  .swiper-slide-active {
-    font-size: var(--fs-10);
-    font-weight: 500;
-    color: black;
-  }
-  
-  .digitalCalendar {
-    display: flex;
-    padding: 1vw 2vw;
-  }
-  
-  .swiper-el {
-    width: 10vw;
-    height: 100%;
-    background-color: yellow;
-  }
-  
-  .v-popup {
-    position: fixed;
-    z-index: 12;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    width: 100vw;
-    height: 50vw;
-    top: 0;
-    left: 0;
-    background-color: rgba(255, 255, 255, 0);
-  }
-  
-  .razm {
-    align-content: center;
-    margin: 0 0.6vw;
-    font-size: var(--fs-15);
-  }
-  
-  .center {
-    width: 30vw;
-    padding-top: 1vw;
-    align-self: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0.5vw;
-    background-color: white;
-    border: 0.1vw solid black;
-    box-shadow: 0vw 0.6vw 12px rgba(0, 0, 0, 1);
-  }
+.button_yellow_border {
+  border: 1px #FFC500 solid;
+  color: black;
+  cursor: pointer;
+  align-content: center;
+  border-radius: 0.3vw;
+  padding: 0.2vw 1vw;
+  margin: 2vw 0;
+  text-decoration: underline;
+  background-color: #FFDF71;
+  font-size: 15px;
+}
+
+.arrow_right{
+  width: 25px;
+}
+
+.container_center {
+  display: flex;
+  justify-content: center;
+}
+
+.summa_text {
+  margin-right: 1vw;
+}
+
+.container_summa {
+  font-size: var(--fs-20);
+}
+
+.container_place {
+  display: flex;
+  height: 2vw;
+  align-items: center;
+}
+
+.place_img {
+  width: 1vw;
+}
+
+.place_text {
+  margin: 1vw;
+  font-size: 15px;
+  color: #d9d9d9;
+}
+
+.clock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.time-display {
+  font-size: 2em;
+  margin-bottom: 2vw;
+}
+
+.time,
+.date {
+  font-size: 15px;
+  text-align: center;
+}
+
+.time {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.start_date_time img{
+  width: 25vw;
+}
+
+.end_date_time {
+  width: 34%;
+}
+
+.time_select {
+  background-color: #d9d9d9;
+  border-radius: 1.5vw;
+}
+
+.container {
+  width: 90%;
+}
+
+.block-flex {
+  display: flex;
+  justify-content: space-around;
+}
+
+.swiper-container {
+  height: 17vw;
+  width: 9vw;
+}
+
+.line_margin3 {
+  margin: 0.5vw 0 1vw 0;
+}
+
+.line_margin2 {
+  margin: 1.2vw 0 0.5vw 0;
+}
+
+.line_margin {
+  margin: 0vw 0;
+}
+
+.grey-line {
+  height: 1px;
+  width: 100%;
+  background-color: #d9d9d9;
+}
+
+.clock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.date-display {
+  font-size: 2em;
+  margin-bottom: 2vw;
+}
+
+.sliders {
+  display: flex;
+  justify-content: space-around;
+  width: 20vw;
+}
+
+.swiper-container {
+  height: 75px;
+  width: max-content;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  color: #d9d9d9;
+  font-weight: 500;
+}
+
+.swiper-slide-active {
+  font-size: 14px;
+  font-weight: 500;
+  color: black;
+}
+
+.digitalCalendar {
+  display: flex;
+  padding: 1vw 2vw;
+}
+
+.swiper-el {
+  width: 10vw;
+  height: 100%;
+  background-color: yellow;
+}
+
+.v-popup {
+  position: fixed;
+  z-index: 12;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100vw;
+  height: 50vw;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.razm {
+  align-content: center;
+  margin: 0 6px;
+  font-size: 21px;
+}
+
+.center {
+  width: 500px;
+  padding-top: 20px;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid black;
+  box-shadow: 0vw 3px 12px rgba(0, 0, 0, 1);
+}
 </style>

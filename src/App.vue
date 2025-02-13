@@ -337,6 +337,7 @@ head {
 header {
   margin: 0;
   padding: 0;
+  margin-bottom: 10px;
 }
 
 .line_block {

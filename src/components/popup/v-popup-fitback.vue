@@ -345,12 +345,12 @@ export default {
 
 .rating_title {
   display: flex;
-  width: 20%;
+  width: 32%;
   align-items: center;
 }
 
 .rating_title samp {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   margin-right: 7px;
 }
@@ -361,13 +361,13 @@ export default {
 
 .container_comments {
   overflow-y: scroll;
-  height: 150px;
+  height: 74%;
   overflow-x: auto;
 }
 
 .text_desc {
   font-weight: 200;
-  font-size: 12px;
+  font-size: 14px;
   color: #141414;
 }
 
@@ -404,7 +404,7 @@ export default {
 .rating_line {
   display: flex;
   justify-content: space-between;
-  width: 75%;
+  width: 100%;
   align-items: center;
 }
 
@@ -456,7 +456,7 @@ export default {
   background: #f1f1f1 url(http://localhost:3000/img/selected_arrow.105101f5.svg) no-repeat right 13% center;
   background-size: 10%;
   border: none;
-  font-size: 12px;
+  font-size: 13px;
   padding: 0.6% 5% 0.6% 3%;
   border-radius: 5px;
   -webkit-appearance: none;
@@ -465,6 +465,7 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  margin-top: 10px;
 }
 
 .selecte_fileter:focus {
@@ -483,7 +484,7 @@ export default {
 }
 
 .matrix_rating{
-  width: 73%;
+  width: 70%;
 }
 
 .rating_container {
@@ -491,9 +492,9 @@ export default {
 }
 
 .center {
-  width: 50%;
+  width: 500px;
   padding: 1%;
-  height: 70%;
+  height: 80%;
   align-self: center;
   justify-content: center;
   align-items: center;
