@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar-poisk">
+  <!-- <div class="navbar-poisk">
     <div class="navbar-poisk-left">
         <button class="button-all-categories" @click="changeRoute('home')">
             <img src="../assets/lupaSMT.svg" alt="">
@@ -11,7 +11,7 @@
         <img src="../assets/markermapSMT.svg" alt="">
         <div>Владикавказ</div>
     </a>
-  </div>
+  </div> -->
 
   <!-- Картинка шапки и линия -->
   <div class="fon-header">

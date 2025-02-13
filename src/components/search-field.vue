@@ -10,7 +10,9 @@
         <button class="input-button" >Найти</button>
     </div>
     <ul v-if="filteredItems.length">
-      <li @click="selectProduct(item.Ads_id)" v-for="item in filteredItems" :key="item">{{ item.Title }}</li>
+      <li @click="selectProduct(item)" v-for="item in filteredItems" :key="item.Ads_id">
+        {{ item.Title }}
+      </li>
     </ul>
   </div>
   <div v-if="filteredItems.length" class="close_panel" @click="closeInfoPopup()"></div>
@@ -41,9 +43,9 @@ export default {
       this.filteredItems = [];
     },
     selectProduct(product) {
-      console.log('selectProduct Serch product');
-      console.log(product);
-      this.$emit("selectProduct", product);
+      console.log('selectProduct Serch product.Ads_id');
+      console.log(product.Ads_id);
+      this.$emit("selectProduct", product.Ads_id);
     },
     async inputFinder(){
       console.log("inputFinder");
@@ -120,14 +122,15 @@ export default {
 
 ul {
   position: absolute;
-  border: 1px solid #ccc;
+  border: 2px solid rgba(247, 202, 50, 1);
   margin: 0;
-  width: 31.3vw;
-  background-color: #ccc;
-  top: 2.5vw;
+  width: 78%;
+  background-color: white;
+  top: 25px;
+  left: 6px;
   padding: 0;
   list-style-type: none;
-  border-radius: 0 0 1vw 1vw;
+  border-radius: 0 0 5px 5px;
 }
 
 li {

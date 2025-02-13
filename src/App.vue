@@ -43,7 +43,7 @@
         </li>
       </ul>
 
-      <!-- <div class="navbar-poisk">
+      <div class="navbar-poisk" v-if="route == 'home'">
         <div class="navbar-poisk-left">
             <button class="button-all-categories" @click="changeRoute('home')">
                 <img src="./assets/lupaSMT.svg" alt="">
@@ -55,7 +55,7 @@
             <img src="./assets/markermapSMT.svg" alt="">
             <div>Владикавказ</div>
         </a>
-      </div> -->
+      </div>
     </nav>
   </header>
 
