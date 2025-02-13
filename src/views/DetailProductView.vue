@@ -265,7 +265,7 @@ export default {
       console.log(`addFavorite ${this.localIdProduct}`);
       try {
         const response = await axios.post(
-          "http://localhost:8080/sigChat",
+          "http://127.0.0.1:8080/sigChat",
           {
             Ads_id: this.localIdProduct,
           },
@@ -292,7 +292,7 @@ export default {
       console.log(`addFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://localhost:8080/sigFavAds",
+          "http://127.0.0.1:8080/sigFavAds",
           {
             Ads_id: idProduct,
           },
@@ -318,7 +318,7 @@ export default {
       console.log(`removeFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://localhost:8080/delFavAds",
+          "http://127.0.0.1:8080/delFavAds",
           {
             Ads_id: idProduct,
           },
@@ -342,7 +342,7 @@ export default {
     },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://localhost:8080/groupFavByRecent", {
+        const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -400,7 +400,7 @@ export default {
     async loadProducts() {
       try {
         const response = await axios.post(
-          "http://localhost:8080/sortProductListCategoriez",
+          "http://127.0.0.1:8080/sortProductListCategoriez",
           { Category: [this.detail.Category_id] },
           { headers: { "Content-Type": "application/json" } }
         );
@@ -427,7 +427,7 @@ export default {
       console.log(this.localIdProduct)
       try {
         const response = await axios.post(
-          "http://localhost:8080/printAds",
+          "http://127.0.0.1:8080/printAds",
           {
             Ads_id: this.localIdProduct,
           },
@@ -468,7 +468,7 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/groupReviewNewOnesFirst",
+        "http://127.0.0.1:8080/groupReviewNewOnesFirst",
         {
           ads_id: this.localIdProduct,
         },
@@ -490,7 +490,7 @@ export default {
 
 
     try {
-      const response = await axios.get("http://localhost:8080/groupFavByRecent", {
+      const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },

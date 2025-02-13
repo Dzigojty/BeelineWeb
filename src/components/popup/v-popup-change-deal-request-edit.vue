@@ -273,7 +273,7 @@ export default {
       try {
         // Выполняем запрос
         const response = await axios.post(
-          "http://localhost:8080/printAds",
+          "http://127.0.0.1:8080/printAds",
           {
             Ads_id: 2
           },
@@ -330,7 +330,7 @@ export default {
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://localhost:8080/regOrderHourly",
+            "http://127.0.0.1:8080/regOrderHourly",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,
@@ -360,7 +360,7 @@ export default {
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://localhost:8080/regOrderDaily",
+            "http://127.0.0.1:8080/regOrderDaily",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,

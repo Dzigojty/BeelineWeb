@@ -4,7 +4,7 @@ module.exports = defineConfig({
   devServer: {
     // disableHostCheck: true,
     allowedHosts: 'all',
-    proxy: 'https://tehnika-test.ru/',
+    proxy: 'http://127.0.0.1:8080/',
   },
   publicPath: '/'
 })

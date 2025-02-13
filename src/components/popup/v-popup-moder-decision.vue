@@ -63,7 +63,7 @@ export default {
     async mediatorFinishJobUser() {
       if(this.validation){
         try {
-          const response = await axios.post("http://localhost:8080/mediatorFinishJobUser", {
+          const response = await axios.post("http://127.0.0.1:8080/mediatorFinishJobUser", {
             Chat_id: this.selectedChat,
             Amount: 0,
             Comment: this.text,
@@ -93,7 +93,7 @@ export default {
     async mediatorFinishJobOwner() {
       if(this.validation){
         try {
-          const response = await axios.post("http://localhost:8080/mediatorFinishJobOwner", {
+          const response = await axios.post("http://127.0.0.1:8080/mediatorFinishJobOwner", {
             Chat_id: this.selectedChat,
             Comment: this.text,
           }, {

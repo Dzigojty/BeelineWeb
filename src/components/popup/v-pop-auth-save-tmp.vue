@@ -483,7 +483,7 @@
       async emailCode() {
         try {
           const response = await axios.post(
-            "http://localhost:8080/enterCodeFromEmail",
+            "http://127.0.0.1:8080/enterCodeFromEmail",
             {
               reg_code: Number(this.confirmationCode),
             },
@@ -526,7 +526,7 @@
         let costil = false;
   
         const response = await axios
-          .post("http://localhost:8080/login", form, {
+          .post("http://127.0.0.1:8080/login", form, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -543,7 +543,7 @@
               // Установка cookie на стороне клиента
               // Cookies.set("token", `${response.data.data.JWT}`, {
               //   // path: "/", // путь
-              //   // domain: "http://localhost:8080/", // замените на ваш домен
+              //   // domain: "http://127.0.0.1:8080/", // замените на ваш домен
               //   secure: true, // для HTTPS
               //   sameSite: "None", // для кросс-доменных запросов
               //   expires: 1 / 48, // срок действия, например, 30 мин
@@ -584,7 +584,7 @@
       async submitEmail() {
         try {
           const response = await axios.post(
-            "http://localhost:8080/signupUserByEmail",
+            "http://127.0.0.1:8080/signupUserByEmail",
             {
               Email: this.Email,
             },
@@ -623,7 +623,7 @@
           }
           try {
             const response = await axios.post(
-              "http://localhost:8080/signupNaturEmail",
+              "http://127.0.0.1:8080/signupNaturEmail",
               {
                 Surname: this.Surname,
                 Name: this.Name,
@@ -648,7 +648,7 @@
         } else {
           try {
             const response = await axios.post(
-              "http://localhost:8080/signupLegalEmail",
+              "http://127.0.0.1:8080/signupLegalEmail",
               {
                 Password_hash: this.Password_hash,
                 Ind_num_taxp: this.Ind_num_taxp,

@@ -218,7 +218,7 @@ export default {
     let authB = false;
     if(Cookies.get('token') == undefined && Cookies.get('Refresh_token') != undefined) {
       const response = await axios
-      .get("http://localhost:8080/refreshToken", {
+      .get("http://127.0.0.1:8080/refreshToken", {
         headers: {
           "Content-Type": "application/json",
         },

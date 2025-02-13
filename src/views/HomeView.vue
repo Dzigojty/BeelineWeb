@@ -18,32 +18,31 @@
         <img class="line-header" src="../assets/lineSMT.jpg" alt="">
         <img class="fon-header-img" src="../assets/fonSMT.jpg" alt="">
     </div>
-  <swiper-container :breakpoints="{
+    <swiper-container :breakpoints="{
       1024: { slidesPerView: 4 },
       768: { slidesPerView: 2 },
       425: { slidesPerView: 2 }}" class="swiper">
-    <swiper-slide :key="slide.name"  v-for="(slide, index) in sldiers"
-      :class="['swiper-el', { active: selectedIndex === index }]" @click="CategoriaSliderClick(index)">
-      <div :class="['slider_con_el', { active: selectedIndex === index }]">
-        <img :class="[slide.path.split('/').pop().split('.')[0].replace(/ /g, '_')]" :src="slide.path" alt="" />
-        <h3>{{ slide.name }}</h3>
-      </div>
-    </swiper-slide>
-    <swiper-slide>
-    </swiper-slide>
-  </swiper-container>
-  <swiper-container id="min-swiper" :style="{ height: selectedIndex === null ? '0' : '15vw' }" slides-per-view="2"
-    v-if="selectedIndex !== null">
-    <swiper-slide :key="subSlide.name" v-for="subSlide in sldiers[selectedIndex].subcategories"
-      :class="['swiper-el', { active: subSlide.active }]" @click="selectSubcategory(subSlide)">
-      <div :class="['swiper-el-block', { active: subSlide.active }]" class="slider_con_el">
-        <img :src="subSlide.path" alt="" />
-        <h3>{{ subSlide.name }}</h3>
-      </div>
-    </swiper-slide>
-    <swiper-slide>
-    </swiper-slide>
-  </swiper-container>
+      <swiper-slide v-for="(slide, index) in sldiers" :key="slide.name"
+        :class="['swiper-el', { active: selectedIndex === index }]" @click="selectCategory(index)">
+        <div :class="['slider_con_el', { active: selectedIndex === index }]">
+          <img :class="[slide.path.split('/').pop().split('.')[0].replace(/ /g, '_')]" :src="slide.path" alt="" />
+          <h3>{{ slide.name }}</h3>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+
+    <swiper-container id="min-swiper" :style="{ height: selectedIndex === null ? '0' : '15vw' }"
+        slides-per-view="2" v-if="selectedIndex !== null">
+      <swiper-slide v-for="(subSlide, subIndex) in sldiers[selectedIndex].subcategories" :key="subSlide.name"
+        :class="['swiper-el', { active: selectedSubcategoryIndex === subIndex }]"
+        @click="selectSubcategory(subIndex, subSlide)">
+        <div :class="['swiper-el-block', { active: selectedSubcategoryIndex === subIndex }]" class="slider_con_el">
+          <img :src="subSlide.path" alt="" />
+          <h3>{{ subSlide.name }}</h3>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+
   <div class="flex-filter-and-content">
         <!-- Фильтр -->
         <div class="filter" v-on:submit.prevent="formSumitted">
@@ -886,7 +885,7 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/sortProductListHourlyRate",
+        "http://127.0.0.1:8080/sortProductListHourlyRate",
         {
           List: 1,
           Size: 2,
@@ -946,7 +945,7 @@ export default {
     try {
       console.log("groupFavByRecent");
 
-      const response = await axios.get("http://localhost:8080/groupFavByRecent", {
+      const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -1020,7 +1019,7 @@ export default {
     //   console.log(`addFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://localhost:8080/sigFavAds",
+    //       "http://127.0.0.1:8080/sigFavAds",
     //       {
     //         Ads_id: idProduct
     //       },
@@ -1046,7 +1045,7 @@ export default {
     //   console.log(`removeFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://localhost:8080/delFavAds",
+    //       "http://127.0.0.1:8080/delFavAds",
     //       {
     //         Ads_id: idProduct,
     //       },
@@ -1070,7 +1069,7 @@ export default {
     // },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://localhost:8080/groupFavByRecent", {
+        const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -1140,7 +1139,7 @@ export default {
       if(this.showMoreData.sortRadio) {
         try {
           const response = await axios.post(
-            "http://localhost:8080/sortProductListDailyRate",
+            "http://127.0.0.1:8080/sortProductListDailyRate",
             {
               List: this.showMoreData.nowPage,
               Size: 2,
@@ -1176,7 +1175,7 @@ export default {
       } else {
         try{
           const response = await axios.post(
-            "http://localhost:8080/sortProductListHourlyRate",
+            "http://127.0.0.1:8080/sortProductListHourlyRate",
             {
               List: this.showMoreData.nowPage,
               Size: 2,
@@ -1234,7 +1233,7 @@ export default {
     //   if(this.sortRadio) {
     //     try {
     //     const response = await axios.post(
-    //       "http://localhost:8080/sortProductListDailyRate",
+    //       "http://127.0.0.1:8080/sortProductListDailyRate",
     //       {
     //         List: 1,
     //         Size: 2,
@@ -1278,7 +1277,7 @@ export default {
     //   } else {
     //     try {
     //       const response = await axios.post(
-    //         "http://localhost:8080/sortProductListHourlyRate",
+    //         "http://127.0.0.1:8080/sortProductListHourlyRate",
     //         {
     //           List: 1,
     //           Size: 2,
@@ -1360,7 +1359,7 @@ export default {
         console.log(this.rating)
         try {
         const response = await axios.post(
-          "http://localhost:8080/sortProductListDailyRate",
+          "http://127.0.0.1:8080/sortProductListDailyRate",
           {
             List: 1,
             Size: 2,
@@ -1419,7 +1418,7 @@ export default {
         console.log(this.rating)
         try {
           const response = await axios.post(
-            "http://localhost:8080/sortProductListHourlyRate",
+            "http://127.0.0.1:8080/sortProductListHourlyRate",
             {
               List: 1,
               Size: 2,
@@ -1546,6 +1545,29 @@ export default {
       console.log("Category ID:", this.category_id);
       this.category_id.forEach(e=>(console.log(e)))
     },
+
+    selectCategory(index) {
+        if (this.selectedIndex === index) return; // Не переключаем, если уже выбрано
+
+        this.selectedIndex = index;
+        this.selectedSubcategoryIndex = null; // Сбрасываем выбор subSlide
+        this.category_id = [index]; // Только одна выбранная категория
+
+        console.log("Выбрана категория:", this.sldiers[index].name, "ID:", this.category_id);
+        
+        this.applyFilters(); // Загружаем товары сразу после выбора
+    },
+
+    selectSubcategory(subIndex, subSlide) {
+        if (this.selectedSubcategoryIndex === subIndex) return; // Если уже выбрано, не делать ничего
+
+        this.selectedSubcategoryIndex = subIndex;
+        this.category_id = [subSlide.category_id]; // Записываем ID выбранной подкатегории
+
+        console.log("Выбрана подкатегория:", subSlide.name, "ID:", subSlide.category_id);
+
+        this.applyFilters(); // Загружаем товары сразу после выбора подкатегории
+    }
   },
 
   name: "HomeView",
