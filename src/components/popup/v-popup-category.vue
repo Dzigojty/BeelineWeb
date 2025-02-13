@@ -639,7 +639,7 @@ export default {
 }
 
 .element samp{
-  font-size: var(--fs-14);
+  font-size: 14px;
 }
 
 .active {
@@ -652,17 +652,17 @@ export default {
 }
 
 .center {
-  width: 24vw;
-  height: 26vh;
-  padding: 1vw;
+  width: 300px;
+  height: 200px;
+  padding: 10px;
   overflow-y: scroll;
   align-self: center;
   justify-content: center;
   align-items: center;
-  border-radius: 0.3vw;
+  border-radius: 5px;
   background-color: #fff;
-  border: .1vw solid #000;
-  box-shadow: 0 .6vw 12px #000;
+  border: 1px solid #000;
+  box-shadow: 0 4px 12px #000;
 }
 
 .v-popup {
@@ -683,7 +683,6 @@ export default {
   width: 100vw;
   height: 100vh;
   z-index: 1;
-  background-color: red;
 }
 
 /* Добавим стили для подкатегорий и анимации */
@@ -718,5 +717,35 @@ export default {
   z-index: 10;
   left: 10vw;
 
+}
+
+@media (max-width: 1024px) and (min-width: 768px){
+  .v-popup[data-v-3d4c17c9] {
+    position: fixed;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    top: 40%;
+    left: 31%;
+    /* right: auto; */
+    background-color: rgba(255, 255, 255, 0);
+    /* margin: 0 auto; */
+  }
+}
+
+@media (max-width: 768px)  {
+  .v-popup {
+    position: fixed;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    top: 40%;
+    left: 17%;
+    /* right: auto; */
+    background-color: rgba(255, 255, 255, 0);
+    /* margin: 0 auto; */
+  }
 }
 </style>

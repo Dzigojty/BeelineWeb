@@ -118,7 +118,7 @@
           <div class="product_button_chat" @click="clickChat()">Написать</div>
           <div class="product_button_date" @click="showPopup()">Выбрать дату</div>
 
-          <div class="owner">
+          <div class="owner" @click="changeRoute">
             <div class="author_name">{{ detail.Owner_name }}</div>
             <img class="author_img" :src="detail.Avatar" alt="" />
           </div>
@@ -173,6 +173,7 @@ axios.defaults.withCredentials = true;
 export default {
   props: {
     idProduct: Number,
+    auth: Boolean,
   },
   data() {
     return {
@@ -212,6 +213,9 @@ export default {
     vPopupFitback,
   },
   methods: {
+    changeRoute() {
+      this.$emit("changeRoute", "OtherUsers");
+    },
     loadMore() {
       this.currentPage++;
       const start = this.displayedProducts.length;
@@ -251,8 +255,10 @@ export default {
       this.$emit("changeRoute", newRoute);
     },
     clickChat(){
-      this.createChat()
-      this.changeRoute('chat')
+      if (this.auth) {
+        this.createChat()
+        this.changeRoute('chat')
+      }
     },
 
     async createChat() {
@@ -380,7 +386,9 @@ export default {
       this.isInfoPopupRatingView = false;
     },
     showPopup() {
-      this.isInfoPopupView = true;
+      if(this.auth) {
+        this.isInfoPopupView = true;
+      }
     },
 
     showPopupRating() {

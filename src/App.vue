@@ -43,7 +43,7 @@
         </li>
       </ul>
 
-      <div class="navbar-poisk">
+      <!-- <div class="navbar-poisk">
         <div class="navbar-poisk-left">
             <button class="button-all-categories" @click="changeRoute('home')">
                 <img src="./assets/lupaSMT.svg" alt="">
@@ -55,7 +55,7 @@
             <img src="./assets/markermapSMT.svg" alt="">
             <div>Владикавказ</div>
         </a>
-      </div>
+      </div> -->
     </nav>
   </header>
 
@@ -91,6 +91,7 @@
     :idProduct="selectedProduct"
     @changeRoute="changeRoute"
     @goBack="goBack"
+    :auth="auth"
   />
   <FavoritView
     v-if="route == 'favorit'"
@@ -130,20 +131,27 @@
     @exitUser="exitUser"
   />
   
-
-    <footer class="footer">
-        <div class="flex-footer">
-            <div class="flex-footer-1">
-                <a >О нас</a>
-                <a >Безопасность</a>
-                <a >Поддержка</a>
-                <a ><img src="./assets/vkSMT.png" alt=""></a>
-                <a ><img src="./assets/whatsappSMT.png" alt=""></a>
-                <a ><img src="./assets/mailSMT.png" alt=""></a>
-            </div>
-            <a class="flex-footer-2" >Загрузите мобильную версию</a>
+  
+  <footer class="footer">
+    <div class="banner">
+      <div class="icon-stors">
+          <a href="#"><img src="./assets/googleplay.png" alt=""></a>
+          <a href="#"><img src="./assets/appstore.png" alt=""></a>
+      </div>
+      <img class="banner-img" src="./assets/bannerFooter.jpg" alt="">
+    </div>
+    <div class="flex-footer">
+        <div class="flex-footer-1">
+            <a >О нас</a>
+            <a >Безопасность</a>
+            <a >Поддержка</a>
+            <a ><img src="./assets/vkSMT.png" alt=""></a>
+            <a ><img src="./assets/whatsappSMT.png" alt=""></a>
+            <a ><img src="./assets/mailSMT.png" alt=""></a>
         </div>
-    </footer>
+        <a class="flex-footer-2" >Загрузите мобильную версию</a>
+    </div>
+  </footer>
 </template>
 
 <script>
@@ -199,7 +207,7 @@ export default {
       auth: false,
       isCategories: false,
       selectedFile: '',
-      route: "OtherUsers",
+      route: "home",
       popup: "popup-auth",
       showPopupInfoAuth: false,
       selectedProduct: null, // Здесь будет храниться выбранный продукт
@@ -346,7 +354,7 @@ footer {
 }
 
 .header_navigation-item img {
-  width: 30vw;
+  width: 10px;
 }
 
 footer nav a {
@@ -424,7 +432,7 @@ body {
 }
 
 nav {
-  font-size: var(--fs-20);
+  font-size: 20px;
 }
 
 ul {
@@ -487,8 +495,8 @@ body {
 a.header_navigation-link {
   color: black;
   align-self: center;
-  font-size: var(--fs-20);
-  margin-left: 0.5vw;
+  font-size: 20px;
+  margin-left: 10px;
   cursor: pointer;
 }
 
@@ -501,7 +509,7 @@ a.header_breadcroums {
 
 .header_navigation-link.header_navigation-name {
   text-decoration: none;
-  width: 4vw;
+  width: 90px;
 }
 
 .header_panel {
@@ -534,7 +542,7 @@ div.header_panel_button {
   position: absolute;
   border-radius: 0.5vw;
   padding: 0.2vw 1vw;
-  font-size: var(--fs-20);
+  font-size: 20px;
   font-weight: 100;
   width: min-content;
   border: solid 0.1vw #5b3700;
@@ -568,7 +576,7 @@ div.header_panel_finder {
   align-self: end;
   display: flex;
   align-items: center;
-  font-size: var(--fs-20);
+  font-size: 20px;
   border: solid 0.2vw #a96807;
 }
 
@@ -624,30 +632,31 @@ div.header_panel_finder {
 
 /* Навбар */
 .navbar {
-    display: flex;
-    flex-direction: column;
-    gap: 1vw;
-    margin: 1vw 15vw;
-    padding-left: 10vw;
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 1024px;
+  margin: 35px auto;
+  margin-top: 20px;
+  position: relative;
 }
 .navbar-menu {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2vw;
 }
 .navbar-menu-left {
-    display: flex;
-    align-items: center;
-    gap: 2vw;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 .navbar-menu-left a {
   cursor: pointer;
   color: rgba(29, 29, 29, 1);
   font-family: "NotoSans";
   font-weight: 400;
-  font-size: clamp(9px, 1.1vw, 40px);
+  font-size: 15px;
 }
 .block-message-menu {
     position: relative;
@@ -682,38 +691,38 @@ div.header_panel_finder {
     font-size: clamp(6px, 0.9vw, 40px);
 }
 .notification-image {
-    width: 1.5vw;
+    width: 20px;
 }
 .navbar-menu-right {
     display: flex;
     align-items: center;
-    gap: 3vw;
+    gap: 30px;
 }
 .profile {
     display: flex;
-    gap: 1.5vw;
+    gap: 15px;
     align-items: center;
 }
 .profile-photo {
-    width: 2vw;
+    width: 30px;
 }
 .profile-name {
   color: rgba(29, 29, 29, 1);
   font-family: "NotoSans";
   font-weight: 400;
-  font-size: clamp(9px, 1.1vw, 40px);
+  font-size: 15px;
   cursor: pointer;
 }
 .button-posting {
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 1.1vw, 40px);
-    background-color: rgba(83, 83, 83, 1);
-    border: 1px solid rgba(83, 83, 83, 1);
-    color: #ffff;
-    padding: 0.4vw;
-    border-radius: 10px;
-    transition: all 500ms;
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 15px;
+  background-color: rgba(83, 83, 83, 1);
+  border: 1px solid rgba(83, 83, 83, 1);
+  color: #ffff;
+  padding: 2px;
+  border-radius: 5px;
+  transition: all 500ms;
 }
 .button-posting:hover {
     cursor: pointer;
@@ -723,45 +732,46 @@ div.header_panel_finder {
     border-radius: 10px;
 }
 .logo {
-    display: inline-block;
-    position: absolute;
-    left: 1vw;
-    /* bottom: 0vw; */
-    top: -0.8vw;
+  display: inline-block;
+  position: absolute;
+  left: -100px;
 }
 .logo img {
-    width: 4vw;
+    width: 75px;
 }
 .navbar-poisk{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1vw;
+    gap: 10px;
+    width: max-content;
+    margin: 0 auto;
+    margin-bottom: 10px;
 }
 .navbar-poisk-left {
     display: flex;
     align-items: center;
-    gap: 1vw;
+    gap: 10px;
 }
 .button-all-categories div {
   width: max-content;
 }
 .button-all-categories {
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 1.1vw, 40px);
-    background-color: rgba(247, 202, 50, 1);
-    border: 1px solid rgba(247, 202, 50, 1);
-    border-radius: 10px;
-    transition: 500ms background;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1vw;
-    padding: 0.5vw 1.5vw;
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: clamp(9px, 1.1vw, 40px);
+  background-color: rgba(247, 202, 50, 1);
+  border: 1px solid rgba(247, 202, 50, 1);
+  border-radius: 10px;
+  transition: 500ms background;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 25px;
 }
 .button-all-categories img {
-    width: 2vw;
+    width: 20px;
 }
 .button-all-categories:hover {
     background: none;
@@ -772,29 +782,29 @@ div.header_panel_finder {
     align-items: center;
     background-color: rgba(247, 202, 50, 1);
     padding: 1px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 .input-poisk {
-    box-sizing: border-box;
-    width: 30vw;
-    height: 2.5vw;
-    border: none;
-    border-radius: 10px;
-    padding: 0 1vw;
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 1.1vw, 40px);
+  box-sizing: border-box;
+  width: 578px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 15px;
 }
 .input-button {
-    box-sizing: border-box;
-    background-color: rgba(247, 202, 50, 1);
-    border: none;
-    width: 5vw;
-    height: 2vw;
-    transition: all 500ms;
-    font-family: "NotoSans";
-    font-weight: 400;
-    font-size: clamp(9px, 1.1vw, 40px);
+  box-sizing: border-box;
+  background-color: rgba(247, 202, 50, 1);
+  border: none;
+  width: 80px;
+  height: 30px;
+  transition: all 500ms;
+  font-family: "NotoSans";
+  font-weight: 400;
+  font-size: 16px;
 }
 .input-button:hover {
     cursor: pointer;
@@ -1189,7 +1199,61 @@ div.header_panel_finder {
     cursor: pointer;
 }
 
+@media (max-width: 1226px) and (min-width: 1024px){
+  .navbar {
+    width: 790px;
+  }
+
+  .input-poisk {
+    width: 367px;
+  }
+}
+
+
+
 @media (max-width: 1024px) and (min-width: 768px){
+  .navbar {
+    width: 566px;
+  }
+
+  .navbar-poisk {
+    gap: 0;
+  }
+
+  .button-all-categories {
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 5px 12px;
+  }
+
+  .button-all-categories img {
+    width: 15px;
+  }
+
+  .button-posting {
+    font-size: 12px;
+  }
+
+  .navbar-poisk-left {
+    gap: 0;
+  }
+
+  .navbar-menu-left {
+    gap: 18px;
+  }
+
+  .profile-name {
+    display: none;
+  }
+
+  .navbar-menu-right {
+    gap: 15px;
+  }
+
+  .input-poisk {
+    width: 267px;
+  }
+
   .flex-filter-and-content {
     width: 760px;
   }
@@ -1249,6 +1313,100 @@ div.header_panel_finder {
 }
 
 @media (max-width: 768px)  {
+  .logo {
+    display: inline-block;
+    position: absolute;
+    left: 40%;
+    top: -55px;
+  }
+
+  .navbar {
+    width: 300px;
+    margin: 65px auto 10px auto;
+  }
+
+  .navbar-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    flex-direction: column;
+    margin-top: 32px;
+  }
+
+  .input-poisk {
+    height: 23px;
+  }
+
+  .navbar-poisk {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: -moz-max-content;
+    width: max-content;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    flex-direction: column-reverse;
+    height: 58px;
+  }
+
+  .button-all-categories {
+    display: none;
+  }
+
+  .map-marker img {
+    width: 10px;
+  }
+
+  .navbar-poisk {
+    gap: 0;
+  }
+
+  .button-all-categories {
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 3px 10px;
+  }
+
+  .button-all-categories img {
+    width: 15px;
+  }
+
+  .button-posting {
+    font-size: 12px;
+  }
+
+  .navbar-poisk-left {
+    gap: 0;
+  }
+
+  .navbar-menu-left {
+    gap: 18px;
+  }
+
+  .profile-name {
+    display: none;
+  }
+
+  .navbar-menu-right {
+    gap: 15px;
+  }
+
+  .input-poisk {
+    width: 267px;
+  }
+
+
+
+
+
+
+
+
+
+
+
   .flex-filter-input input {
     font-size: 11px;
     padding: 0 3% 0 23%;

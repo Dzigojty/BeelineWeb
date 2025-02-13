@@ -1,4 +1,18 @@
 <template>
+  <div class="navbar-poisk">
+    <div class="navbar-poisk-left">
+        <button class="button-all-categories" @click="changeRoute('home')">
+            <img src="../assets/lupaSMT.svg" alt="">
+            <div @click="changeRoute('home')">Все категории</div>
+        </button>
+        <search-field :items="items" @selectProduct="selectProduct" />
+    </div>
+    <a  class="map-marker" >
+        <img src="../assets/markermapSMT.svg" alt="">
+        <div>Владикавказ</div>
+    </a>
+  </div>
+
   <!-- Картинка шапки и линия -->
   <div class="fon-header">
         <img class="line-header" src="../assets/lineSMT.jpg" alt="">
@@ -173,15 +187,6 @@
     <div class="button-cards-div">
         <button @click="showMore" v-if="canLoadMore"  class="button-all-cards">Показать еще</button>
     </div>
-
-
-    <div class="banner">
-        <div class="icon-stors">
-            <a href="#"><img src="../assets/googleplay.png" alt=""></a>
-            <a href="#"><img src="../assets/appstore.png" alt=""></a>
-        </div>
-        <img class="banner-img" src="../assets/bannerFooter.jpg" alt="">
-    </div>
 </template>
 
 
@@ -192,10 +197,12 @@ import axios from "axios";
 import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns";
 import { ru } from "date-fns/locale";
 import { ref } from "vue";
+import SearchField from "../components/search-field.vue";
 
 export default {
   data() {
     return {
+      items: [],
       LengthAds: 0,
       showMoreData: null,
       nowPage: 1,
@@ -1543,7 +1550,7 @@ export default {
 
   name: "HomeView",
   components: {
-    HelloWorld,
+    SearchField,
   },
 };
 </script>
@@ -1825,7 +1832,7 @@ input.shop_filter_text {
   display: flex;
   margin: 3% 0 4.5% 0;
   justify-content: space-between;
-  width: 35%;
+  width: 45%;
 }
 
 .shop_filter_block p {
@@ -2004,6 +2011,7 @@ input.shop_filter_text {
   .block-desc {
     height: 239px;
     margin-left: 2%;
+    width: 100%;
   }
 
   .card-profile-phot{

@@ -51,8 +51,10 @@ export default {
 }
 
 .notification {
-  padding: 0 2vw;
+  width: 1024px;
+  margin: 0 auto;
 }
+
 .grey-line {
   background-color: #d9d9d9;
   height: 1px;
@@ -97,15 +99,33 @@ span img {
 }
 
 h1 {
-  font-size: var(--fs-30);
+  font-size: 25px;
   color: #141414;
 }
 
 .text {
-  font-size: var(--fs-18);
+  font-size: 16px;
 }
 
 .text_button {
-  font-size: var(--fs-18);
+  font-size: 16px;
+}
+
+
+@media (max-width: 1024px) and (min-width: 770px) {
+  .notification {
+    width: 760px;
+    margin: 0 auto;
+  }
+}
+
+
+@media (max-width: 768px)  {
+  .notification {
+    width: 420px;
+    margin: 0 auto;
+  }
+
+
 }
 </style>

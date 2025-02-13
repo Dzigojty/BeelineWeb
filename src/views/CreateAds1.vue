@@ -103,26 +103,26 @@ export default {
 
 <style scoped>
 .shop_title {
-  font-size: var(--fs-20);
-  margin-bottom: 0.5vw;
+  font-size: 20px;
+  margin-bottom: 10px;
   font-weight: bold;
-  padding-top: 1vw;
+  padding-top: 15px;
 }
 
 .desc_field {
   color: #929292;
-  font-size: var(--fs-10);
+  font-size: 12px;
 }
 
 .field_name {
   color: #141414;
-  margin: 0.5vw 0 0.2vw 0;
+  margin: 15px 0 10px 0;
   font-weight: 600;
-  font-size: var(--fs-14);
+  font-size: 14px;
 }
 
 h2 {
-  font-size: var(--fs-16);
+  font-size: 15px;
 }
 
 .button_show_more {
@@ -131,7 +131,7 @@ h2 {
   color: #f9cc33;
   padding: 1.4vw 5vw;
   border-radius: 1vw;
-  font-size: var(--fs-20);
+  font-size: 20px;
   align-content: center;
   align-items: center;
   cursor: pointer;
@@ -140,10 +140,10 @@ h2 {
   margin-top: 4vw;
 }
 
-.main {
+/* .main {
   margin: 0 auto;
   width: 34vw;
-}
+} */
 
 .comment_title {
   color: #1d1d1d;
@@ -153,11 +153,11 @@ h2 {
 
 .recomendation_price {
   font-weight: bold;
-  font-size: var(--fs-20);
+  font-size: 20px;
 }
 
 .recomendation_desc {
-  font-size: var(--fs-20);
+  font-size: 20px;
 }
 
 .margin-top {
@@ -207,14 +207,14 @@ h2 {
 }
 
 .grafic {
-  font-size: var(--fs-20);
+  font-size: 20px;
   color: #929292;
   margin-top: 1vw;
   font-weight: 200;
 }
 
 .rating_user_samp {
-  font-size: var(--fs-10);
+  font-size: 12px;
   color: #929292;
 }
 
@@ -242,13 +242,13 @@ h2 {
 
 .filter_block {
   background-color: #f1f1f1;
-  border-radius: 0.3vw;
-  padding-top: 0.2vw;
-  padding-bottom: 0.2vw;
+  border-radius: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   border: none;
-  width: 29vw;
-  font-size: var(--fs-10);
-  margin-right: 0.4vw;
+  width: 100%;
+  font-size: 12px;
+  margin-right: 0px;
 }
 
 /* .column .filter_block {
@@ -265,6 +265,11 @@ h2 {
   color: #929292;
   display: block;
   width: min-content;
+  margin-right: 10px;
+}
+
+.filter_block_check:last-child {
+  margin-right: 0;
 }
 
 .product_button_chat {
@@ -310,6 +315,9 @@ h2 {
 
 .block {
   display: flex;
+  width: 1024px;
+  margin: 0 auto;
+  justify-content: center;
 }
 
 .action {
@@ -331,23 +339,23 @@ h1 {
 
 li::before {
   content: "•";
-  font-size: var(--fs-20);
+  font-size: 20px;
   margin-inline-end: 1ch;
 }
 
 .desc_list {
-  font-size: var(--fs-20);
+  font-size: 20px;
   padding: 0;
   line-height: 3vw;
 }
 
 .flex_block {
-  margin-top: 1vw;
+  margin-top: 15px;
   display: flex;
 }
 
 .desc_text {
-  font-size: var(--fs-20);
+  font-size: 20px;
   line-height: 3vw;
 }
 
@@ -396,7 +404,7 @@ li::before {
 }
 
 .rating_user samp {
-  font-size: var(--fs-10);
+  font-size: 12px;
   color: #929292;
 }
 
@@ -409,7 +417,7 @@ li::before {
 }
 
 .author_name {
-  font-size: var(--fs-16);
+  font-size: 15px;
 }
 
 .author_img {
@@ -426,17 +434,72 @@ li::before {
 
 .arrow_back {
   border-radius: 50%;
-  height: 1.5vw;
-  padding: 0.5vw 0.4vw;
+  height: 25px;
+  padding: 6px 5px;
   box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.25);
-  margin-top: 2vw;
-  margin-right: 2vw;
+  margin-top: 20px;
+  margin-right: 25px;
 }
 
 .min-size {
   width: 20vw;
   color: #929292;
   margin-top: 4vw;
-  font-size: var(--fs-20);
+  font-size: 20px;
+}
+
+@media (max-width: 1024px) and (min-width: 768px){
+  .block {
+    width: 760px;
+  }
+}
+
+@media (max-width: 768px)  {
+  .block {
+    width: 300px;
+  }
+
+  .filter_block_check {
+    width: 100%;
+  }
+
+  .shop_title {
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 14px;
+  }
+
+  .field_name {
+    font-size: 12px;
+    margin: 9px 0 8px 0;
+  }
+
+  .crateAds {
+    width: 100%;
+  }
+
+  .flex_block {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 85px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .arrow_back {
+    border-radius: 50%;
+    height: 15px;
+    padding: 6px 5px;
+    box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.25);
+    margin-top: 17px;
+    margin-right: 13px;
+  }
+
+  .desc_field {
+    font-size: 10px;
+  }
 }
 </style>

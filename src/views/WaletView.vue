@@ -1,73 +1,74 @@
 <template>
   <div class="shop">
     <user-panel-right @changeRoute="changeRoute" @exitUser="exitUser" />
-
-    <div class="walent">
-      <div class="shop_title">Кошелёк</div>
-      <div class="h2">Общий счет</div>
-      
-      <!-- Анимация загрузки или данные -->
-      <div class="price">
-        <span v-if="loading">Загрузка...</span>
-        <span v-else>{{ wallet?.Total_balance }} ₽</span>
-      </div>
-
-      <div class="grey-panel">Пополнение кошелька</div>
-      <div class="grey-panel_price">1 500 ₽</div>
-      <div class="h3">Выберите способ пополнения</div>
-      <div class="bank-block">
-        <img src="../assets/bank.png" alt="" />
-        <span>Банковская карта</span>
-      </div>
-      <div class="bank-block">
-        <img src="../assets/sber.png" alt="" />
-        <span>СберБанк Онлайн</span>
-      </div>
-      <div class="name margin_t">Вывод денежных средств</div>
-      <div class="grey-panel_img">
-        <img src="../assets/plus.png" alt="" />
-        <span>Добавить реквизиты</span>
-      </div>
-      <router-link
-        @click="changeRoute('waletHistory')"
-        to="/walentHistory"
-        class="history_link"
-      >
-        История кошелька
-      </router-link>
-    </div>
-
-    <div class="walent">
-      <div class="h2 mtmax">Замороженные средства</div>
-      
-      <!-- Анимация загрузки или данные -->
-      <div class="price">
-        <span v-if="loading">Загрузка...</span>
-        <span v-else>{{ wallet?.Frozen_funds }} ₽</span>
-      </div>
-
-      <div class="green-block">
-        <div class="column">
-          <div class="name">Ближайшая оплата</div>
-          <div class="name2">Николай ПочтиБасков</div>
+    <div class="walent-flex-block">
+      <div class="walent">
+        <div class="shop_title">Кошелёк</div>
+        <div class="h2">Общий счет</div>
+        
+        <!-- Анимация загрузки или данные -->
+        <div class="price">
+          <span v-if="loading">Загрузка...</span>
+          <span v-else>{{ wallet?.Total_balance }} ₽</span>
         </div>
 
-        <div class="arrow">
-          <img src="../assets/arrow.png" alt="" />
+        <div class="grey-panel">Пополнение кошелька</div>
+        <div class="grey-panel_price">1 500 ₽</div>
+        <div class="h3">Выберите способ пополнения</div>
+        <div class="bank-block">
+          <img src="../assets/bank.png" alt="" />
+          <span>Банковская карта</span>
+        </div>
+        <div class="bank-block">
+          <img src="../assets/sber.png" alt="" />
+          <span>СберБанк Онлайн</span>
+        </div>
+        <div class="name margin_t">Вывод денежных средств</div>
+        <div class="grey-panel_img">
+          <img src="../assets/plus.png" alt="" />
+          <span>Добавить реквизиты</span>
+        </div>
+        <router-link
+          @click="changeRoute('waletHistory')"
+          to="/walentHistory"
+          class="history_link"
+        >
+          История кошелька
+        </router-link>
+      </div>
+
+      <div class="walent">
+        <div class="h2 mtmax">Замороженные средства</div>
+        
+        <!-- Анимация загрузки или данные -->
+        <div class="price">
+          <span v-if="loading">Загрузка...</span>
+          <span v-else>{{ wallet?.Frozen_funds }} ₽</span>
         </div>
 
-        <div class="column">
-          <div class="name">12.05.24</div>
-          <div class="name">5 000 ₽</div>
+        <div class="green-block">
+          <div class="column">
+            <div class="name">Ближайшая оплата</div>
+            <div class="name2">Николай ПочтиБасков</div>
+          </div>
+
+          <div class="arrow">
+            <img src="../assets/arrow.png" alt="" />
+          </div>
+
+          <div class="column">
+            <div class="name">12.05.24</div>
+            <div class="name">5 000 ₽</div>
+          </div>
         </div>
+        <router-link
+          @click="changeRoute('waletHistory')"
+          to="/walentHistory"
+          class="history_link"
+        >
+          Смотреть историю
+        </router-link>
       </div>
-      <router-link
-        @click="changeRoute('waletHistory')"
-        to="/walentHistory"
-        class="history_link"
-      >
-        Смотреть историю
-      </router-link>
     </div>
   </div>
 </template>
@@ -127,6 +128,13 @@ export default {
 </script>
 
 <style scoped>
+.walent-flex-block {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 2%;
+  width: 60%;
+}
+
 .route-view {
   text-decoration: none;
 }
@@ -166,7 +174,7 @@ main {
 }
 
 .rating_user samp {
-  font-size: var(--fs-10);
+  font-size: 12px;
   color: #929292;
 }
 
@@ -179,7 +187,7 @@ main {
 }
 
 .author_name {
-  font-size: var(--fs-16);
+  font-size: 20px;
 }
 
 .author_img {
@@ -200,96 +208,96 @@ main {
 
 .name {
   color: #141414;
-  font-size: var(--fs-14);
-  margin-bottom: 0.1vw;
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 
 .margin_t {
-  margin-top: 1vw;
-  margin-bottom: 1vw;
+  margin-top: 10px;
+  margin-bottom: 8px;
 }
 
 .h2 {
-  font-size: var(--fs-16);
+  font-size: 16px;
 }
 
 .grey-panel_price {
   background-color: #f1f1f1;
-  width: 17.4vw;
+  width: 91%;
   text-align: start;
-  padding: 0.4vw 0;
-  padding-left: 1vw;
-  padding-right: 0.6vw;
+  padding: 4px 0;
+  padding-left: 10px;
+  padding-right: 8px;
   color: #979797;
-  border-radius: 0.3vw;
-  margin-bottom: 1vw;
-  font-size: var(--fs-14);
-  margin-bottom: 2vw;
+  border-radius: 5px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  margin-bottom: 30px;
 }
 
 .bank-block {
-  margin-top: 1vw;
+  margin-top: 12px;
   align-items: center;
   align-content: center;
   display: flex;
 }
 
 .bank-block img {
-  width: 1.7vw;
-  margin-right: 0.6vw;
+  width: 30px;
+  margin-right: 10px;
 }
 
 .bank-block span {
-  font-size: var(--fs-10)
+  font-size: 12px
 }
 
 .h3 {
-  font-size: var(--fs-14);
+  font-size: 14px;
   color: black;
 }
 
 .history_link {
   text-decoration: underline;
-  font-size: var(--fs-15);
-  margin-top: 1.5vw;
+  font-size: 15px;
   color: black;
 }
 
 .grey-panel_img {
   background-color: #f1f1f1;
-  width: 17vw;
+  width: 100%;
   text-align: center;
-  padding: 0.3vw;
-  font-size: var(--fs-15);
-  border-radius: 0.3vw;
-  margin-bottom: 0.5vw;
+  padding: 4px;
+  border-radius: 5pxvw;
+  margin-bottom: 8px;
+  font-size: 15px;
+  border-radius: 5px;
 }
 
 .grey-panel_img img {
-  width: 1vw;
+  width: 13px;
   text-align: center;
-  margin-right: 1vw;
+  margin-right: 12px;
 }
 
 .grey-panel_img span {
-  font-size: var(--fs-10);
+  font-size: 12px;
 }
 
 .grey-panel {
   background-color: #f1f1f1;
-  width: 19vw;
+  width: 100%;
   text-align: center;
-  padding: 0.4vw 0;
-  font-size: var(--fs-14);
-  border-radius: 0.3vw;
-  margin-bottom: 0.5vw;
+  padding: 4px 0;
+  font-size: 14px;
+  border-radius: 5px;
+  margin-bottom: 6px;
 }
 
 .price {
   color: #141414;
-  font-size: var(--fs-16);
+  font-size: 16px;
   font-weight: bold;
-  margin: 0.5vw 0vw;
+  margin: 8px 0;
 }
 
 .col1 {
@@ -299,7 +307,7 @@ main {
 
 .data {
   color: #141414;
-  font-size: var(--fs-15);
+  font-size: 15px;
 }
 
 .data:first-child {
@@ -378,12 +386,12 @@ main {
 
 .product_status_r {
   color: #c70000;
-  font-size: var(--fs-15);
+  font-size: 15px;
 }
 
 .product_status_g {
   color: #04c700;
-  font-size: var(--fs-15);
+  font-size: 15px;
 }
 
 .product_create_at {
@@ -440,11 +448,11 @@ main {
 }
 
 .mtmax {
-  margin-top: 8vw;
+  margin-top: 108px;
 }
 
 .name2 {
-  font-size: var(--fs-14);
+  font-size: 14px;
   color: #141414;
   font-weight: lighter;
 }
@@ -452,16 +460,16 @@ main {
 .green-block {
   background-color: #03c7004c;
   display: flex;
-  padding: 0.3vw;
-  border-radius: 0.3vw;
-  margin-top: 0.5vw;
+  padding: 3px;
+  border-radius: 5px;
+  margin-top: 8px;
 }
 
 .green-block .arrow {
   align-self: flex-end;
-  margin: 0 1.2vw;
-  margin-bottom: 0.8vw;
-  width: 2.5vw;
+  margin: 0 10px;
+  margin-bottom: 18px;
+  width: 15%;
 }
 
 .shop_product {
@@ -593,7 +601,7 @@ main {
 .shop_filter_button {
   border: 1px #585858 solid;
   background-color: #f9cc33;
-  font-size: var(--fs-16);
+  font-size: 20px;
   border-radius: 0.8vw;
   text-align: center;
   cursor: pointer;
@@ -726,7 +734,7 @@ main {
 }
 
 .rating_user samp {
-  font-size: var(--fs-10);
+  font-size: 12px;
   color: #929292;
 }
 
@@ -739,7 +747,7 @@ main {
 }
 
 .author_name {
-  font-size: var(--fs-16);
+  font-size: 20px;
 }
 
 .author_img {
@@ -767,7 +775,7 @@ main {
   padding: 1.4vw 5vw;
   cursor: pointer;
   border-radius: 2vw;
-  font-size: var(--fs-15);
+  font-size: 15px;
   align-content: center;
   align-items: center;
   align-self: center;
@@ -787,7 +795,7 @@ main {
 }
 
 .product_title_date {
-  font-size: var(--fs-16);
+  font-size: 20px;
   color: #929292;
   margin: 5px 0 5px 0;
 }
@@ -820,7 +828,7 @@ main {
 .product_create_at {
   color: #d9d9d9;
   margin-top: 15px;
-  font-size: var(--fs-16);
+  font-size: 20px;
 }
 
 .product_title {
@@ -828,7 +836,7 @@ main {
   justify-content: space-between;
   color: #1d1d1d;
   text-decoration: underline 2px #1d1d1d;
-  font-size: var(--fs-16);
+  font-size: 20px;
   margin-bottom: 0.5vw;
   font-weight: bold;
 }
@@ -847,7 +855,7 @@ main {
 }
 
 .product_des {
-  font-size: var(--fs-14);
+  font-size: 14px;
   color: #929292;
   margin-left: 5vw;
 }
@@ -861,20 +869,20 @@ main {
 
 .product_button {
   background-color: #f9cc33;
-  font-size: var(--fs-16);
+  font-size: 20px;
   cursor: pointer;
   color: #141414;
 }
 
 .product {
-  font-size: var(--fs-16);
+  font-size: 20px;
 }
 
 .shop_title {
-  font-size: var(--fs-16);
-  margin-bottom: 0.5vw;
+  font-size: 20px;
+  margin-bottom: 5px;
   font-weight: bold;
-  padding-top: 1vw;
+  padding-top: 20px;
 }
 
 .shop_product {
@@ -997,7 +1005,7 @@ main {
 .shop_filter_button {
   border: 1px #585858 solid;
   background-color: #f9cc33;
-  font-size: var(--fs-16);
+  font-size: 20px;
   border-radius: 0.8vw;
   cursor: pointer;
   text-align: center;
@@ -1093,16 +1101,15 @@ main {
 
 .shop {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   margin: 0 auto;
-  width: 60vw;
+  width: 1024px;
 }
 
 .price span {
-  font-size: 0.9rem;
-  margin: 0.3vw 0;
+  font-size: 16px;
   color: #aaa;
-  animation: blink 1.5s infinite;
+  animation: blink 10s infinite;
 }
 
 @keyframes blink {
@@ -1117,4 +1124,61 @@ main {
   }
 }
 
+@media (max-width: 1024px) and (min-width: 768px){
+  .walent-flex-block {
+    flex-direction: column;
+  }
+
+  .walent {
+    width: 70%;
+  }
+
+  .grey-panel_price {
+    width: 95%;
+    margin-bottom: 20px;
+  }
+
+  .mtmax {
+    margin-top: 20px;
+  }
+
+  .green-block {
+    width: max-content;
+  }
+
+  .shop {
+    width: 768px;
+  }
+}
+
+@media (max-width: 768px)  {
+  .walent-flex-block {
+    flex-direction: column;
+  }
+
+  .walent {
+    width: 70%;
+  }
+
+  .grey-panel_price {
+    width: 95%;
+    margin-bottom: 20px;
+  }
+
+  .mtmax {
+    margin-top: 20px;
+  }
+
+  .green-block {
+    width: max-content;
+  }
+
+  .shop {
+    width: 424px;
+  }
+
+  .grey-panel_price {
+    width: 90.5%;
+  }
+}
 </style>

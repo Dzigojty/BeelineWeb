@@ -26,7 +26,7 @@
       <samp>0000</samp>
     </div> -->
     <div class="shop_filter_button_price">
-      <span v-if="loading" style="font-size: var(--fs-10)">Загрузка...</span>
+      <span v-if="loading" style="font-size: 12px">Загрузка...</span>
       <span v-else>{{ wallet?.Total_balance }} ₽</span>
     </div>
     <div class="shop_filter_button">Применить</div>
@@ -127,7 +127,7 @@ export default {
 
 <style scoped>
 .user-panel-right{
-  width: 12vw;
+  width: 16%;
 }
 
 .route-view {
@@ -460,10 +460,6 @@ a {
   width: 2.5vw;
 }
 
-.shop_product {
-  margin-left: 4vw;
-  width: 36vw;
-}
 
 .shop_filter {
   width: 18.9%;
@@ -472,7 +468,7 @@ a {
 .block_title_user {
   justify-content: center;
   display: flex;
-  margin-top: 3.5vw;
+  margin-top: 10%;
 }
 
 .block_flex {
@@ -492,10 +488,10 @@ a {
 .title_user {
   border-radius: 50%;
   margin: 0 auto;
-  width: 7vw;
-  height: 7vw;
-  box-shadow: 0vw 0vw 1vw -0.6vw rgba(0, 0, 0, 0.348);
-  border: 1vw white solid;
+  width: 120px;
+  height: 120px;
+  box-shadow: 0vw 0vw 25px -3.6px rgba(0, 0, 0, 0.348);
+  border: 12px white solid;
   box-sizing: border-box;
 }
 
@@ -579,12 +575,13 @@ a {
 .shop_filter_button {
   border: 1px #585858 solid;
   background-color: #f9cc33;
-  font-size: var(--fs-14);
+  font-size: 11px;
   cursor: pointer;
-  border-radius: 0.3vw;
+  border-radius: 5px;
   text-align: center;
-  padding: 0.2vw 0;
-  margin: 0.5vw 3vw 0.5vw 3vw;
+  padding: 2px 25px;
+  margin: 8px auto;
+  width: min-content;
 }
 
 .shop_filter_block {
@@ -862,8 +859,8 @@ main {
 }
 
 .shop_product {
-  margin-left: 4vw;
-  width: 36vw;
+  width: 60%;
+  margin-left: 2%;
 }
 
 .shop_filter {
@@ -873,7 +870,7 @@ main {
 .block_title_user {
   justify-content: center;
   display: flex;
-  margin-top: 3.5vw;
+  margin-top: 25px;
 }
 
 .block_flex {
@@ -906,21 +903,19 @@ main {
 }
 
 .shop_filter_rating_name {
-  font-size: var(--fs-10);
-  margin-right: 1vw;
-  margin-top: 0.1vw;
+  margin-top: 10px;
 }
 
 .shop_filter_name {
-  font-size: var(--fs-16);
+  font-size: 16px;
   font-weight: bold;
-  margin: 0.2vw 0;
+  margin: 6px 0;
   align-content: flex-start;
 }
 
-.shop_filter_name:first-child {
+/* .shop_filter_name:first-child {
   margin-bottom: 1.5vw;
-}
+} */
 
 .block-num_prof {
   display: flex;
@@ -935,30 +930,31 @@ main {
 .shop_filter_button_price {
   border: 1px #888888 solid;
   background-color: #e8e8e8;
-  font-size: var(--fs-14);
+  font-size: 10px;
   cursor: pointer;
-  border-radius: 0.3vw;
+  border-radius: 5px;
   text-align: center;
-  padding: 0.1vw 0;
-  margin: 0.6vw auto;
-  width: 6vw;
+  padding: 1px 10px;
+  margin: 0 auto;
+  width: max-content;
+  margin-top: 10px;
 }
 
 .shop_filter_button_price span {
-  font-size: var(--fs-10);
+  font-size: 11px;
 }
 
 .line-grey2 {
   background-color: #d9d9d9;
-  height: 0.1vw;
+  height: 2px;
 }
 
 .shop_filter_grey_title {
   color: #929292;
   display: block;
   text-decoration: none;
-  padding: 0.2vw 0;
-  font-size: var(--fs-16);
+  padding: 3px 0;
+  font-size: 16px;
 }
 
 .exit {
@@ -1067,13 +1063,24 @@ main {
 }
 
 .filter_rating img {
-  width: 1vw;
-  height: 1vw;
-  margin-right: 0.3vw;
+  width: 12px;
+  height: 12px;
+  margin-right: 10px;
 }
 
 .shop {
   display: flex;
   justify-content: space-evenly;
+}
+
+@media (max-width: 768px)  {
+  .user-panel-right{
+    width: 40%;
+  }
+
+  .title_user {
+    width: 100px;
+    height: 100px;
+  }
 }
 </style>

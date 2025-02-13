@@ -20,6 +20,10 @@
 import axios from 'axios';
 
 export default {
+  created() {
+    console.log("this.items");
+    console.log(this.items);
+  },
   props: {
     items: {
       type: Array,
@@ -102,10 +106,10 @@ export default {
 }
 
 .search-field {
-position: relative;
-display: flex;
- margin-left: 2vw;
-  margin-right: 2vw;
+  position: relative;
+  display: flex;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 /* input {
@@ -160,5 +164,26 @@ li:hover {
   border-radius: 0.5vw;
   padding: 0.3vw 0;
   background-color: #f7ead6;
+}
+
+@media (max-width: 768px)  {
+  .search-field {
+    position: relative;
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .input-button {
+    box-sizing: border-box;
+    background-color: rgba(247, 202, 50, 1);
+    border: none;
+    width: 56px;
+    height: 20px;
+    transition: all 500ms;
+    font-family: "NotoSans";
+    font-weight: 400;
+    font-size: 12px;
+  }
 }
 </style>

@@ -13,7 +13,7 @@
               <input v-model="title" class="input" type="text" />
             </div>
             <div class="sm_title">Название объявления</div>
-            <div class="flex_block" style="height: 2vw;">
+            <div class="flex_block">
               <div class="grey_text_tr">Тип оборудования</div>
               <input v-model="type" class="filter_block" type="text" />
             </div>
@@ -22,7 +22,7 @@
               <input class="filter_block" type="text" />
             </div>
             <div class="sm_title">Подробности</div>
-            <div class="flex_block">
+            <div class="flex_block price_block">
               <div class="grey_text_tr">Цена</div>
               <input
                 v-model="Rate"
@@ -55,7 +55,7 @@
               </div>
             </div>
 
-            <div id="hour_block">
+            <div id="hour_block" v-if="priceType == 'час'">
               <input v-model="hourTo" class="hour_input" type="time" placeholder="С 6:00" />
               <input v-model="hourFrom" class="hour_input" type="time" placeholder="До 18:00" />
             </div>
@@ -81,7 +81,7 @@
             </div>
 
 
-            <div class="flex_block" style="margin-bottom: 10.8vw">
+            <div class="flex_block textarea_block">
               <div class="grey_text_tr">Описание объявления</div>
               <textarea
               v-model="desc"
@@ -338,57 +338,53 @@ export default {
 
 <style scoped>
 .black_button {
-  padding: 0.3vw 0.3vw;
-  border-radius: 0.3vw;
+  padding: 3px 3px;
+  border-radius: 5px;
   border: none;
   cursor: pointer;
   background-color: black;
   color: white;
   font-weight: bold;
-  font-size: var(--fs-14);
-  width: 16vw;
+  font-size: 14px;
+  width: 40%;
 }
 
 #uploade-photo {
   opacity: 0;
   position: relative;
   z-index: 10;
-  height: 7vw;
+  height: 110px;
 }
 
 .buttons {
-  margin-top: 5vw;
+  margin-top: 80px;
 }
 
 #hour_block {
-  margin-left: 12vw;
-  /* visibility: visible; */
-  /* visibility: hidden;
-  height: 0; */
-  /* height: max-content; */
+  margin-left: 186px;
 }
 
 .hour_input {
   border: none;
-  border-radius: 0.3vw;
+  border-radius: 5px;
   background-color: #f1f1f1;
-  width: 5.8vw;
-  font-size: var(--fs-14);
+  width: 80px;
+  font-size: 14px;
   color: #929292;
-  padding: 0.3vw 0.3vw;
-  margin-left: 1vw;
+  padding: 3px 3px;
+  margin-left: 20px;
 }
 
 .grey_button {
-  padding: 0.3vw 4vw;
-  border-radius: 0.3vw;
+  padding: 3px 10%;
+  border-radius: 5px;
   border: none;
   background-color: #d9d9d9;
   cursor: pointer;
   color: black;
   font-weight: 200;
-  font-size: var(--fs-14);
-  margin-left: 1vw;
+  font-size: 14px;
+  margin-left: 10px;
 }
 
 .flex-block {
@@ -396,9 +392,8 @@ export default {
 }
 
 .textarea {
-  height: 11vw;
+  height: 100px;
   resize: none;
-  width: 16vw !important;
 }
 
 .min-container {
@@ -406,11 +401,10 @@ export default {
   background-image: url("../assets/icon_file.svg");
   background-repeat: no-repeat;
   background-position: center;
-  height: 7vw;
   height: max-content;
-  border-radius: 0.3vw;
-  background-size: 1.6vw;
-  width: 16.6vw;
+  border-radius: 5px;
+  background-size: 25px;
+  width: 245px;
 }
 
 .custom-checkbox {
@@ -429,8 +423,8 @@ export default {
   display: inline-flex;
   align-items: center;
   user-select: none;
-  font-size: var(--fs-14);
-  margin-right: 1vw;
+  font-size: 14px;
+  margin-right: 10px;
 }
 
 .align {
@@ -445,10 +439,10 @@ export default {
 }
 
 .sm_title {
-  font-size: var(--fs-16);
+  font-size: 16px;
   color: #141414;
   font-weight: 600;
-  margin-top: 0.5vw;
+  margin-top: 15px;
 }
 
 /* создание в label псевдоэлемента before со следующими стилями */
@@ -481,15 +475,15 @@ export default {
 
 .input_small {
   border: 1px #929292 solid;
-  width: 16vw;
-  padding: 0.3vw 0.3vw;
+  width: 225px;
+  padding: 3px 3px;
 }
 
 .input {
   border: 1px #929292 solid;
-  width: 15.5vw;
-  padding: 0.3vw 0.3vw;
-  font-size: var(--fs-14);
+  width: 230px;
+  padding: 2px 2px;
+  font-size: 14px;
 }
 
 /* стили для чекбокса, находящегося в фокусе */
@@ -525,15 +519,15 @@ body {
 }
 
 .shop_title {
-  font-size: var(--fs-20);
-  margin-bottom: 0.5vw;
+  font-size: 20px;
+  margin-bottom: 10px;
   font-weight: bold;
-  padding-top: 1vw;
+  padding-top: 15px;
 }
 
 .desc_field {
   color: #929292;
-  font-size: var(--fs-15);
+  font-size: 12px;
 }
 
 .field_name {
@@ -561,10 +555,10 @@ h2 {
   margin-top: 4vw;
 }
 
-.main {
+/* .main {
   margin: 0 auto;
   width: 48vw;
-}
+} */
 
 .comment_title {
   color: #1d1d1d;
@@ -591,11 +585,11 @@ h2 {
 }
 
 .grey_text_tr {
-  font-size: var(--fs-14);
+  font-size: 14px;
   color: #929292;
   align-self: flex-start;
   margin-right: 0vw;
-  width: 13vw;
+  width: 190px;
 }
 
 .recomendation_list {
@@ -667,16 +661,12 @@ h2 {
 
 .filter_block {
   background-color: #f1f1f1;
-    border-radius: 0.3vw;
-    padding-top: 0.8vw;
-    padding-bottom: 0.8vw;
-    padding-left: 1.5vw;
-    padding-right: 3vw;
-    border: none;
-    width: 16vw;
-    font-size: var(--fs-14);
-    padding: 0.3vw;
-    margin-bottom: 0vw;
+  border-radius: 5px;
+  border: none;
+  width: 230px;
+  font-size: 14px;
+  padding: 2px;
+  margin-bottom: 0vw;
 }
 
 /* .column .filter_block {
@@ -737,8 +727,10 @@ h2 {
 }
 
 .block {
+  justify-content: center;
   display: flex;
-  margin-left: 5vw;
+  margin: 0 auto;
+  width: 1024px;
 }
 
 .action {
@@ -771,11 +763,15 @@ li::before {
 }
 
 .flex_block {
-  margin-top: 1vw;
+  margin-top: 12px;
   display: flex;
   align-content: flex-start;
-  height: 1.8vw;
-  margin-bottom: 0.5vw;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.flex_block:nth-child(2) {
+  height: 30px;
 }
 
 .desc_text {
@@ -841,7 +837,7 @@ li::before {
 }
 
 .author_name {
-  font-size: var(--fs-16);
+  font-size: 16px;
 }
 
 .author_img {
@@ -858,11 +854,11 @@ li::before {
 
 .arrow_back {
   border-radius: 50%;
-  height: 1.5vw;
-  padding: 0.5vw 0.4vw;
+  height: 25px;
+  padding: 6px 5px;
   box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.25);
-  margin-top: 2vw;
-  margin-right: 2vw;
+  margin-top: 20px;
+  margin-right: 25px;
 }
 
 .min-size {
@@ -875,11 +871,11 @@ li::before {
 .preview-container {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-top: 95px;
 }
 
 .image-preview {
-  margin: 0.5rem;
+  margin: 8px;
   width: 100px;
   height: 100px;
   overflow: hidden;
@@ -893,4 +889,118 @@ li::before {
   object-fit: cover;
 }
 
+
+
+@media (max-width: 1024px) and (min-width: 768px){
+  .block {
+    width: 760px;
+  }
+}
+
+@media (max-width: 768px)  {
+
+  .block {
+    width: 300px;
+  }
+
+  .filter_block_check {
+    width: 100%;
+  }
+
+  .shop_title {
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 14px;
+  }
+
+  .field_name {
+    font-size: 12px;
+    margin: 9px 0 8px 0;
+  }
+
+  .crateAds {
+    width: 100%;
+  }
+
+  .flex_block {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .preview-container {
+    margin-top: 115px;
+    width: 244px;
+  }
+
+  .image-preview {
+    margin-left: 0;
+  }
+
+  .price_block {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .flex_block:nth-child(2) {
+    height: 50px;
+  }
+
+  .arrow_back {
+    border-radius: 50%;
+    height: 15px;
+    padding: 6px 5px;
+    box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.25);
+    margin-top: 17px;
+    margin-right: 13px;
+  }
+
+  .desc_field {
+    font-size: 10px;
+  }
+
+  .textarea_block {
+    height: 135px;
+    margin-bottom: 24px;
+  }
+
+  .flex-block {
+    display: flex;
+    flex-direction: column;
+    height: 57px;
+    justify-content: space-between;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+
+  .black_button {
+    width: 100%;
+  }
+
+  .grey_button {
+    padding: 3px 23%;
+    border-radius: 5px;
+    border: none;
+    background-color: #d9d9d9;
+    cursor: pointer;
+    color: black;
+    font-weight: 200;
+    font-size: 14px;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
 </style>
