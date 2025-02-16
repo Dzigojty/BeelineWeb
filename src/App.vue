@@ -204,7 +204,7 @@ export default {
     return {
       name: '',
       user: null,
-      auth: false,
+      auth: true,
       isCategories: false,
       selectedFile: '',
       route: "home",
@@ -218,7 +218,7 @@ export default {
     let authB = false;
     if(Cookies.get('token') == undefined && Cookies.get('Refresh_token') != undefined) {
       const response = await axios
-      .get("http://127.0.0.1:8080/refreshToken", {
+      .get("http://185.112.83.36:8080/refreshToken", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -252,7 +252,7 @@ export default {
     } else {
       authB = false;
     }
-    this.auth = authB;
+    this.auth = true;
     console.log("this.auth", this.auth)
 
     console.log("web socket")

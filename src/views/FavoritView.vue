@@ -60,7 +60,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -89,7 +89,7 @@ export default {
     }
 
     // try {
-    //   const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
+    //   const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
     //     headers: {
     //       "Content-Type": "application/json",
     //     },

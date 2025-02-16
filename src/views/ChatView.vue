@@ -249,7 +249,7 @@ export default {
         );
 
         const response = await axios.post(
-          "http://127.0.0.1:8080/sendVideo",
+          "http://185.112.83.36:8080/sendVideo",
           {
             Id_chat: this.chatSelected,
             Videos: videoBase64, // Отправляем видео в Base64 формате
@@ -285,7 +285,7 @@ export default {
     async createDispute() {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/sigDisputInChat",
+          "http://185.112.83.36:8080/sigDisputInChat",
           {
             // Ваши данные для POST-запроса
             chatId: this.selectedChat, // Пример идентификатора чата
@@ -316,7 +316,7 @@ export default {
 
     async newDisput() {
       try {
-        const response = await axios.post("http://127.0.0.1:8080/sigDisputInChat", {
+        const response = await axios.post("http://185.112.83.36:8080/sigDisputInChat", {
           Id_chat: this.selectedChat,
         }, {
           headers: {
@@ -355,7 +355,7 @@ export default {
 
     async reqestYes() {
       try {
-        const response = await axios.post("http://127.0.0.1:8080/mediatorEnterInChat", {
+        const response = await axios.post("http://185.112.83.36:8080/mediatorEnterInChat", {
           Id_chat: 36,
         }, {
           headers: {
@@ -475,7 +475,7 @@ export default {
       }
 
       try {
-        const response = await axios.post("http://127.0.0.1:8080/sendMessage", {
+        const response = await axios.post("http://185.112.83.36:8080/sendMessage", {
           Id_chat: this.chatSelected,
           Text: this.text,
         }, {
@@ -532,7 +532,7 @@ export default {
       try {
         // Отправляем запрос на сервер
         const response = await axios.post(
-          "http://127.0.0.1:8080/openChat",
+          "http://185.112.83.36:8080/openChat",
           { Id_chat: chatId },
           {
             headers: { "Content-Type": "application/json" },
@@ -575,7 +575,7 @@ export default {
     },
     async CreateChats(){
       try {
-        const response = await axios.get("http://127.0.0.1:8080/printChat", {
+        const response = await axios.get("http://185.112.83.36:8080/printChat", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -602,7 +602,7 @@ export default {
 
     async CreateDisputs(){
       try {
-        const response = await axios.get("http://127.0.0.1:8080/disputeChatPanel", {
+        const response = await axios.get("http://185.112.83.36:8080/disputeChatPanel", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -627,7 +627,7 @@ export default {
     async sendBiddingRequest() {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/bidding",
+          "http://185.112.83.36:8080/bidding",
           {
             Chat_id: this.selectedChat,
             Global_rate: this.globalRate,

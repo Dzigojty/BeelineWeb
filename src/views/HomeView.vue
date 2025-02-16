@@ -884,7 +884,7 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8080/sortProductListHourlyRate",
+        "http://185.112.83.36:8080/sortProductListHourlyRate",
         {
           List: 1,
           Size: 2,
@@ -944,7 +944,7 @@ export default {
     try {
       console.log("groupFavByRecent");
 
-      const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -1018,7 +1018,7 @@ export default {
     //   console.log(`addFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://127.0.0.1:8080/sigFavAds",
+    //       "http://185.112.83.36:8080/sigFavAds",
     //       {
     //         Ads_id: idProduct
     //       },
@@ -1044,7 +1044,7 @@ export default {
     //   console.log(`removeFavorite ${idProduct}`);
     //   try {
     //     const response = await axios.post(
-    //       "http://127.0.0.1:8080/delFavAds",
+    //       "http://185.112.83.36:8080/delFavAds",
     //       {
     //         Ads_id: idProduct,
     //       },
@@ -1068,7 +1068,7 @@ export default {
     // },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -1138,7 +1138,7 @@ export default {
       if(this.showMoreData.sortRadio) {
         try {
           const response = await axios.post(
-            "http://127.0.0.1:8080/sortProductListDailyRate",
+            "http://185.112.83.36:8080/sortProductListDailyRate",
             {
               List: this.showMoreData.nowPage,
               Size: 2,
@@ -1174,7 +1174,7 @@ export default {
       } else {
         try{
           const response = await axios.post(
-            "http://127.0.0.1:8080/sortProductListHourlyRate",
+            "http://185.112.83.36:8080/sortProductListHourlyRate",
             {
               List: this.showMoreData.nowPage,
               Size: 2,
@@ -1232,7 +1232,7 @@ export default {
     //   if(this.sortRadio) {
     //     try {
     //     const response = await axios.post(
-    //       "http://127.0.0.1:8080/sortProductListDailyRate",
+    //       "http://185.112.83.36:8080/sortProductListDailyRate",
     //       {
     //         List: 1,
     //         Size: 2,
@@ -1276,7 +1276,7 @@ export default {
     //   } else {
     //     try {
     //       const response = await axios.post(
-    //         "http://127.0.0.1:8080/sortProductListHourlyRate",
+    //         "http://185.112.83.36:8080/sortProductListHourlyRate",
     //         {
     //           List: 1,
     //           Size: 2,
@@ -1358,7 +1358,7 @@ export default {
         console.log(this.rating)
         try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/sortProductListDailyRate",
+          "http://185.112.83.36:8080/sortProductListDailyRate",
           {
             List: 1,
             Size: 2,
@@ -1417,7 +1417,7 @@ export default {
         console.log(this.rating)
         try {
           const response = await axios.post(
-            "http://127.0.0.1:8080/sortProductListHourlyRate",
+            "http://185.112.83.36:8080/sortProductListHourlyRate",
             {
               List: 1,
               Size: 2,

@@ -126,7 +126,7 @@ export default {
   async created() {
       //Списанные
       let response = await axios
-      .post("http://127.0.0.1:8080/walletHistory", 
+      .post("http://185.112.83.36:8080/walletHistory", 
         {
           Type: 3,
         },
@@ -157,7 +157,7 @@ export default {
 
       //Зачисленные
       response = await axios
-      .post("http://127.0.0.1:8080/walletHistory", 
+      .post("http://185.112.83.36:8080/walletHistory", 
         {
           Type: 2,
         },

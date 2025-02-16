@@ -19,12 +19,12 @@
           <span class="text_button">Перейти в чат</span>
           <img class="link_button" src="../assets/link.png" alt="" />
         </button>
-      </div> -->
-      <!-- <div class="grey-line"></div> -->
+      </div>
+      <div class="grey-line"></div> -->
     </div>
-    <!-- <div class="grey_text">
+    <div class="grey_text">
         Здесь будут появляться уведомления!
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -44,9 +44,9 @@ export default {
 
 <style>
 .grey_text{
-    font-size: var(--fs-20);
+    font-size: 20px;
     color: #666666;
-    margin-top: 4vw;
+    margin-top: 20px;
     text-align: center;
 }
 
@@ -61,8 +61,9 @@ export default {
 }
 
 .button .link_button {
-  width: 2.5vw;
-  margin-left: 1vw;
+  width: 20px;
+  margin-left: 10px;
+  height: 20px;
 }
 
 .button {
@@ -71,8 +72,8 @@ export default {
   align-items: center;
   flex-wrap: nowrap;
   cursor: pointer;
-  padding: 0.6vw;
-  border-radius: 1vw;
+  padding: 2px 20px;
+  border-radius: 5px;
   border: 1px #929292 solid;
 }
 
@@ -84,18 +85,18 @@ span img {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2vw 2vw;
-  padding-left: 1vw;
+  padding: 20px 20px;
+  padding-left: 10px;
 }
 
 .notififi img {
-  width: 3vw;
+  width: 20px;
   border-radius: 50%;
-  height: 3vw;
+  height: 20px;
 }
 
 .notififi span img {
-  width: 2vw;
+  width: 20px;
 }
 
 h1 {
@@ -121,6 +122,12 @@ h1 {
 
 
 @media (max-width: 768px)  {
+  .button .link_button {
+    width: 15px;
+    margin-left: 5px;
+    height: 15px;
+  }
+
   .notification {
     width: 420px;
     margin: 0 auto;

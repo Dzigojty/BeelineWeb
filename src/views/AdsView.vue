@@ -76,7 +76,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get("http://127.0.0.1:8080/groupAdsByRented", {
+      const response = await axios.get("http://185.112.83.36:8080/groupAdsByRented", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -95,7 +95,7 @@ export default {
     this.array = this.active;
 
     try {
-      const response = await axios.get("http://127.0.0.1:8080/groupAdsByArchived", {
+      const response = await axios.get("http://185.112.83.36:8080/groupAdsByArchived", {
         headers: {
           "Content-Type": "application/json",
         },

@@ -265,7 +265,7 @@ export default {
       console.log(`addFavorite ${this.localIdProduct}`);
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/sigChat",
+          "http://185.112.83.36:8080/sigChat",
           {
             Ads_id: this.localIdProduct,
           },
@@ -292,7 +292,7 @@ export default {
       console.log(`addFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/sigFavAds",
+          "http://185.112.83.36:8080/sigFavAds",
           {
             Ads_id: idProduct,
           },
@@ -318,7 +318,7 @@ export default {
       console.log(`removeFavorite ${idProduct}`);
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/delFavAds",
+          "http://185.112.83.36:8080/delFavAds",
           {
             Ads_id: idProduct,
           },
@@ -342,7 +342,7 @@ export default {
     },
     async getFavoritList() {
       try {
-        const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
+        const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -400,7 +400,7 @@ export default {
     async loadProducts() {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/sortProductListCategoriez",
+          "http://185.112.83.36:8080/sortProductListCategoriez",
           { Category: [this.detail.Category_id] },
           { headers: { "Content-Type": "application/json" } }
         );
@@ -427,7 +427,7 @@ export default {
       console.log(this.localIdProduct)
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8080/printAds",
+          "http://185.112.83.36:8080/printAds",
           {
             Ads_id: this.localIdProduct,
           },
@@ -468,7 +468,7 @@ export default {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8080/groupReviewNewOnesFirst",
+        "http://185.112.83.36:8080/groupReviewNewOnesFirst",
         {
           ads_id: this.localIdProduct,
         },
@@ -490,7 +490,7 @@ export default {
 
 
     try {
-      const response = await axios.get("http://127.0.0.1:8080/groupFavByRecent", {
+      const response = await axios.get("http://185.112.83.36:8080/groupFavByRecent", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -875,7 +875,6 @@ li::before {
   height: 20px;
   padding: 10px 8px;
   box-shadow: 0 2px 9px rgba(0, 0, 0, 0.25);
-  margin-top: 58px;
   margin-right: 0;
 }
 
@@ -924,6 +923,15 @@ li::before {
 
 
 @media (max-width: 768px) {
+  .route-view {
+    margin-bottom: 5%;
+    display: block;
+  }
+
+  .block {
+    display: block;
+  }
+
   .product {
     width: 87%;
   }

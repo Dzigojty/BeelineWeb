@@ -268,7 +268,7 @@ export default {
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://127.0.0.1:8080/regOrderHourly",
+            "http://185.112.83.36:8080/regOrderHourly",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,
@@ -298,7 +298,7 @@ export default {
         try {
           // Выполняем запрос
           const response = await axios.post(
-            "http://127.0.0.1:8080/regOrderDaily",
+            "http://185.112.83.36:8080/regOrderDaily",
             {
               Ads_id: this.idProduct,
               Starts_at: startsAt,

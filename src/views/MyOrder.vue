@@ -75,7 +75,7 @@ export default {
   async created() {
     console.log("created MyOrder")
     try {
-      const response = await axios.get("http://127.0.0.1:8080/groupOrdersByRented", {
+      const response = await axios.get("http://185.112.83.36:8080/groupOrdersByRented", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -96,7 +96,7 @@ export default {
     this.array = this.active;
 
     try {
-      const response = await axios.get("http://127.0.0.1:8080/groupOrdersByUnRented", {
+      const response = await axios.get("http://185.112.83.36:8080/groupOrdersByUnRented", {
         headers: {
           "Content-Type": "application/json",
         },

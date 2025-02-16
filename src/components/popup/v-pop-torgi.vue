@@ -257,7 +257,7 @@ methods: {
       try {
       // Выполняем запрос
       const response = await axios.post(
-          "http://127.0.0.1:8080/regOrderBidding",
+          "http://185.112.83.36:8080/regOrderBidding",
           {
             Ads_id: this.idProduct,
             Global_rate: this.totalCost,
@@ -322,7 +322,7 @@ methods: {
     console.log("idAds = ", this.idAds)
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8080/printAds",
+        "http://185.112.83.36:8080/printAds",
         {
           Ads_id: this.idAds,
         },
