@@ -9,7 +9,13 @@
     <v-popup-change-deal-request-edit v-if="isInfoPopupChangeDealRequestEdit" @closePopup="closePopup" />
     <v-popup-torgi v-if="isInfoPopupTorgi" :idAds="idAds" @closePopup="closePopup" />
     <div class="container-chat">
-      <swiper-container class="swiper contacts" slides-per-view="8" :direction="'vertical'">
+      <swiper-container 
+      :direction="sliderDirection"
+      :spaceBetween="20"
+      :slidesPerView="sliderPerView"
+      :pagination="{ clickable: true }"
+      :modules="[Pagination]"
+      class="swiper contacts" >
         <swiper-slide
           v-for="(chat, index) in chats"
           :key="index"
@@ -201,8 +207,38 @@ import VPopupTextUser from "../components/popup/v-popup-text-user.vue"
 import axios from 'axios';
 import Cookies from "js-cookie";
 import { storeToRefs } from 'pinia';
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default {
+  setup() {
+    const width = ref(window.innerWidth);
+
+    const updateWidth = () => {
+      width.value = window.innerWidth;
+    };
+
+    onMounted(() => {
+      window.addEventListener("resize", updateWidth);
+    });
+
+    onBeforeUnmount(() => {
+      window.removeEventListener("resize", updateWidth);
+    });
+
+    const sliderDirection = computed(() => {
+      return width.value >= 300 && width.value <= 1024 ? "horizontal" : "vertical";
+    });
+
+    const sliderPerView = computed(() => {
+      return width.value >= 300 && width.value <= 1024 ? 2 : 7;
+    });
+
+    return { sliderDirection, Pagination, sliderPerView };
+  },
   components: {
     VPopupModerDecision,
     VPopupChangeDeal,
@@ -685,8 +721,100 @@ export default {
       isInfoPopupModerDecision: false,
       isInfoPopupChangeDeal: false,
       isInfoPopupChangeDealRequestEdit: false,
-      messages: [],
-      chats: [],
+      messages: [
+        {
+          data: [
+            {
+              Date: "2025-01-20T17:45:28.626629+03:00",
+              Media: null,
+              Media_pwd: null,
+              Message_id: 1,
+              Name: "company_user.name_of_company",
+              Text: "adsadsads",
+              User_id: 28,
+              User_role: 1
+            },
+            {
+              Date: "2025-01-20T17:45:28.626629+03:00",
+              Media: null,
+              Media_pwd: null,
+              Message_id: 2,
+              Name: "company_user.name_of_company",
+              Text: "adsadsads",
+              User_id: 28,
+              User_role: 1
+            },
+            {
+              Date: "2025-01-20T17:45:28.626629+03:00",
+              Media: null,
+              Media_pwd: null,
+              Message_id: 3,
+              Name: "company_user.name_of_company",
+              Text: "adsadsads",
+              User_id: 28,
+              User_role: 1
+            },
+          ],
+          ads_id: 2,
+          disput_state: true,
+          global_rate: 42,
+          message: "Показано",
+          moderator_id: 175,
+          owner_id: 28,
+          slave_id: 27,
+          status: "success"
+        }
+      ],
+      chats: [
+        {
+          Chat_id: 36,
+          avatar: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwQ",
+          info: "Азамат",
+          sender_id: 28,
+          sent_at: "2025-01-20T17:45:28.626629+03:00",
+          text: ""
+        },
+        {
+          Chat_id: 36,
+          avatar: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwQ",
+          info: "Азамат",
+          sender_id: 28,
+          sent_at: "2025-01-20T17:45:28.626629+03:00",
+          text: ""
+        },
+        {
+          Chat_id: 36,
+          avatar: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwQ",
+          info: "Азамат",
+          sender_id: 28,
+          sent_at: "2025-01-20T17:45:28.626629+03:00",
+          text: ""
+        },
+        {
+          Chat_id: 36,
+          avatar: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwQ",
+          info: "Азамат",
+          sender_id: 28,
+          sent_at: "2025-01-20T17:45:28.626629+03:00",
+          text: ""
+        },
+        {
+          Chat_id: 36,
+          avatar: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwQ",
+          info: "Азамат",
+          sender_id: 28,
+          sent_at: "2025-01-20T17:45:28.626629+03:00",
+          text: ""
+        },
+        {
+          Chat_id: 36,
+          avatar: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwQ",
+          info: "Азамат",
+          sender_id: 28,
+          sent_at: "2025-01-20T17:45:28.626629+03:00",
+          text: ""
+        },
+      ],
     };
   },
 };
@@ -694,9 +822,9 @@ export default {
 
 <style scoped>
 
-.swiper-el{
+/* .swiper-el{
   height: 4.5vw !important;
-}
+} */
 
 .button_status_request_spor{
   border: 0.1vw solid #E27622;
@@ -766,12 +894,12 @@ export default {
 }
 
 .dialog {
-  height: 39.1vw;
+  height: 100%;
 }
 
 .contact_name {
   margin-bottom: 0.5vw;
-  font-size: var(--fs-14);
+  font-size: 14px;
 }
 
 .contact {
@@ -779,17 +907,18 @@ export default {
 }
 
 .column_data {
-  margin-left: 1vw;
+  margin-left: 20px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  width: 120px;
 }
 
 .contact_img {
   border-radius: 50%;
-  width: 3vw;
-  height: 3vw;
+  width: 35px;
+  height: 35px;
 }
 
 .button_status_message {
@@ -894,7 +1023,7 @@ export default {
   height: 5vw;
   left: 40vw;
   background-color: white;
-  font-size: var(--fs-14);
+  font-size: 14px;
   text-align: center;
   z-index: 10;
   border: 1px solid black;
@@ -919,7 +1048,7 @@ button.green {
   border: 1px solid #135F00;
   border-radius: 1vw;
   width: 10vw;
-  font-size: var(--fs-14);
+  font-size: 14px;
 }
 
 button.grey {
@@ -927,7 +1056,7 @@ button.grey {
   border-radius: 1vw;
   border: none;
   width: 10vw;
-  font-size: var(--fs-14);
+  font-size: 14px;
 }
 
 .notification {
@@ -955,15 +1084,15 @@ button.grey {
 .contact {
   display: flex;
   border: 1px #a96807 solid;
-  padding: 0.4vw 0.4vw;
-  box-shadow: -0.1vw 0.3vw 0.5vw -0.2vw rgba(0, 0, 0, 0.348);
-  border-radius: 0.4vw;
+  padding: 2px 2px;
+  box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.348);
+  border-radius: 5px;
   align-items: center;
 }
 
 .contacts {
   background-color: #ffefb9;
-  width: 24vw;
+  width: 100%;
   height: 100%;
   overflow: auto;
 }
@@ -975,7 +1104,7 @@ button.grey {
 }
 
 .backgroud_contact {
-  padding: 0.5vw 0.5vw;
+  padding: 10px 10px;
 }
 
 .margin-right_message {
@@ -992,7 +1121,7 @@ button.grey {
 }
 
 .chat {
-  height: 46vw;
+  height: 500px;
   display: flex;
 }
 
@@ -1018,7 +1147,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 76vw;
-  height: 40vw;
+  height: 100%;
 }
 
 .messages {
@@ -1035,22 +1164,24 @@ body {
 }
 
 .message {
-  margin-bottom: 1vw;
+  margin-bottom: 10px;
 }
 
 form {
   position: relative;
   display: flex;
   background-color: #ffefb9;
-  padding-bottom: 0.4vw;
-  padding-top: 0.6vw;
+  /* padding-bottom: 0.4vw; */
+  padding-top: 9px;
   justify-content: center;
+  height: 45px;
 }
 
 .buttons {
   display: flex;
-  justify-content: center;
-  padding-top: 0.7vw;
+  justify-content: space-around;
+  padding-top: 5px;
+  width: 100px;
 }
 
 .buttons button {
@@ -1064,7 +1195,7 @@ form {
 }
 
 .form {
-  padding-bottom: 1vw;
+  padding-bottom: 5px;
 }
 
 input {
@@ -1072,9 +1203,9 @@ input {
   border: none;
   padding: 0;
   box-shadow: -0.1vw 0.3vw 0.6vw rgba(0, 0, 0, 0.348);
-  border-radius: 0.5vw 0 0 0.5vw;
-  margin: 0.5vw 1.5vw 0 0;
-  padding-left: 1vw;
+  border-radius: 5px 0 0 5px;
+  margin: 5px 5px 0 0;
+  padding-left: 10px;
   background-color: white;
   outline: none;
 }
@@ -1084,28 +1215,27 @@ input {
   outline: none;
   background: none;
   position: absolute;
-  right: 1vw;
-  top: 1.1vw;
-  background-color: #f9cc33;
+  right: 5px;
+  top: 14px;
   padding: 0;
-  padding-right: 0.5vw;
-  width: 3vw;
-  height: 55%;
-  background-image: url("../assets/submit_chat.png");
+  width: 40px;
+  height: 36px;
   background-repeat: no-repeat;
-  background-size: 2.5vw;
+  background-size: 36px;
+  background-color: #f9cc33;
+  background-image: url("../assets/submit_chat.png");
 }
 
 .aligment_noyou {
   display: flex;
   justify-content: start;
-  margin-bottom: 0.9vw;
+  margin-bottom: 10px;
 }
 
 .aligment_you {
   display: flex;
   justify-content: end;
-  margin-bottom: 0.9vw;
+  margin-bottom: 10px;
 }
 
 .message_mediator {
@@ -1214,5 +1344,142 @@ input {
                 -webkit-transform:rotateX(180deg); /* Safari and Chrome */
                 -ms-transform:rotateX(180deg); /* IE 9+ */
                 -o-transform:rotateX(180deg); /* Opera */
+}
+
+
+@media (max-width: 1024px) and (min-width: 425px) {
+  .container-chat {
+    flex-direction: column;
+    height: 400px;
+    height: 100%;
+  }
+
+  .submit {
+    background-image: url("../assets/submit_chat.png");
+    right: 5px;
+    top: 7px;
+    padding: 0;
+    padding-right: 10px;
+    width: 31px;
+    height: 30px;
+    background-size: 28px;
+  }
+
+  .chat {
+    width: 425px;
+    margin: 0 auto;
+    height: 100%;
+  }
+
+  .panel {
+    width: 100%;
+  }
+
+  .dialog {
+    height: 304px;
+  }
+
+  .buttons button img {
+    width: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .contacts {
+    background-color: #ffefb9;
+    width: 100%;
+    height: 84px;
+    overflow: auto;
+  }
+
+  .datetime_message {
+    font-size: 5px;
+  }
+
+  .message_you {
+    position: relative;
+    align-self: flex-end;
+    background-color: #ebe2c3;
+    padding: 1px 5px;
+    border-radius: 5px;
+    max-width: 60%;
+    text-align: left;
+    word-break: break-all;
+    font-size: 10px;
+  }
+
+  .button_new_message {
+    background-color: #f9cc33;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 1px 3px;
+    font-size: 8px;
+    width: 63%;
+  }
+
+  input {
+    width: 100%;
+    border: none;
+    padding: 0;
+    box-shadow: -0.1vw 0.3vw 0.6vw rgba(0, 0, 0, 0.348);
+    border-radius: 5px 0 0 5px;
+    margin: 2px 5px 0 0;
+    padding-left: 8px;
+    background-color: white;
+    outline: none;
+    height: 30px;
+  }
+
+  .contact_name {
+    margin-bottom: 2px;
+  }
+
+  .inner {
+    padding: 10px 6px;
+  }
+
+  .message_user {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+
+  .message_noyou {
+    position: relative;
+    align-self: flex-end;
+    background-color: #ffe795;
+    padding: 1px 5px;
+    border-radius: 5px;
+    max-width: 60%;
+    text-align: left;
+    word-break: break-all;
+    font-size: 10px;
+  }
+
+  .message_mediator {
+    position: relative;
+    align-self: flex-end;
+    padding: 1px 5px;
+    border-radius: 5px;
+    max-width: 60%;
+    text-align: left;
+    word-break: break-all;
+    font-size: 10px;
+  }
+
+  .message_noyou_end {
+
+  }
+
+  .form {
+    padding-bottom: 5px;
+    position: relative;
+    display: flex;
+    background-color: #ffefb9;
+    padding-bottom: 0.4vw;
+    padding-top: 5px;
+    justify-content: center;
+  }
 }
 </style>
